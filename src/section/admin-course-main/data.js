@@ -5,5 +5,9 @@ export const data = {
     instructor: "김경태",
     containerStatus: "중지"
   },
-  assignments: []
+  assignments: [],
+  students: {
+    signedUp: [],
+    register: []
+  }
 }

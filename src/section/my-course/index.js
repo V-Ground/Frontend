@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from "next/link";
 
 import * as S from "./styles";
 import { data } from "./data";
@@ -15,7 +16,7 @@ const MyCourse = ({ isAdmin }) => {
   return (
     <S.Container>
       <WhiteBackground>
-        {isAdmin ? <S.AdminHeader><S.Title>내가 참여하는 클래스</S.Title><S.Text>생성하기</S.Text></S.AdminHeader> : <S.Title>진행중인 클래스 및 테스트</S.Title>}
+        {isAdmin ? <S.AdminHeader><S.Title>내가 참여하는 클래스</S.Title><Link href="/admin/create"><S.Text style={{ cursor: "pointer" }}>생성하기</S.Text></Link></S.AdminHeader> : <S.Title>진행중인 클래스 및 테스트</S.Title>}
         <Divider />
         <S.CourseWrapper>
           <S.ClassWrapper>

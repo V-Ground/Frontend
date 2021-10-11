@@ -11,29 +11,31 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { Typography, Button } from '@material-ui/core';
 
 export default function Header() {
-    const router = useRouter();
-    const [open, setOpen] = React.useState(false);
-    const [scrollPosition, setScrollPosition] = React.useState(0);
-    const updateScroll = () => {
-        setScrollPosition(window.scrollY || document.documentElement.scrollTop);
-    }
-    React.useEffect(() => {
-        window.addEventListener('scroll', updateScroll);
-    });
+  const router = useRouter();
+  const [open, setOpen] = React.useState(false);
+  const [scrollPosition, setScrollPosition] = React.useState(0);
+  const updateScroll = () => {
+    setScrollPosition(window.scrollY || document.documentElement.scrollTop);
+  }
+  React.useEffect(() => {
+    window.addEventListener('scroll', updateScroll);
+  });
 
-    return router.route == '/login' || /signup/g.exec(router.route) ? '' : (
-        <Grid style={{ boxShadow: "0px 3px 22px rgba(0, 0, 0, 0.16)", background: "white" }} container className={styles.headerContainer}>
-            <Grid item className={styles.leftTitle} xs={1}>
-                V-Ground
-            </Grid>
-            <Grid item xs={9}>
-            </Grid>
-            <Grid item xs={1}>
-                <Typography className={styles.textAlignRight} variant='body1'>로그인</Typography>
-            </Grid>
-            <Grid item xs={1}>
-                <Typography variant='body1'>회원가입</Typography>
-            </Grid>
-        </Grid>
-    );
+  return router.route == '/login' || /signup/g.exec(router.route) ? '' : (
+    <Grid style={{ boxShadow: "0px 3px 22px rgba(0, 0, 0, 0.16)", background: "white" }} container className={styles.headerContainer}>
+      <Grid item className={styles.leftTitle} xs={1}>
+        <Link href="/">
+          V-Ground
+                </Link>
+      </Grid>
+      <Grid item xs={9}>
+      </Grid>
+      <Grid item xs={1}>
+        <Typography className={styles.textAlignRight} variant='body1'>로그인</Typography>
+      </Grid>
+      <Grid item xs={1}>
+        <Typography variant='body1'>회원가입</Typography>
+      </Grid>
+    </Grid>
+  );
 }

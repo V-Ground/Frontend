@@ -106,15 +106,7 @@ const CourseAssignment = () => {
       <Modal open={isOpen} handleOnModalClose={handleModalClose}>
         <h2>과제 제출</h2>
         <div>
-          1번 Docker 명령어를 입력하세요
-          <input type="text" placeholder="정답을 입력하세요" />
-        </div>
-        <div>
-          2번 Docker 명령어를 입력하세요
-          <input type="text" placeholder="정답을 입력하세요" />
-        </div>
-        <div>
-          3번 Docker 명령어를 입력하세요
+          공격자의 IP와 Port 를 입력하세요
           <input type="text" placeholder="정답을 입력하세요" />
         </div>
         <S.Button onClick={handleModalClose}>제출</S.Button>

@@ -4,7 +4,7 @@ import * as S from "./styles";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import CourseCard from "../course-card";
 
-const CourseHeader = ({ title, instructor, thumnailImageUrl, containerStatus }) => {
+const CourseHeader = ({ isAdmin, title, instructor, thumnailImageUrl, containerStatus }) => {
   return (
     <S.Container>
       <S.Back><ArrowBackIosNewIcon />{title}</S.Back>
@@ -27,6 +27,7 @@ const CourseHeader = ({ title, instructor, thumnailImageUrl, containerStatus }) 
           <S.ContainerButtons>
             <S.Button>인스턴스 실행</S.Button>
             <S.Button>인스턴스 중지</S.Button>
+            {isAdmin && <S.Button style={{ background: "#FA5050", width: "140px" }}>모든 인스턴스 중지</S.Button>}
           </S.ContainerButtons>
         </div>
       </S.Course>

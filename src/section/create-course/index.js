@@ -1,5 +1,5 @@
 import { useState } from 'react'
-
+import { useRouter } from "next/router";
 import * as S from "./styles";
 
 import TextField from '@mui/material/TextField';
@@ -8,6 +8,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import ClearIcon from '@mui/icons-material/Clear';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import WhiteBackground from "../../component/white-background";
 import { Divider } from '@mui/material';
@@ -15,10 +16,19 @@ import { Divider } from '@mui/material';
 import { DropzoneArea } from 'material-ui-dropzone';
 
 const CreateCourse = () => {
-
+  const router = useRouter();
   const [clicked, setClicked] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handleSoftwareClick = () => {
     setClicked(!clicked);
+  }
+
+  const loadingFalse = () => {
+    router.push("/admin/course")
+  }
+  const handleLoading = () => {
+    setLoading(true);
+    setTimeout(loadingFalse, 2000);
   }
   return (
     <S.Container>
@@ -95,15 +105,15 @@ const CreateCourse = () => {
                 </S.Software>
                 <S.Software>
                   <S.Image src="https://macin.files.wordpress.com/2012/08/ida-6-3-icon.png?w=256" />
-                  <span style={{ color: "#525463", fontSize: "0.8rem" }}>FTK Imager</span>
+                  <span style={{ color: "#525463", fontSize: "0.8rem" }}>IDA</span>
                 </S.Software>
                 <S.Software>
                   <S.Image src="//upload.wikimedia.org/wikipedia/commons/d/db/Wireshark_Icon.png" />
-                  <span style={{ color: "#525463", fontSize: "0.8rem" }}>FTK Imager</span>
+                  <span style={{ color: "#525463", fontSize: "0.8rem" }}>Wireshark</span>
                 </S.Software>
                 <S.Software>
                   <S.Image src="https://cdn.icon-icons.com/icons2/3053/PNG/512/burp_suite_macos_bigsur_icon_190319.png" />
-                  <span style={{ color: "#525463", fontSize: "0.8rem" }}>FTK Imager</span>
+                  <span style={{ color: "#525463", fontSize: "0.8rem" }}>Burp Suite</span>
                 </S.Software>
                 <S.Software>
                   <S.Image src="https://blog.kakaocdn.net/dn/skTqL/btqCrjICmfx/QgSvf45Nshbq7LmDvHphMK/img.png" />
@@ -111,7 +121,7 @@ const CreateCourse = () => {
                 </S.Software>
                 <S.Software>
                   <S.Image src="https://blog.kakaocdn.net/dn/skTqL/btqCrjICmfx/QgSvf45Nshbq7LmDvHphMK/img.png" />
-                  <span style={{ color: "#525463", fontSize: "0.8rem" }}>FTK Imager</span>
+                  <span style={{ color: "#525463", fontSize: "0.8rem" }}>FTK Imager 6.2.1</span>
                 </S.Software>
               </S.SoftwareWrapper>
               <h4>CPU와 RAM</h4>
@@ -168,7 +178,9 @@ const CreateCourse = () => {
           </S.InputColumn>
           <Divider />
           <div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <S.Button>생성하기</S.Button>
+            <S.Button onClick={handleLoading}>
+              {loading ? <CircularProgress style={{ color: "white" }} /> : "asdf"}
+            </S.Button>
           </div>
         </S.Padding>
       </WhiteBackground>

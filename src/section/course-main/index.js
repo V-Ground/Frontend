@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useRouter } from "next/router";
 
 import * as  S from "./styles";
 import { data } from "./data";
@@ -22,7 +23,7 @@ const convertToChip = (string) => {
 
 const CourseMain = () => {
 
-
+  const router = useRouter();
   const { courseInfo, assignments } = data;
 
   return (
@@ -54,6 +55,7 @@ const CourseMain = () => {
                 <TableRow
                   key={assignment.id}
                   hover
+                  onClick={() => router.push("/assignment")}
                   style={{ cursor: "pointer" }}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
