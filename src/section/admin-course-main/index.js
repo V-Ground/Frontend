@@ -77,9 +77,9 @@ const CourseMain = () => {
         <Box sx={{ width: '100%' }} style={{ margin: "80px 0" }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-              <Tab label="Item One" {...a11yProps(0)} />
-              <Tab label="Item Two" {...a11yProps(1)} />
-              <Tab label="Item Three" {...a11yProps(2)} />
+              <Tab label="과제" {...a11yProps(0)} />
+              <Tab label="구성원 관리" {...a11yProps(1)} />
+              <Tab label="클래스 관리" {...a11yProps(2)} />
             </Tabs>
           </Box>
           <TabPanel value={value} index={0}>
