@@ -1,0 +1,230 @@
+.container {
+  font-family: 'Spoqa Han Sans Neo', 'San-serif';
+}
+
+.paper {
+  text-align: center;
+}
+
+.popup {
+  width: 528px;
+  height: 528px;
+  text-align: center;
+}
+
+.categoryContainer {
+  height: 100%;
+  margin-top: 30px;
+  box-shadow: 0;
+}
+
+.categoryButton {
+  font-size: 14pt;
+  white-space: nowrap;
+  display: inline-block;
+  padding: 10px 20px;
+  height: 50px;
+  border-radius: 80px !important;
+  margin-top: 20px !important;
+  background-color: #EBEBEB;
+  box-shadow: none;
+}
+
+.categoryBody_mobile {
+  text-align: center;
+  padding-right: 8px;  
+}
+
+.mainImage {
+  padding: 0px !important;
+}
+
+.newProductTitle {
+  margin-top: 40px;
+}
+
+.arrowContainer_left {
+  position: relative;
+  float: left; 
+}
+
+.reviweSlideButton_left {
+  border: solid 0.5px #ccc;
+  height: 1px;
+  height: 369px;
+  display: table-cell;
+  vertical-align: middle;
+  position: absolute !important;
+  right: 0;
+}
+
+.reviweSlideButton_right {
+  border: solid 0.5px #ccc;
+  height: 1px;
+  height: 369px;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.reviweSlideButton_left_preview {
+  border: solid 0.5px #ccc;
+  height: 1px;
+  height: 546px;
+  display: table-cell;
+  vertical-align: middle;
+  position: absolute !important;
+  right: 0;
+}
+
+.reviweSlideButton_right_preview {
+  border: solid 0.5px #ccc;
+  height: 1px;
+  height: 546px;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.newProductText {
+  font-family: Spoqa Han Sans Neo !important;
+  font-weight: bolder !important;
+}
+
+.blue {
+  text-align: center;
+  display: inline-block;
+  padding: 10px 20px;
+  box-shadow: none;
+  background: #3478FF !important;
+  color: #fff !important;
+}
+
+@media screen and (max-width: 945px) {
+  .arrowContainer_left {
+    display: none
+  }
+  
+  .arrowContainer_right {
+    display: none
+  }
+
+  .mainImage {
+    height: 280px;
+  }
+  
+  .mainImage img {
+    object-fit: fill;
+  }
+
+  .newProductText {
+    font-size: 14pt !important;
+  }
+
+  .newProductSubtext {
+    font-size: 10pt !important;
+  }
+}
+
+.bannerCoupon {
+  padding: 0px !important;
+}
+.banner_partner {
+  margin-bottom: -50px !important;
+  padding: 0px !important;
+}
+
+@media screen and (max-width: 960px) {
+  .banner_partner {
+    margin-bottom: 50px !important;
+  }
+}
+
+@media screen and (max-width: 960px) {
+  .categoryBody {
+    display: none !important;
+  }
+}
+@media screen and (min-width: 961px) {
+  .categoryBody_mobile {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 443px) {
+  .noPadding {
+    padding-right: 0px !important;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .mainImage img {
+    
+    height: 235px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .bannerCoupon img {
+    
+  }
+  .banner_partner img {
+   
+  }
+}
+
+@media screen and (max-width: 666px) {
+  .slider1 {
+      display: none !important;
+  }
+}
+
+@media screen and (min-width: 666px) {
+  .slider2 {
+      display: none !important;
+  }
+}
+
+.profileContainer {
+  background-color: #303740;
+  padding: 72px 72px 0px 72px;
+}
+
+.profileImage {
+  padding-top: 7px;
+}
+
+.profileTextBox {
+  color: #fff;
+  padding-left: 30px;
+}
+
+.profileType {
+  background-color: #5E36B1;
+  padding: 1px;
+  max-width: 54px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.profileInfo {
+  padding: 4px 0px;
+}
+
+.profileInst {
+  padding: 4px 0px;
+  font-family: 'Spoqa Han Sans Neo' !important;
+  font-weight: bolder !important;
+}
+
+.tabTitle {
+  font-family: 'Spoqa Han Sans Neo' !important;
+  font-weight: bolder !important;
+}
+
+.tabBox {
+  padding-top: 32px;
+}
+
+.boardContainer {
+  background-color: #EEF2F7;
+  min-height: 500px;
+}

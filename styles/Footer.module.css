@@ -1,0 +1,36 @@
+.footerContainer {
+    background-color: #303740;
+    padding: 30px;
+    color : #fff;
+    text-align: center;
+}
+
+@media screen and (max-width: 945px) {
+    .footerContainer {
+        display: none !important;
+    }
+}
+
+.footerTitle {
+    font-weight: bolder !important;
+    font-family: 'Spoqa Han Sans Neo' !important;
+    font-style: normal;
+    color: #cccccc;
+}
+
+.footerSubTitle {
+    font-size: 10pt;
+    color: #707070;
+    font-weight: bolder !important;
+}
+
+.footerCompanyBox {
+    border-top: 1px solid #707070;
+    margin-top: 20px !important;
+    padding-top: 15px !important;
+}
+
+.footerCompany {
+    text-align: left;
+    color: #707070;
+}
