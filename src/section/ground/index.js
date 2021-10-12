@@ -1,17 +1,10 @@
-import React, { useEffect } from 'react'
-import dynamic from "next/dynamic";
-import VncDisplay from "react-vnc-display";
+import { useState, useEffect } from 'react'
 import * as S from "./styles"
 
-const Ground = () => {
-
-
+const Ground = ({ vnc, handleVncConnect, handleVncDisconnect }) => {
   return (
     <S.Container>
-      <div>컨테이너를 실행시켜주세요</div>
-      <S.VncWrapper>
-        <VncDisplay url="ws://13.125.162.194:5900" />
-      </S.VncWrapper>
+      {vnc ? <S.VncView src="http://localhost:5901" /> : <div>컨테이너를 실행시켜주세요</div>}
     </S.Container>
   )
 }

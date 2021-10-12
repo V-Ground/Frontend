@@ -1,11 +1,26 @@
-import React from 'react'
-import VncDisplay from "react-vnc-display";
+import { useState } from 'react'
+
+import Ground from "../src/section/ground";
+import TestSidebar from "../src/component/test-sidebar";
+
 const test = () => {
+
+  const [vnc, setVnc] = useState(false);
+
+  const handleVncConnect = () => {
+    setVnc(true);
+  }
+
+  const handleVncDisconnect = () => {
+    setVnc(false);
+  }
+
   return (
-    <div>
-      <VncDisplay url="ws://13.125.162.194:5900" />
-    </div>
-  )
+    <>
+      <TestSidebar handleVncConnect={handleVncConnect} handleVncDisconnect={handleVncDisconnect} />
+      <Ground vnc={vnc} />
+    </>
+  );
 }
 
 export default test

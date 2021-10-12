@@ -10,6 +10,8 @@ export const Container = styled.div`
   font-size: 1.3rem;
 `;
 
-export const VncWrapper = styled.div`
-  z-index: 999;
+export const VncView = styled.iframe`
+  width: 100%;
+  height:100%;
+  border: none;
 `;

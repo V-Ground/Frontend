@@ -35,28 +35,28 @@ const CreateCourse = () => {
       <WhiteBackground>
         <S.Padding>
           <S.InputColumn>
-            <h3>클래스 이름</h3>
-            <S.HelpText>해당 클래스에 타이틀로 사용될 이름입니다.</S.HelpText>
+            <h3>테스트 이름</h3>
+            <S.HelpText>해당 테스트의 타이틀로 사용될 이름입니다.</S.HelpText>
             <TextField label="클래스명" variant="outlined" />
           </S.InputColumn>
           <Divider />
           <S.InputColumn>
-            <h3>클래스 설명</h3>
-            <S.HelpText>학생에게 보여질 해당 클래스의 교육 내용과 상세 정보입니다.</S.HelpText>
+            <h3>테스트 설명</h3>
+            <S.HelpText>학생에게 보여질 해당 테스트의 제약 조건등 상세한 설명을 입력해주세요</S.HelpText>
             <TextField fullWidth label="클래스 설명" variant="outlined" multiline rows={5} />
           </S.InputColumn>
           <Divider />
 
           <S.InputColumn>
             <h3>썸네일 이미지</h3>
-            <S.HelpText>학생에게 보여질 해당 클래스의 썸네일 이미지 입니다.</S.HelpText>
+            <S.HelpText>학생에게 보여질 해당 테스트의 썸네일 이미지 입니다.</S.HelpText>
             <DropzoneArea />
           </S.InputColumn>
           <Divider />
 
           <S.InputColumn>
             <h3>강사 선택</h3>
-            <S.HelpText>해당 클래스를 소유하고 관리할 강사를 선택하세요</S.HelpText>
+            <S.HelpText>해당 테스트를 소유하고 관리할 강사를 선택하세요</S.HelpText>
             <div style={{ width: "200px" }}>
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">강사를 선택하세요</InputLabel>
@@ -70,10 +70,12 @@ const CreateCourse = () => {
               </FormControl>
             </div>
           </S.InputColumn>
+
           <Divider />
+
           <S.InputColumn>
-            <h3>클래스 컨테이너 정보</h3>
-            <S.HelpText>해당 클래스에서 수업 용도로 사용될 컨테이너의 자세한 스펙을 선택해주세요</S.HelpText>
+            <h3>테스트 컨테이너 정보</h3>
+            <S.HelpText>해당 테스트에서 참가자의 Computing Engine 으로 사용될 컨테이너의 자세한 스펙을 선택해주세요</S.HelpText>
             <S.ContainerSpec>
               <h4>OS</h4>
               <S.HelpText>컨테이너의 Base OS 를 선택하세요</S.HelpText>
@@ -156,6 +158,28 @@ const CreateCourse = () => {
                   </Select>
                 </FormControl>
               </S.MultiSelectWrapper>
+              <h4>문제 선택하기</h4>
+              <S.HelpText>테스트에서 사용될 문제를 선택하세요. 문제를 선택하면 테스트 참가자는 V-Ground 가 제공되는 문제를 풀게됩니다.</S.HelpText>
+              <div style={{ width: "300px" }}>
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">문제를 선택하세요</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Age"
+                  >
+                    <MenuItem value={10}>시스템 해킹을 통한 웹서버 중단 문제</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+
+              <S.InputColumn>
+                <h4>커스텀 문제 업로드</h4>
+                <S.HelpText>테스트에서 사용될 문제가 담긴 컨테이너를 업로드하세요. 이미지를 업로드하면 제공되는 문제가 아닌 강사가 직접 문제를 구성하고 채점할 수 있습니다.</S.HelpText>
+                <div style={{ width: "300px" }}>
+                  <DropzoneArea />
+                </div>
+              </S.InputColumn>
             </S.ContainerSpec>
           </S.InputColumn>
           <Divider />
@@ -177,6 +201,38 @@ const CreateCourse = () => {
             </div>
           </S.InputColumn>
           <Divider />
+          <h4>CPU와 RAM</h4>
+          <S.HelpText>컨테이너의 CPU와 RAM 에 대해 선택해주세요</S.HelpText>
+          <S.MultiSelectWrapper>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">CPU를 선택하세요</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Age"
+              >
+                <MenuItem value={10}>1 vCPUs</MenuItem>
+                <MenuItem value={10}>2 vCPUs</MenuItem>
+                <MenuItem value={20}>4 vCPUs</MenuItem>
+                <MenuItem value={30}>8 vCPUs</MenuItem>
+                <MenuItem value={40}>16 vCPUs</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">RAM을 선택하세요</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Age"
+              >
+                <MenuItem value={10}>0.5 GiB</MenuItem>
+                <MenuItem value={10}>1 GiB</MenuItem>
+                <MenuItem value={20}>2 GiB</MenuItem>
+                <MenuItem value={30}>4 GiB</MenuItem>
+                <MenuItem value={40}>8 GiB</MenuItem>
+              </Select>
+            </FormControl>
+          </S.MultiSelectWrapper>
           <div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
             <S.Button onClick={handleLoading}>
               {loading ? <CircularProgress style={{ color: "white" }} /> : "생성하기"}

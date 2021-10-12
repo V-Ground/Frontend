@@ -3,15 +3,14 @@ import { useRouter } from "next/router";
 import Header from "../src/component/Header";
 import Footer from "../src/component/Footer";
 import GroundHeader from "../src/component/ground-header";
-import GroundSidebar from "../src/component/ground-sidebar";
+import TestHeader from "../src/component/test-header";
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
-  if (router.pathname === "/ground") {
+  if (router.pathname === "/ground" || router.pathname === "/admin/ground" || router.pathname === "/test") {
     return (
       <div style={{ display: "flex" }}>
         <GroundHeader />
-        <GroundSidebar />
         <Component {...pageProps} />
       </div>
     )
