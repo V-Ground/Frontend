@@ -34,6 +34,7 @@
         "react-infinite-scroll-component": "^6.1.0",
         "react-responsive-carousel": "^3.2.21",
         "react-slick": "^0.28.1",
+        "react-vnc": "^0.2.5",
         "react-vnc-display": "^2.0.1",
         "serverless": "^2.60.0",
         "slick-carousel": "^1.8.1",
