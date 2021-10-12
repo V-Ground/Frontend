@@ -9,3 +9,7 @@ export const Container = styled.div`
   color: #9E9E9E;
   font-size: 1.3rem;
 `;
+
+export const VncWrapper = styled.div`
+  z-index: 999;
+`;
