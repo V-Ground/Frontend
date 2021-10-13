@@ -24,6 +24,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import CourseHeader from "../../component/course-header";
 import WhiteBackground from "../../component/white-background";
 import Modal from "../../component/modal";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 
 const convertToChip = (string) => {
@@ -275,7 +276,11 @@ const CourseMain = () => {
           <S.InputColumn style={{ width: "80%" }}>
             <h3>주관식 문제</h3>
             <S.HelpText>주관식 문제에 대한 설명과 배점을 입력하세요</S.HelpText>
-            <TextField fullWidth label="문제" variant="outlined" />
+            <div style={{ width: "100%", display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
+              <TextField sx={{ width: "70%", marginRight: "20px" }} fullWidth label="문제" variant="outlined" />
+              <TextField sx={{ width: "30%", marginRight: "20px" }} fullWidth label="정답" variant="outlined" />
+              <AddCircleOutlineIcon sx={{ color: "green" }} />
+            </div>
           </S.InputColumn>
           <div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
             <S.Button onClick={handleLoading}>
