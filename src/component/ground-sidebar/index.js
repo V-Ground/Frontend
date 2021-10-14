@@ -24,6 +24,16 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
   const [openAssignment, setOpenAssignment] = useState(false);
   const [openAssignmentDetail, setOpenAssignmentDetail] = useState(false);
   const [openSnapshot, setOpenSnapshot] = useState(false);
+  const [openStudentDetail, setOpenStudentDetail] = useState(false);
+  const [studentContainer, setStudentContainer] = useState(false);
+
+  const handleStudentDetail = () => {
+    setOpenStudentDetail(!openStudentDetail);
+  }
+
+  const handleStudentContainer = () => {
+    setStudentContainer(!studentContainer);
+  }
 
   const handleAssignmentClick = () => {
     setOpenAssignment(!openAssignment);
@@ -56,6 +66,80 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
         <ListItemButton onClick={handleVncDisconnect}>
           <ListItemText primary="중지" />
         </ListItemButton>
+
+
+        <ListItemButton onClick={handleStudentDetail}>
+          <ListItemText primary="학생 관리" />
+          {openStudentDetail ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={openStudentDetail} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+          <List component="div" disablePadding>
+            <ListItemButton onClick={handleStudentContainer} sx={{ pl: 4 }}>
+              <ListItemText primary="[학생 1] 강지민" />
+
+              {studentContainer ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={studentContainer} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+              <List component="div" disablePadding>
+                <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
+                  <ListItemButton >
+                    <ListItemText primary="컨테이너 관리" />
+                  </ListItemButton>
+                  <S.ButtonWrapper>
+                    <S.Button>접속</S.Button>
+                    <S.Button>중지</S.Button>
+                  </S.ButtonWrapper>
+                </ListItem>
+              </List>
+            </Collapse>
+
+            <ListItemButton sx={{ pl: 4 }}>
+              <ListItemText primary="[학생 2] 고현수" />
+              <ExpandMore />
+            </ListItemButton>
+            <Collapse in={false} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+              <List component="div" disablePadding>
+                <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
+                  <S.ButtonWrapper>
+                    <S.Button>접속</S.Button>
+                    <S.Button>중지</S.Button>
+                  </S.ButtonWrapper>
+                </ListItem>
+              </List>
+            </Collapse>
+
+            <ListItemButton sx={{ pl: 4 }}>
+              <ListItemText primary="[학생 3] 임창현" />
+              <ExpandMore />
+            </ListItemButton>
+            <Collapse in={false} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+              <List component="div" disablePadding>
+                <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
+                  <S.ButtonWrapper>
+                    <S.Button>접속</S.Button>
+                    <S.Button>중지</S.Button>
+                  </S.ButtonWrapper>
+                </ListItem>
+              </List>
+            </Collapse>
+
+            <ListItemButton sx={{ pl: 4 }}>
+              <ListItemText primary="[학생 4] 장원익" />
+              <ExpandMore />
+            </ListItemButton>
+            <Collapse in={false} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+              <List component="div" disablePadding>
+                <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
+                  <S.ButtonWrapper>
+                    <S.Button>접속</S.Button>
+                    <S.Button>중지</S.Button>
+                  </S.ButtonWrapper>
+                </ListItem>
+              </List>
+            </Collapse>
+          </List>
+        </Collapse>
+
         <ListItemButton onClick={handleAssignmentClick}>
           <ListItemText primary="과제 및 실시간 퀴즈" />
           {openAssignment ? <ExpandLess /> : <ExpandMore />}
