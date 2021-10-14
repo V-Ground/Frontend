@@ -47,6 +47,10 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
     setOpenSnapshot(!openSnapshot);
   };
 
+  const [snapshot, setSnapshot] = useState([]);
+
+  const ip = isAdmin ? "http://localhost:5901" : "http://localhost:5902";
+  console.log(ip);
 
   return (
     <S.Container>
@@ -56,89 +60,88 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
         aria-labelledby="nested-list-subheader"
         subheader={
           <ListSubheader component="div" id="nested-list-subheader" sx={{ background: "#2E3336", color: "#9e9e9e", fontSize: "1.2rem", margin: "15px" }}>
-            {isAdmin ? "[BoB-강사] 보안제품개발 김경태" : "[BoB-교육생] 보안제품개발 장원익"}
+            {isAdmin ? "[BoB-강사] 보안제품개발 김경태" : "[BoB-교육생] 보안제품개발 강지민"}
           </ListSubheader>
         }
       >
-        <ListItemButton onClick={handleVncConnect}>
+        <ListItemButton onClick={() => handleVncConnect(ip)}>
           <ListItemText primary="시작" />
         </ListItemButton>
         <ListItemButton onClick={handleVncDisconnect}>
           <ListItemText primary="중지" />
         </ListItemButton>
 
-
-        <ListItemButton onClick={handleStudentDetail}>
+        {isAdmin && <> <ListItemButton onClick={handleStudentDetail}>
           <ListItemText primary="학생 관리" />
           {openStudentDetail ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
-        <Collapse in={openStudentDetail} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
-          <List component="div" disablePadding>
-            <ListItemButton onClick={handleStudentContainer} sx={{ pl: 4 }}>
-              <ListItemText primary="[학생 1] 강지민" />
+          <Collapse in={openStudentDetail} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+            <List component="div" disablePadding>
+              <ListItemButton onClick={handleStudentContainer} sx={{ pl: 4 }}>
+                <ListItemText primary="[학생 1] 강지민" />
 
-              {studentContainer ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={studentContainer} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
-              <List component="div" disablePadding>
-                <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
-                  <ListItemButton >
-                    <ListItemText primary="컨테이너 관리" />
-                  </ListItemButton>
-                  <S.ButtonWrapper>
-                    <S.Button>접속</S.Button>
-                    <S.Button>중지</S.Button>
-                  </S.ButtonWrapper>
-                </ListItem>
-              </List>
-            </Collapse>
+                {studentContainer ? <ExpandLess /> : <ExpandMore />}
+              </ListItemButton>
+              <Collapse in={studentContainer} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+                <List component="div" disablePadding>
+                  <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
+                    <ListItemButton >
+                      <ListItemText primary="컨테이너 관리" />
+                    </ListItemButton>
+                    <S.ButtonWrapper>
+                      <S.Button onClick={() => handleVncConnect("http://localhost:5902")}>접속</S.Button>
+                      <S.Button onClick={handleVncDisconnect}>중지</S.Button>
+                    </S.ButtonWrapper>
+                  </ListItem>
+                </List>
+              </Collapse>
 
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemText primary="[학생 2] 고현수" />
-              <ExpandMore />
-            </ListItemButton>
-            <Collapse in={false} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
-              <List component="div" disablePadding>
-                <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
-                  <S.ButtonWrapper>
-                    <S.Button>접속</S.Button>
-                    <S.Button>중지</S.Button>
-                  </S.ButtonWrapper>
-                </ListItem>
-              </List>
-            </Collapse>
+              <ListItemButton sx={{ pl: 4 }}>
+                <ListItemText primary="[학생 2] 고현수" />
+                <ExpandMore />
+              </ListItemButton>
+              <Collapse in={false} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+                <List component="div" disablePadding>
+                  <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
+                    <S.ButtonWrapper>
+                      <S.Button>접속</S.Button>
+                      <S.Button>중지</S.Button>
+                    </S.ButtonWrapper>
+                  </ListItem>
+                </List>
+              </Collapse>
 
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemText primary="[학생 3] 임창현" />
-              <ExpandMore />
-            </ListItemButton>
-            <Collapse in={false} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
-              <List component="div" disablePadding>
-                <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
-                  <S.ButtonWrapper>
-                    <S.Button>접속</S.Button>
-                    <S.Button>중지</S.Button>
-                  </S.ButtonWrapper>
-                </ListItem>
-              </List>
-            </Collapse>
+              <ListItemButton sx={{ pl: 4 }}>
+                <ListItemText primary="[학생 3] 임창현" />
+                <ExpandMore />
+              </ListItemButton>
+              <Collapse in={false} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+                <List component="div" disablePadding>
+                  <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
+                    <S.ButtonWrapper>
+                      <S.Button>접속</S.Button>
+                      <S.Button>중지</S.Button>
+                    </S.ButtonWrapper>
+                  </ListItem>
+                </List>
+              </Collapse>
 
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemText primary="[학생 4] 장원익" />
-              <ExpandMore />
-            </ListItemButton>
-            <Collapse in={false} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
-              <List component="div" disablePadding>
-                <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
-                  <S.ButtonWrapper>
-                    <S.Button>접속</S.Button>
-                    <S.Button>중지</S.Button>
-                  </S.ButtonWrapper>
-                </ListItem>
-              </List>
-            </Collapse>
-          </List>
-        </Collapse>
+              <ListItemButton sx={{ pl: 4 }}>
+                <ListItemText primary="[학생 4] 장원익" />
+                <ExpandMore />
+              </ListItemButton>
+              <Collapse in={false} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+                <List component="div" disablePadding>
+                  <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
+                    <S.ButtonWrapper>
+                      <S.Button>접속</S.Button>
+                      <S.Button>중지</S.Button>
+                    </S.ButtonWrapper>
+                  </ListItem>
+                </List>
+              </Collapse>
+            </List>
+          </Collapse></>}
 
         <ListItemButton onClick={handleAssignmentClick}>
           <ListItemText primary="과제 및 실시간 퀴즈" />
@@ -176,7 +179,22 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
         <Collapse in={openSnapshot} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
           <List component="div" disablePadding>
             <ListItemButton sx={{ pl: 4 }}>
-              <ListItemText primary="스냅샷이 존재하지 않습니다" />
+              {snapshot.length === 0 ? <ListItemText primary="스냅샷이 존재하지 않습니다" /> : (
+                <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+                  <ListItemButton onClick={handleAssignmentDetailClick} sx={{ display: "flex" }}>
+                    <ListItemText primary="server.js 생성" />
+                    {openAssignmentDetail ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse in={openAssignmentDetail} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+                    <List component="div" disablePadding>
+                      <ListItem sx={{ display: "flex", flexDirection: "column" }}>
+                        <S.ButtonWrapper>
+                          <S.Button>적용하기</S.Button>
+                        </S.ButtonWrapper>
+                      </ListItem>
+                    </List>
+                  </Collapse>
+                </div>)}
             </ListItemButton>
             {isAdmin && <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
               <div>
@@ -185,7 +203,7 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
                 <TextField inputProps={{ sx: "color: #F7F7F7" }} fullWidth color="primary" />
               </div>
               <S.ButtonWrapper>
-                <S.Button>생성하기</S.Button>
+                <S.Button onClick={() => setSnapshot([...snapshot, {}])}>생성하기</S.Button>
               </S.ButtonWrapper>
             </ListItem>}
           </List>

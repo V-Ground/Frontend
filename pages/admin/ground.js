@@ -6,9 +6,11 @@ import GroundSidebar from "../../src/component/ground-sidebar";
 const adminGround = () => {
 
   const [vnc, setVnc] = useState(false);
+  const [ip, setIp] = useState("");
 
-  const handleVncConnect = () => {
+  const handleVncConnect = (ip) => {
     setVnc(true);
+    setIp(ip);
   }
 
   const handleVncDisconnect = () => {
@@ -18,7 +20,7 @@ const adminGround = () => {
   return (
     <>
       <GroundSidebar isAdmin handleVncConnect={handleVncConnect} handleVncDisconnect={handleVncDisconnect} />
-      <Ground vnc={vnc} />
+      <Ground vnc={vnc} ip={ip} />
     </>
   );
 }
