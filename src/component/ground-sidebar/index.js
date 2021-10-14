@@ -15,8 +15,9 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarBorder from '@mui/icons-material/StarBorder';
 import TextField from "@mui/material/TextField";
+import { CircularProgress } from '@mui/material';
 
-
+import Modal from "../../component/modal";
 
 
 const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
@@ -47,7 +48,27 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
     setOpenSnapshot(!openSnapshot);
   };
 
+  const [modal, setModal] = useState(false);
+
+  const handleModalClose = () => {
+    setModal(false);
+  }
+
   const [snapshot, setSnapshot] = useState([]);
+
+  const [loading, setLoading] = useState(false);
+
+  const addSnapshot = () => {
+    setSnapshot([...snapshot, {}]);
+    setLoading(false);
+    setModal(true);
+  }
+
+  const handleAddClick = () => {
+    setLoading(true);
+    setTimeout(addSnapshot, 2000);
+
+  }
 
   const ip = isAdmin ? "http://localhost:5901" : "http://localhost:5902";
   console.log(ip);
@@ -179,22 +200,36 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
         <Collapse in={openSnapshot} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
           <List component="div" disablePadding>
             <ListItemButton sx={{ pl: 4 }}>
-              {snapshot.length === 0 ? <ListItemText primary="스냅샷이 존재하지 않습니다" /> : (
-                <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-                  <ListItemButton onClick={handleAssignmentDetailClick} sx={{ display: "flex" }}>
-                    <ListItemText primary="server.js 생성" />
-                    {openAssignmentDetail ? <ExpandLess /> : <ExpandMore />}
-                  </ListItemButton>
-                  <Collapse in={openAssignmentDetail} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
-                    <List component="div" disablePadding>
-                      <ListItem sx={{ display: "flex", flexDirection: "column" }}>
-                        <S.ButtonWrapper>
-                          <S.Button>적용하기</S.Button>
-                        </S.ButtonWrapper>
-                      </ListItem>
-                    </List>
-                  </Collapse>
-                </div>)}
+              {snapshot.length === 0 ? !isAdmin ? <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+                <ListItemButton onClick={handleAssignmentDetailClick} sx={{ display: "flex" }}>
+                  <ListItemText primary="server.js 생성" />
+                  {openAssignmentDetail ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+                <Collapse in={openAssignmentDetail} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+                  <List component="div" disablePadding>
+                    <ListItem sx={{ display: "flex", flexDirection: "column" }}>
+                      <S.ButtonWrapper>
+                        <S.Button>적용하기</S.Button>
+                      </S.ButtonWrapper>
+                    </ListItem>
+                  </List>
+                </Collapse>
+              </div> : <ListItemText primary="스냅샷이 존재하지 않습니다" /> : (
+                  <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+                    <ListItemButton onClick={handleAssignmentDetailClick} sx={{ display: "flex" }}>
+                      <ListItemText primary="server.js 생성" />
+                      {openAssignmentDetail ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={openAssignmentDetail} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+                      <List component="div" disablePadding>
+                        <ListItem sx={{ display: "flex", flexDirection: "column" }}>
+                          <S.ButtonWrapper>
+                            <S.Button>적용하기</S.Button>
+                          </S.ButtonWrapper>
+                        </ListItem>
+                      </List>
+                    </Collapse>
+                  </div>)}
             </ListItemButton>
             {isAdmin && <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
               <div>
@@ -203,13 +238,19 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
                 <TextField inputProps={{ sx: "color: #F7F7F7" }} fullWidth color="primary" />
               </div>
               <S.ButtonWrapper>
-                <S.Button onClick={() => setSnapshot([...snapshot, {}])}>생성하기</S.Button>
+                <S.Button onClick={handleAddClick}>{loading ? <CircularProgress sx={{ color: "white" }} /> : "생성하기"}</S.Button>
               </S.ButtonWrapper>
             </ListItem>}
           </List>
         </Collapse>
       </List>
-    </S.Container>
+      <Modal open={modal} handleOnModalClose={handleModalClose}>
+        <h3>스냅샷 생성 완료</h3>
+        <div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+          스냅샷이 생성되었습니다 !
+        </div>
+      </Modal>
+    </S.Container >
   )
 }
 

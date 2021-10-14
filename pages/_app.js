@@ -7,7 +7,7 @@ import TestHeader from "../src/component/test-header";
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
-  if (router.pathname === "/ground" || router.pathname === "/admin/ground" || router.pathname === "/test") {
+  if (router.pathname === "/ground" || router.pathname === "/admin/ground" || router.pathname === "/test-ground") {
     return (
       <div style={{ display: "flex" }}>
         <GroundHeader />

@@ -6,9 +6,11 @@ import TestSidebar from "../src/component/test-sidebar";
 const test = () => {
 
   const [vnc, setVnc] = useState(false);
+  const [ip, setIp] = useState("");
 
-  const handleVncConnect = () => {
+  const handleVncConnect = (ip) => {
     setVnc(true);
+    setIp(ip);
   }
 
   const handleVncDisconnect = () => {
@@ -18,7 +20,7 @@ const test = () => {
   return (
     <>
       <TestSidebar handleVncConnect={handleVncConnect} handleVncDisconnect={handleVncDisconnect} />
-      <Ground vnc={vnc} />
+      <Ground vnc={vnc} ip={ip} />
     </>
   );
 }

@@ -12,7 +12,7 @@ const CourseCard = ({ viewOnly, title, instructor, thumnailImageUrl }) => {
         <S.Title>{title}</S.Title>
         <S.Instructor>강사 : {instructor}</S.Instructor>
       </S.TextWrapper>
-      {viewOnly ? <></> : <S.ButtonWrapper><S.Button onClick={() => router.push("/course")}>입장하기</S.Button> </S.ButtonWrapper>}
+      {viewOnly ? <></> : <S.ButtonWrapper><S.Button onClick={() => router.push("/test-ground")}>입장하기</S.Button> </S.ButtonWrapper>}
     </S.Container>
   )
 }

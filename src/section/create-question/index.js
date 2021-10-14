@@ -28,7 +28,7 @@ const CreateQuestion = () => {
   }
 
   const loadingFalse = () => {
-    router.push("/test")
+    router.push("/test-created");
   }
   const handleLoading = () => {
     setLoading(true);
@@ -38,17 +38,6 @@ const CreateQuestion = () => {
     <S.Container>
       <WhiteBackground>
         <S.Padding>
-          <S.InputColumn>
-            <h3>테스트 이름</h3>
-            <S.HelpText>해당 테스트의 타이틀로 사용될 이름입니다.</S.HelpText>
-            <TextField label="테스트명" variant="outlined" />
-          </S.InputColumn>
-          <Divider />
-          <S.InputColumn>
-            <h3>테스트 설명</h3>
-            <S.HelpText>학생에게 보여질 해당 테스트의 제약 조건등 상세한 설명을 입력해주세요</S.HelpText>
-            <TextField fullWidth label="테스트 설명" variant="outlined" multiline rows={5} />
-          </S.InputColumn>
           <Divider />
           <S.InputColumn style={{ width: "80%" }}>
             <h3>주관식 문제</h3>
@@ -67,7 +56,7 @@ const CreateQuestion = () => {
           <Divider />
           <div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
             <S.Button onClick={handleLoading}>
-              {loading ? <CircularProgress style={{ color: "white" }} /> : "문제 생성하기"}
+              {loading ? <CircularProgress style={{ color: "white" }} /> : "테스트 생성"}
             </S.Button>
           </div>
         </S.Padding>

@@ -76,7 +76,7 @@ const TestSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
           </ListSubheader>
         }
       >
-        <ListItemButton onClick={handleVncConnect}>
+        <ListItemButton onClick={() => handleVncConnect("http://localhost:5901")}>
           <ListItemText primary="컨테이너 접속" />
         </ListItemButton>
         <ListItemButton onClick={handleVncDisconnect}>
