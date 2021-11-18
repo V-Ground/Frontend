@@ -55,7 +55,7 @@ const DialogTitle = withStyles(buttonStyles)((props) => {
   );
 });
 
-const OrganizationHeader = ({ children }) => {
+const OrganizationHeader = ({ children, nClassLength, nEvaluationLength }) => {
   const router = useRouter();
 
   const [login, setLogin] = useState(true);
@@ -97,12 +97,12 @@ const OrganizationHeader = ({ children }) => {
                 <Image src={'/sample/bob_profile.png'} width={160} height={160} />
               </Grid>
               <Grid item xs={10} className={styles.profileTextBox}>
-                <Typography variant='body2' className={styles.profileType}>교육생</Typography>
-                <Typography variant='h6' className={styles.profileInst}>Best of the Best 11기</Typography>
+                <Typography variant='body2' className={styles.profileType}>{router.query?.role}</Typography>
+                <Typography variant='h6' className={styles.profileInst}>Best of the Best 10기</Typography>
                 <Typography variant='body1' className={styles.profileInfo}></Typography>
-                <Typography variant='body2' className={styles.profileInfo}>[보안제품개발] 장원익</Typography>
-                <Typography variant='body2' className={styles.profileInfo}>개설된 전체 클래스 : 24</Typography>
-                <Typography variant='body2' className={styles.profileInfo}>수강중인 클래스 : 3</Typography>
+                <Typography variant='body2' className={styles.profileInfo}>[보안제품개발] {router.query?.name}</Typography>
+                <Typography variant='body2' className={styles.profileInfo}>개설된 전체 클래스 : {nClassLength}</Typography>
+                <Typography variant='body2' className={styles.profileInfo}>수강중인 클래스 : {nEvaluationLength}</Typography>
               </Grid>
             </Fragment>
           :

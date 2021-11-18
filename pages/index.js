@@ -16,7 +16,7 @@ export default function MainPage(props) {
           Main | V-Ground
         </title>
       </Head>
-      <OrganizationHeader>
+      <OrganizationHeader nClassLength={nClass.length} nEvaluationLength={nEvaluation.length}>
         { router.query?.uid ?
             <MyCourse nClass={nClass} nEvaluation={nEvaluation} />
           : ''        
