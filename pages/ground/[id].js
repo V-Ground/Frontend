@@ -1,12 +1,12 @@
 import { useState } from 'react'
 
-import Ground from "../src/section/ground";
-import GroundSidebar from "../src/component/ground-sidebar";
+import Ground from "../../src/section/ground";
+import GroundSidebar from "../../src/component/ground-sidebar";
 
 const ground = () => {
 
   const [vnc, setVnc] = useState(false);
-  const [ip, setIp] = useState("");
+  const [ip, setIp] = useState("http://localhost:5901");
 
   const handleVncConnect = (ip) => {
     setVnc(true);

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 import * as  S from "./styles";
 import { data } from "./data";
@@ -14,6 +15,8 @@ import CourseHeader from "../../component/course-header";
 import Modal from "../../component/modal";
 import WhiteBackground from "../../component/white-background";
 
+import SuccessAlert from '../../component/SuccessAlert.js';
+
 
 const convertToChip = (string) => {
   if (string === "마감") return <Chip label={string} />
@@ -21,13 +24,16 @@ const convertToChip = (string) => {
 }
 
 const CourseAssignment = () => {
-
+  const router = useRouter();
 
   const { courseInfo, assignment } = data;
+
+  console.log('query in course assignment :', router.query);
 
   const [isOpen, setIsOpen] = useState(false);
 
   const handleModalClose = () => {
+    SuccessAlert('과제가 성공적으로 제출되었습니다.')
     setIsOpen(false);
   }
 

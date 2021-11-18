@@ -3,6 +3,9 @@ import { useRouter } from "next/router";
 import * as S from "./styles";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import CourseCard from "../course-card";
+import SuccessAlert from '../SuccessAlert.js';
+import InfoAlert from '../InfoAlert.js';
+import WarningAlert from '../WarningAlert.js';
 
 const CourseHeader = ({ isAdmin, title, instructor, thumnailImageUrl, containerStatus }) => {
 
@@ -11,6 +14,18 @@ const CourseHeader = ({ isAdmin, title, instructor, thumnailImageUrl, containerS
   const handleClick = () => {
     if (isAdmin) router.push("/admin/ground");
     else router.push("/ground");
+  }
+
+  const handleInstanceStart = () => {
+    InfoAlert('인스턴스가 시작되었습니다.');
+  }
+
+  const handleInstanceStop = () => {
+    WarningAlert('인스턴스가 중지되었습니다.');
+  }
+
+  const handleInstanceStopAll = () => {
+    WarningAlert('모든 인스턴스가 중지되었습니다.');
   }
 
   return (
@@ -34,9 +49,9 @@ const CourseHeader = ({ isAdmin, title, instructor, thumnailImageUrl, containerS
           </div>
           <S.ContainerButtons>
             <S.Button onClick={handleClick}>클래스 입장</S.Button>
-            <S.Button>인스턴스 시작</S.Button>
-            <S.Button>인스턴스 중지</S.Button>
-            {isAdmin && <S.Button style={{ background: "#FA5050", width: "140px" }}>모든 인스턴스 중지</S.Button>}
+            <S.Button onClick={handleInstanceStart}>인스턴스 시작</S.Button>
+            <S.Button onClick={handleInstanceStop}>인스턴스 중지</S.Button>
+            {isAdmin && <S.Button onClick={handleInstanceStopAll} style={{ background: "#FA5050", width: "140px" }}>모든 인스턴스 중지</S.Button>}
           </S.ContainerButtons>
         </div>
       </S.Course>

@@ -130,7 +130,7 @@ const CourseMain = () => {
               <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                 <Tab label="과제" {...a11yProps(0)} />
                 <Tab label="구성원 관리" {...a11yProps(1)} />
-                <Tab label="클래스 관리" {...a11yProps(2)} />
+                {/*<Tab label="클래스 관리" {...a11yProps(2)} />*/}
               </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
@@ -183,7 +183,7 @@ const CourseMain = () => {
                       </S.Text>
                   </S.AdminHeader>
                   <Divider />
-                  <h3>수강중인 학생</h3>
+                  <S.AdminCourseTitle>수강 중인 학생</S.AdminCourseTitle>
                   <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                       <TableRow>
@@ -212,7 +212,7 @@ const CourseMain = () => {
                     </TableBody>
                   </Table>
                   <br />
-                  <h3>수강을 신청한 학생</h3>
+                  <S.AdminCourseTitle>수강을 신청한 학생</S.AdminCourseTitle>
                   <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                       <TableRow>
@@ -258,11 +258,11 @@ const CourseMain = () => {
             <TextField label="과제명" variant="outlined" />
           </S.InputColumn>
 
-          <S.InputColumn style={{ width: "80%" }}>
+          {/*<S.InputColumn style={{ width: "80%" }}>
             <h3>과제 상세 설명</h3>
             <S.HelpText>과제에 대한 상세한 설명입니다.</S.HelpText>
             <TextField fullWidth label="과제 설명" variant="outlined" multiline rows={5} />
-          </S.InputColumn>
+            </S.InputColumn>*/}
 
           <S.InputColumn>
             <h3>공개 및 마감 시간</h3>

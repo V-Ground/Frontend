@@ -76,3 +76,7 @@ export const Button = styled.button`
   cursor: pointer;
   margin-top: 50px;
 `;
+
+export const AdminCourseTitle = styled.h3`
+  padding-left: 20px;
+`;

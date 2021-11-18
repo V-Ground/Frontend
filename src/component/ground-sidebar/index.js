@@ -27,6 +27,9 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
   const [openSnapshot, setOpenSnapshot] = useState(false);
   const [openStudentDetail, setOpenStudentDetail] = useState(false);
   const [studentContainer, setStudentContainer] = useState(false);
+  const [studentContainer2, setStudentContainer2] = useState(false);
+  const [studentContainer3, setStudentContainer3] = useState(false);
+  const [studentContainer4, setStudentContainer4] = useState(false);
 
   const handleStudentDetail = () => {
     setOpenStudentDetail(!openStudentDetail);
@@ -34,6 +37,18 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
 
   const handleStudentContainer = () => {
     setStudentContainer(!studentContainer);
+  }
+
+  const handleStudentContainer2 = () => {
+    setStudentContainer2(!studentContainer2);
+  }
+
+  const handleStudentContainer3 = () => {
+    setStudentContainer3(!studentContainer3);
+  }
+
+  const handleStudentContainer4 = () => {
+    setStudentContainer4(!studentContainer4);
   }
 
   const handleAssignmentClick = () => {
@@ -70,7 +85,7 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
 
   }
 
-  const ip = isAdmin ? "http://localhost:5901" : "http://localhost:5902";
+  const ip = isAdmin ? "http://localhost:5901" : "http://localhost:5901";
   console.log(ip);
 
   return (
@@ -86,10 +101,10 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
         }
       >
         <ListItemButton onClick={() => handleVncConnect(ip)}>
-          <ListItemText primary="시작" />
+          <ListItemText primary="컨테이너 접속" />
         </ListItemButton>
         <ListItemButton onClick={handleVncDisconnect}>
-          <ListItemText primary="중지" />
+          <ListItemText primary="컨테이너 중지" />
         </ListItemButton>
 
         {isAdmin && <> <ListItemButton onClick={handleStudentDetail}>
@@ -110,53 +125,65 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
                       <ListItemText primary="컨테이너 관리" />
                     </ListItemButton>
                     <S.ButtonWrapper>
-                      <S.Button onClick={() => handleVncConnect("http://localhost:5902")}>접속</S.Button>
+                      <S.Button onClick={() => handleVncConnect("http://localhost:5901")}>접속</S.Button>
                       <S.Button onClick={handleVncDisconnect}>중지</S.Button>
                     </S.ButtonWrapper>
                   </ListItem>
                 </List>
               </Collapse>
 
-              <ListItemButton sx={{ pl: 4 }}>
+              <ListItemButton onClick={handleStudentContainer2} sx={{ pl: 4 }}>
                 <ListItemText primary="[학생 2] 고현수" />
-                <ExpandMore />
+
+                {studentContainer2 ? <ExpandLess /> : <ExpandMore />}
               </ListItemButton>
-              <Collapse in={false} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+              <Collapse in={studentContainer2} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
                 <List component="div" disablePadding>
                   <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
+                    <ListItemButton >
+                      <ListItemText primary="컨테이너 관리" />
+                    </ListItemButton>
                     <S.ButtonWrapper>
-                      <S.Button>접속</S.Button>
-                      <S.Button>중지</S.Button>
+                      <S.Button onClick={() => handleVncConnect("http://localhost:5901")}>접속</S.Button>
+                      <S.Button onClick={handleVncDisconnect}>중지</S.Button>
                     </S.ButtonWrapper>
                   </ListItem>
                 </List>
               </Collapse>
 
-              <ListItemButton sx={{ pl: 4 }}>
+              <ListItemButton onClick={handleStudentContainer3} sx={{ pl: 4 }}>
                 <ListItemText primary="[학생 3] 임창현" />
-                <ExpandMore />
+
+                {studentContainer3 ? <ExpandLess /> : <ExpandMore />}
               </ListItemButton>
-              <Collapse in={false} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+              <Collapse in={studentContainer3} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
                 <List component="div" disablePadding>
                   <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
+                    <ListItemButton >
+                      <ListItemText primary="컨테이너 관리" />
+                    </ListItemButton>
                     <S.ButtonWrapper>
-                      <S.Button>접속</S.Button>
-                      <S.Button>중지</S.Button>
+                      <S.Button onClick={() => handleVncConnect("http://localhost:5901")}>접속</S.Button>
+                      <S.Button onClick={handleVncDisconnect}>중지</S.Button>
                     </S.ButtonWrapper>
                   </ListItem>
                 </List>
               </Collapse>
 
-              <ListItemButton sx={{ pl: 4 }}>
+              <ListItemButton onClick={handleStudentContainer4} sx={{ pl: 4 }}>
                 <ListItemText primary="[학생 4] 장원익" />
-                <ExpandMore />
+
+                {studentContainer4 ? <ExpandLess /> : <ExpandMore />}
               </ListItemButton>
-              <Collapse in={false} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+              <Collapse in={studentContainer4} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
                 <List component="div" disablePadding>
                   <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
+                    <ListItemButton >
+                      <ListItemText primary="컨테이너 관리" />
+                    </ListItemButton>
                     <S.ButtonWrapper>
-                      <S.Button>접속</S.Button>
-                      <S.Button>중지</S.Button>
+                      <S.Button onClick={() => handleVncConnect("http://localhost:5901")}>접속</S.Button>
+                      <S.Button onClick={handleVncDisconnect}>중지</S.Button>
                     </S.ButtonWrapper>
                   </ListItem>
                 </List>

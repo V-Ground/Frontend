@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Footer() {
     const classes = useStyles();
     const router = useRouter();
-    return (<>
+    return router.route == '/login' || /signup/g.exec(router.route) ? '' : (<>
         {
             <Grid container justifyContent='center' className={styles.footerContainer}>
                 <Grid item xs={6}>

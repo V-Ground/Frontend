@@ -12,6 +12,6 @@ export const Container = styled.div`
 
 export const VncView = styled.iframe`
   width: 100%;
-  height:100%;
+  height:720px;
   border: none;
 `;

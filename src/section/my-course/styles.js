@@ -48,6 +48,7 @@ export const ClassWrapper = styled.div`
 `;
 
 export const Title = styled.h3`
+  padding-left: 20px;
 `;
 
 export const TestWrapper = styled.div`

@@ -198,7 +198,15 @@
 }
 
 .profileType {
-  background-color: #5E36B1;
+  background-color: #364db1;
+  padding: 1px;
+  max-width: 54px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.profileType_admin {
+  background-color: #b13636;
   padding: 1px;
   max-width: 54px;
   border-radius: 12px;
@@ -213,6 +221,11 @@
   padding: 4px 0px;
   font-family: 'Spoqa Han Sans Neo' !important;
   font-weight: bolder !important;
+}
+
+.profileUnknown {
+  font-family: 'Spoqa Han Sans Neo' !important;
+  padding-top: 60px;
 }
 
 .tabTitle {

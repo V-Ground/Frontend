@@ -1,0 +1,215 @@
+@media screen and (min-width: 1440px) {
+    .logo {
+        position: absolute;
+        top: 13px;
+        left: 9.3%;
+        width: 119px;
+        height: 36px;
+    }
+
+    .back {
+        display: none;
+    }
+
+    .contents_box {
+        position: absolute;
+        height: 236px;
+        left: 17.85%;
+        top: 30%;
+    }
+
+    .title {
+        font-size: 30px;
+        line-height: 45px;
+        letter-spacing: -0.005em;
+        margin: 0 0 8px 0;
+    }
+
+    .comment {
+        font-size: 14px;
+        line-height: 21px;
+        letter-spacing: -0.005em;
+        margin: 0 0 32px 0;
+    }
+
+    .check_comment {
+        width: 172px;
+        font-size: 12px;
+        line-height: 21px;
+        letter-spacing: -0.005em;
+    }
+
+    .rightimg {
+        position: absolute;
+        right: 0;
+        width: 50vw;
+        height: 100vh;
+        background: black;
+    }
+
+}
+
+@media screen and (max-width: 1440px) and (min-width: 767px){
+    .logo {
+        position: absolute;
+        top: 13px;
+        left: 9.3%;
+        width: 119px;
+        height: 36px;
+    }
+
+    .back {
+        display: none;
+    }
+
+    .contents_box {
+        position: absolute;
+        height: 236px;
+        left: 17.85%;
+        top: 30%;
+    }
+    .title {
+        font-size: 30px;
+        line-height: 45px;
+        letter-spacing: -0.005em;
+        margin: 0 0 8px 0;
+    }
+
+    .comment {
+        font-size: 14px;
+        line-height: 21px;
+        letter-spacing: -0.005em;
+        margin: 0 0 32px 0;
+    }
+
+    .check_comment {
+        width: 172px;
+        font-size: 12px;
+        line-height: 21px;
+        letter-spacing: -0.005em;
+    }
+
+    .rightimg {
+        position: absolute;
+        right: 0;
+        width: 50vw;
+        height: 100vh;
+        background: black;
+    }
+}
+
+@media screen and (max-width: 767px) and (min-width: 360px){
+    .logo {
+        display: none;
+    }
+
+    .back {
+        position: absolute;
+        top: 28px;
+        left: 0;
+        padding: 12px 12px 12px 12px; 
+        width: 48px;
+        height: 48px;
+    }
+
+    .contents_box {
+        position: absolute;
+        left: 50vw;
+        top: 30%;
+        margin-left: -114px;
+    }
+    
+    .title {
+        font-size: 24px;
+        line-height: 36px;
+        letter-spacing: -0.005em;
+        margin: 0 0 16px 0;
+    }
+
+    .comment {
+        font-size: 14px;
+        line-height: 21px;
+        letter-spacing: -0.005em;
+        margin: 0 0 40px 0;
+    }
+
+    .check_comment {
+        width: 172px;
+        margin-left: -86px;
+        font-size: 12px;
+        line-height: 21px;
+        letter-spacing: -0.005em;
+    }
+
+    .rightimg {
+        display: none;
+    }
+}
+.title {
+    font-weight: bold;
+}
+
+.type_boxes {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 0 0 40px 0;
+}
+
+.type_boxes > *:hover {
+    cursor: pointer;
+}
+
+.type_boxes > * {
+    margin-left: 12px;
+}
+
+.type_boxes > *:nth-child(1) {
+    margin-left: 0 !important;
+}
+
+.signup {
+    float: right;
+    font-size: 14px;
+    line-height: 21px;
+    letter-spacing: -0.005em;
+    color: #3478FF;
+}
+
+.signup:hover {
+    cursor: pointer;
+}
+
+.otherEmail {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 100%;
+    width: 48px;
+    height: 48px;
+    font-size: 8px;
+    line-height: 1;
+    text-align: center;
+    color: #333;
+}
+
+.rightimg {
+    background-image: url(/login.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+}
+
+.leftTitle {
+    color: #5094FA;
+    font-weight: bolder;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+}
+
+.loginTextFieldItem {
+    margin-top: 10px !important;
+}

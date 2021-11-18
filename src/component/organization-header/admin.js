@@ -1,5 +1,4 @@
 import { useState, useRef, Fragment } from 'react';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
 
 import styles from '../../../styles/Main.module.css';
@@ -56,7 +55,7 @@ const DialogTitle = withStyles(buttonStyles)((props) => {
 });
 
 const OrganizationHeader = ({ children }) => {
-  const router = useRouter();
+
 
   const [login, setLogin] = useState(true);
   const [popupOpen, setPopupOpen] = useState(false);
@@ -89,33 +88,18 @@ const OrganizationHeader = ({ children }) => {
   return (
     <div>
       <Grid container justifyContent='center' className={styles.profileContainer}>
-        {
-          router.query?.uid ? 
-            <Fragment>
-              <Grid item xs={1}></Grid>
-              <Grid item xs={1} className={styles.profileImage}>
-                <Image src={'/sample/bob_profile.png'} width={160} height={160} />
-              </Grid>
-              <Grid item xs={10} className={styles.profileTextBox}>
-                <Typography variant='body2' className={styles.profileType}>교육생</Typography>
-                <Typography variant='h6' className={styles.profileInst}>Best of the Best 11기</Typography>
-                <Typography variant='body1' className={styles.profileInfo}></Typography>
-                <Typography variant='body2' className={styles.profileInfo}>[보안제품개발] 장원익</Typography>
-                <Typography variant='body2' className={styles.profileInfo}>개설된 전체 클래스 : 24</Typography>
-                <Typography variant='body2' className={styles.profileInfo}>수강중인 클래스 : 3</Typography>
-              </Grid>
-            </Fragment>
-          :
-          <Fragment>
-              <Grid item xs={1}></Grid>
-              <Grid item xs={1} className={styles.profileImage}>
-                <Image src={'/sample/bob_profile.png'} width={160} height={160} />
-              </Grid>
-              <Grid item xs={10} className={styles.profileTextBox}>
-                <Typography variant='h6' className={styles.profileUnknown}>로그인이 필요합니다.</Typography>
-              </Grid>
-          </Fragment>
-        }
+        <Grid item xs={1}></Grid>
+        <Grid item xs={1} className={styles.profileImage}>
+          <Image src={'/sample/bob_profile.png'} width={160} height={160} />
+        </Grid>
+        <Grid item xs={10} className={styles.profileTextBox}>
+          <Typography variant='body2' className={styles.profileType_admin}>멘토</Typography>
+          <Typography variant='h6' className={styles.profileInst}>Best of the Best 11기</Typography>
+          <Typography variant='body1' className={styles.profileInfo}></Typography>
+          <Typography variant='body2' className={styles.profileInfo}>[보안제품개발] 김경태</Typography>
+          <Typography variant='body2' className={styles.profileInfo}>개설된 전체 클래스 : 24</Typography>
+          <Typography variant='body2' className={styles.profileInfo}>수강중인 클래스 : 3</Typography>
+        </Grid>
         <Grid item xs={3}>
           <TabDesign>
             <Tabs
@@ -128,9 +112,9 @@ const OrganizationHeader = ({ children }) => {
               aria-label="full width tabs example"
               className={styles.tabBox}>
               <Tab label={<Typography className={styles.tabTitle}>대시보드</Typography>} {...a11yProps(0)} />
-              {/*<Tab label={<Typography className={styles.tabTitle}>공지사항</Typography>} {...a11yProps(1)} />
+              <Tab label={<Typography className={styles.tabTitle}>공지사항</Typography>} {...a11yProps(1)} />
               <Tab label={<Typography className={styles.tabTitle}>클래스</Typography>} {...a11yProps(2)} />
-              <Tab label={<Typography className={styles.tabTitle}>기관정보</Typography>} {...a11yProps(3)} />*/}
+              <Tab label={<Typography className={styles.tabTitle}>기관정보</Typography>} {...a11yProps(3)} />
             </Tabs>
           </TabDesign>
         </Grid>

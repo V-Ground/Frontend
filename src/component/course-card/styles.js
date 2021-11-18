@@ -21,6 +21,10 @@ export const Thumnail = styled.img`
 
 export const Title = styled.h2`
   font-size: 1rem;
+  overflow: hidden;
+  width: 240px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 export const Instructor = styled.h3`

@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import OrganizationHeader from "../../src/component/organization-header";
+import OrganizationHeader from "../../src/component/organization-header/admin";
 import MyCourse from "../../src/section/my-course";
 
 export default function MainPage() {
