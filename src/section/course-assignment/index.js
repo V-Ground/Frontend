@@ -120,7 +120,7 @@ const CourseAssignment = ({nMe, nClassDetail, nStudentList, nQuizList}) => {
         'answer' : answer
       })
       SuccessAlert('과제가 성공적으로 제출되었습니다.')
-    } catch {
+    } catch(err) {
       if(err?.response?.status == 403 || err?.response?.status == 401){
         FailureAlert('로그인이 필요합니다.');
       } else {

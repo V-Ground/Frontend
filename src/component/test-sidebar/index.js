@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
-
+import { useState, useEffect, useRef, Fragment } from 'react'
+import { useRouter } from 'next/router';
 import * as S from "./styles";
 
 import ListSubheader from '@mui/material/ListSubheader';
@@ -14,29 +14,48 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import TextField from "@mui/material/TextField";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import SuccessAlert from '../SuccessAlert';
+import FailureAlert from '../FailureAlert';
+import axios from 'axios';
 
 
 
-const TestSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
-
-  const [q1, setQ1] = useState(false);
-  const [q2, setQ2] = useState(false);
-  const [q3, setQ3] = useState(false);
-
+const TestSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect, nMe, nEvaluationDetail, nQuizList }) => {
+  const router = useRouter();
+  const [quizChecker, setQuizChecker] = useState(Array.from({length: nQuizList.length}, ()=>false));
+  const [answer, setAnswer] = useState(Array.from({length: nQuizList.length}, ()=>''));
   const [q1SendAnswer, setQ1SendAnswer] = useState(false);
   const [loading, setLoading] = useState(false);
+  const userId = nMe?.id;
+  const evaluationId = router.query.id;
 
-  const handleQ1 = () => {
-    setQ1(!q1);
+  const handleAnswer = async(quizId, index) => {
+    try {
+      await axios.post(`/v1/users/${userId}/evaluations/${evaluationId}/quizzes/${quizId}`, {
+        'answer': answer[index]
+      })
+      SuccessAlert('과제가 성공적으로 제출되었습니다.')
+    } catch(err) {
+      if(err?.response?.status == 403 || err?.response?.status == 401){
+        FailureAlert('로그인이 필요합니다.');
+      } else {
+        FailureAlert('에러가 발생하였습니다.');
+      }
+    }
   }
 
-  const handleQ2 = () => {
-    setQ2(!q2);
+  const changeAnswer = (value, index) => {
+    const copyAnswer = answer.slice();
+    copyAnswer[index] = value;
+    setAnswer(copyAnswer);
   }
 
-  const handleQ3 = () => {
-    setQ3(!q3);
+  const handleQuizChecker = (index) =>{
+    const copyChecker = quizChecker.slice();
+    copyChecker[index] = !quizChecker[index];
+    setQuizChecker(copyChecker);
   }
+
   const callback = () => {
     setQ1SendAnswer(true);
     setLoading(false);
@@ -82,70 +101,37 @@ const TestSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
         <ListItemButton onClick={handleVncDisconnect}>
           <ListItemText primary="컨테이너 중지" />
         </ListItemButton>
-        <ListItemButton onClick={handleQ1}>
-          {q1SendAnswer ? <><CheckCircleOutlineIcon sx={{ color: "#36B13B", marginRight: "15px" }} /> <ListItemText primary="[문제 1] 공격자 정보 파악하기" /> </> : <><RadioButtonUncheckedIcon sx={{ color: "grey", marginRight: "15px" }} /><ListItemText primary="[문제 1] 공격자 정보 파악하기" /></>}
-          {q1 ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={q1} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemText primary="문제 설명" />
-            </ListItemButton>
-            <ListItem sx={{ display: "flex", flexDirection: "column", pl: 4 }}>
-              <div>
-                <S.HelpText>공격자의 패킷을 분석하여 공격자 IP를 입력하라</S.HelpText>
-                <TextField inputProps={{ sx: "color: #F7F7F7" }} fullWidth color="primary" />
-              </div>
-              <S.ButtonWrapper>
-                <S.Button onClick={handleSubmit}>
-                  {loading ? <CircularProgress /> : "제출하기"}
-                </S.Button>
-              </S.ButtonWrapper>
-            </ListItem>
-          </List>
-        </Collapse>
-
-        <ListItemButton onClick={handleQ2}>
-          <RadioButtonUncheckedIcon sx={{ color: "grey", marginRight: "15px" }} /><ListItemText primary="[문제 2] 피해 목록 조사" />
-          {q2 ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={q2} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemText primary="문제 설명" />
-            </ListItemButton>
-            <ListItem sx={{ display: "flex", flexDirection: "column", pl: 4 }}>
-              <div>
-                <S.HelpText>현재 공격자가 시스템 내부에서 여러 악의적인 활동으로 인해 많은 정보들이 유츌되었다. 어떤 파일이 유출되었는지 입력하라</S.HelpText>
-                <TextField inputProps={{ sx: "color: #F7F7F7" }} fullWidth color="primary" />
-              </div>
-              <S.ButtonWrapper>
-                <S.Button>제출하기</S.Button>
-              </S.ButtonWrapper>
-            </ListItem>
-          </List>
-        </Collapse>
-
-        <ListItemButton onClick={handleQ3}>
-          <RadioButtonUncheckedIcon sx={{ color: "grey", marginRight: "15px" }} /><ListItemText primary="[문제 3] 웹 서버 보안 조치" />
-          {q3 ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={q3} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemText primary="문제 설명" />
-            </ListItemButton>
-            <ListItem sx={{ display: "flex", flexDirection: "column", pl: 4 }}>
-              <div>
-                <S.HelpText>적절한 보안 조치를 치한뒤 수정한 파일명을 모두 입력하세요</S.HelpText>
-                <TextField inputProps={{ sx: "color: #F7F7F7" }} fullWidth color="primary" />
-              </div>
-              <S.ButtonWrapper>
-                <S.Button>제출하기</S.Button>
-              </S.ButtonWrapper>
-            </ListItem>
-          </List>
-        </Collapse>
+        {
+          nQuizList.map((quiz, index)=>{
+            return(
+              <Fragment>
+              <ListItemButton onClick={()=>{handleQuizChecker(index)}}>
+                {q1SendAnswer ? <><CheckCircleOutlineIcon sx={{ color: "#36B13B", marginRight: "15px" }} /> <ListItemText primary={`[문제 ${index+1}] ${quiz.title}`} /> </> : <><RadioButtonUncheckedIcon sx={{ color: "grey", marginRight: "15px" }} /><ListItemText primary={`[문제 ${index+1}] ${quiz.title}`} /></>}
+                {quizChecker[index] ? <ExpandLess /> : <ExpandMore />}
+              </ListItemButton>
+              <Collapse in={quizChecker[index]} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+                <List component="div" disablePadding>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemText primary="문제 설명" />
+                  </ListItemButton>
+                  <ListItem sx={{ display: "flex", flexDirection: "column", pl: 4 }}>
+                    <div>
+                      <S.HelpText>{quiz.title}</S.HelpText>
+                      <TextField inputProps={{ sx: "color: #F7F7F7" }} fullWidth color="primary" value={answer[index]} onChange={(e)=>{changeAnswer(e.target.value, index)}} />
+                    </div>
+                    <S.ButtonWrapper>
+                      <S.Button onClick={()=>{handleAnswer(quiz.quizId, index)}}>
+                        {/*loading ? <CircularProgress /> : "제출하기"*/}
+                        {'제출하기'}
+                      </S.Button>
+                    </S.ButtonWrapper>
+                  </ListItem>
+                </List>
+              </Collapse>
+              </Fragment>
+            )
+          })
+        }
       </List>
     </S.Container >
   )

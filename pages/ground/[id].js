@@ -98,7 +98,7 @@ export const getServerSideProps = async (ctx) => {
         "id": 6,
         "email": "teacher1@vground.com",
         "username": "정승기",
-        "role": "교육생"
+        "role": "강사"
       },
       nClassDetail: nClassDetail.data?.course ? nClassDetail.data?.course.filter((item)=>item.courseId==ctx.query.id).map((item)=>{item.thumnailImageUrl="https://cdn.inflearn.com/public/courses/327762/cover/d37b231e-411f-4358-9b28-e3839f79f42b/327762-eng.png";return item;})[0] : {
         "courseId": 1,

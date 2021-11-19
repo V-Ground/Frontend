@@ -18,6 +18,8 @@ import StarBorder from '@mui/icons-material/StarBorder';
 import TextField from "@mui/material/TextField";
 import { CircularProgress } from '@mui/material';
 import axios from 'axios';
+import SuccessAlert from '../SuccessAlert';
+import FailureAlert from '../FailureAlert';
 
 import Modal from "../../component/modal";
 
@@ -36,9 +38,15 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [assignmentId, setAssignmentId] = useState(0);
   const [questionId, setQuestionId] = useState(0);
   const [questionDescriptionDialog, setQuestionDescriptionDialog] = useState('');
-  const [answer, setAnswer] = useState('');
+  const [answer, setAnswer] = useState(Array.from({length: nQuizList.length}, ()=>[]));
 
   const isAdmin = nMe.role=='강사' ? true : false;
+
+  const changeAnswer = (value, aindex, qindex) => {
+    const copyAnswer = answer.slice();
+    copyAnswer[aindex][qindex] = value;
+    setAnswer(copyAnswer); 
+  }
 
   const handleQuizChildrenClose = (assignmentId, index) => {
     const copyChecker = quizChildrenChecker.slice();
@@ -47,6 +55,9 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   };
 
   const handleQuizChildrenOpen = async (assignmentId, index) => {
+    const copyAnswer = answer.slice();
+    copyAnswer[index] = Array.from({length: 20}, ()=>'');
+    setAnswer(copyAnswer);
     const copyChecker = quizChildrenChecker.slice();
     copyChecker[index] = true;
     setQuizChildrenChecker(copyChecker);
@@ -111,20 +122,19 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
     setQuizChildrenList(copyList);
   };
 
-  const handleAnswer = async (aid, qid) => {
+  const handleAnswer = async (aid, aindex, qid, qindex) => {
     try {
       await axios.post(`/v1/users/${userId}/courses/${courseId}/assignments/${aid}/questions/${qid}/answers`, {
-        'answer' : answer
+        'answer' : answer[aindex][qindex]
       })
       SuccessAlert('과제가 성공적으로 제출되었습니다.')
-    } catch {
+    } catch(err) {
       if(err?.response?.status == 403 || err?.response?.status == 401){
         FailureAlert('로그인이 필요합니다.');
       } else {
         FailureAlert('에러가 발생하였습니다.');
       }
     }
-    setIsOpen(false);
   }
 
   const handleStudentDetail = () => {
@@ -248,15 +258,15 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                         <ListItemText primary={assignment.description} />
                       </ListItemButton>
                       {
-                        quizChildrenChecker[index] ? quizChildrenList[index].questionDetail.questions.map((child)=>{
+                        quizChildrenChecker[index] ? quizChildrenList[index].questionDetail.questions.map((child, childIndex)=>{
                           return (
                             <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
                               <div>
                                 <S.HelpText>{child.description}</S.HelpText>
-                                <TextField inputProps={{ sx: "color: #F7F7F7" }} fullWidth color="primary" value={answer} onChange={(e)=>{setAnswer(e.target.value)}} />
+                                <TextField inputProps={{ sx: "color: #F7F7F7" }} fullWidth color="primary" value={answer[index][childIndex]} onChange={(e)=>{changeAnswer(e.target.value, index, childIndex)}} />
                               </div>
                               <S.ButtonWrapper>
-                                <S.Button onClick={()=>{handleAnswer(assignment.assignmentId, child.questionId)}}>제출하기</S.Button>
+                                <S.Button onClick={()=>{handleAnswer(assignment.assignmentId, index, child.questionId, childIndex)}}>제출하기</S.Button>
                               </S.ButtonWrapper>
                             </ListItem>
                           )

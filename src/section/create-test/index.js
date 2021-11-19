@@ -15,11 +15,20 @@ import { Divider } from '@mui/material';
 
 import { DropzoneArea } from 'material-ui-dropzone';
 import Link from 'next/link';
+import FailureAlert from '../../component/FailureAlert';
+import axios from 'axios';
 
-const CreateCourse = () => {
+const CreateCourse = ({nMe}) => {
   const router = useRouter();
   const [clicked, setClicked] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [classTitle, setClassTitle] = useState('');
+  const [classDescription, setClassDescription] = useState('');
+  const [classOS, setClassOS] = useState('');
+  const [classCPU, setClassCPU] = useState('');
+  const [classRAM, setClassRAM] = useState('');
+  const [classTeacher, setClassTeacher] = useState(''); 
+
   const handleSoftwareClick = () => {
     setClicked(!clicked);
   }
@@ -27,9 +36,25 @@ const CreateCourse = () => {
   const loadingFalse = () => {
     router.push("/question")
   }
-  const handleLoading = () => {
-    setLoading(true);
-    setTimeout(loadingFalse, 2000);
+  const handleLoading = async () => {
+    //setLoading(true);
+    //setTimeout(loadingFalse, 2000);
+    try {
+      const nResult = await axios.post(`/v1/evaluations`, {
+        'userId' : nMe.id,
+        'title': classTitle,
+        'description': classDescription,
+        'cpu': classCPU,
+        'memory': classRAM,
+        'os': "UBUNTU_18_04"
+      })
+      router.push(`/question/${nResult.data.evaluationId}`);
+    } catch(err) {
+      if(err?.response?.status == 403 || err?.response?.status == 401){
+        FailureAlert('로그인이 필요합니다.');
+      }
+      FailureAlert('에러가 발생하였습니다.');
+    }
   }
   return (
     <S.Container>
@@ -38,13 +63,13 @@ const CreateCourse = () => {
           <S.InputColumn>
             <h3>테스트 이름</h3>
             <S.HelpText>해당 테스트의 타이틀로 사용될 이름입니다.</S.HelpText>
-            <TextField label="테스트명" variant="outlined" />
+            <TextField label="테스트명" variant="outlined" value={classTitle} onChange={(e)=>{setClassTitle(e.target.value)}} />
           </S.InputColumn>
           <Divider />
           <S.InputColumn>
             <h3>테스트 설명</h3>
             <S.HelpText>학생에게 보여질 해당 테스트의 제약 조건등 상세한 설명을 입력해주세요</S.HelpText>
-            <TextField fullWidth label="테스트 설명" variant="outlined" multiline rows={5} />
+            <TextField fullWidth label="테스트 설명" variant="outlined" multiline rows={5} value={classDescription} onChange={(e)=>{setClassDescription(e.target.value)}} />
           </S.InputColumn>
           <Divider />
 
@@ -65,8 +90,10 @@ const CreateCourse = () => {
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   label="Age"
+                  value={classTeacher}
+                  onChange={(e)=>{setClassTeacher(e.target.value)}}
                 >
-                  <MenuItem value={10}>[BoB]장원익</MenuItem>
+                  <MenuItem value={6}>[BoB]장원익</MenuItem>
                 </Select>
               </FormControl>
             </div>
@@ -114,10 +141,10 @@ const CreateCourse = () => {
                   <S.Image src="//upload.wikimedia.org/wikipedia/commons/d/db/Wireshark_Icon.png" />
                   <span style={{ color: "#525463", fontSize: "0.8rem" }}>Wireshark</span>
                 </S.Software>
-                <S.Software>
+                {/*<S.Software>
                   <S.Image src="https://cdn.icon-icons.com/icons2/3053/PNG/512/burp_suite_macos_bigsur_icon_190319.png" />
                   <span style={{ color: "#525463", fontSize: "0.8rem" }}>Burp Suite</span>
-                </S.Software>
+                </S.Software>*/}
                 <S.Software>
                   <S.Image src="https://blog.kakaocdn.net/dn/skTqL/btqCrjICmfx/QgSvf45Nshbq7LmDvHphMK/img.png" />
                   <span style={{ color: "#525463", fontSize: "0.8rem" }}>FTK Imager</span>
@@ -136,12 +163,14 @@ const CreateCourse = () => {
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     label="Age"
+                    value={classCPU}
+                    onChange={(e)=>setClassCPU(e.target.value)}
                   >
-                    <MenuItem value={10}>1 vCPUs</MenuItem>
-                    <MenuItem value={10}>2 vCPUs</MenuItem>
-                    <MenuItem value={20}>4 vCPUs</MenuItem>
-                    <MenuItem value={30}>8 vCPUs</MenuItem>
-                    <MenuItem value={40}>16 vCPUs</MenuItem>
+                    <MenuItem value={'1'}>1 vCPUs</MenuItem>
+                    <MenuItem value={'2'}>2 vCPUs</MenuItem>
+                    <MenuItem value={'4'}>4 vCPUs</MenuItem>
+                    <MenuItem value={'8'}>8 vCPUs</MenuItem>
+                    <MenuItem value={'16'}>16 vCPUs</MenuItem>
                   </Select>
                 </FormControl>
                 <FormControl fullWidth>
@@ -150,12 +179,14 @@ const CreateCourse = () => {
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     label="Age"
+                    value={classRAM}
+                    onChange={(e)=>{setClassRAM(e.target.value)}}
                   >
-                    <MenuItem value={10}>0.5 GiB</MenuItem>
-                    <MenuItem value={10}>1 GiB</MenuItem>
-                    <MenuItem value={20}>2 GiB</MenuItem>
-                    <MenuItem value={30}>4 GiB</MenuItem>
-                    <MenuItem value={40}>8 GiB</MenuItem>
+                    <MenuItem value={'0.5'}>0.5 GiB</MenuItem>
+                    <MenuItem value={'1'}>1 GiB</MenuItem>
+                    <MenuItem value={'2'}>2 GiB</MenuItem>
+                    <MenuItem value={'4'}>4 GiB</MenuItem>
+                    <MenuItem value={'8'}>8 GiB</MenuItem>
                   </Select>
                 </FormControl>
               </S.MultiSelectWrapper>

@@ -12,7 +12,7 @@ const CourseHeader = ({ isAdmin, title, instructor, thumnailImageUrl, containerS
   const router = useRouter();
 
   const handleClick = () => {
-    if (isAdmin) router.push("/admin/ground");
+    if (isAdmin) router.push("/ground");
     else router.push("/ground");
   }
 
