@@ -7,7 +7,7 @@ import axios from 'axios';
 export default function ground ({nMe, nClassDetail, nStudentList, nQuizList}) {
 
   const [vnc, setVnc] = useState(false);
-  const [ip, setIp] = useState("http://localhost:5901");
+  const [ip, setIp] = useState(nClassDetail.containerIp);
 
   const handleVncConnect = (ip) => {
     setVnc(true);

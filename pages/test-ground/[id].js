@@ -6,7 +6,7 @@ import TestSidebar from "../../src/component/test-sidebar";
 export default function test ({nMe, nEvaluationDetail, nQuizList}) {
 
   const [vnc, setVnc] = useState(false);
-  const [ip, setIp] = useState("http://localhost:5901");
+  const [ip, setIp] = useState(nEvaluationDetail.containerIp);
 
   const handleVncConnect = (ip) => {
     setVnc(true);
