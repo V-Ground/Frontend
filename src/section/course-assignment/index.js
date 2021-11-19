@@ -49,13 +49,13 @@ const CourseAssignment = ({nMe, nClassDetail, nStudentList, nQuizList}) => {
     setQuizChildrenChecker(copyChecker);
   };
 
-  const handleQuizChildrenOpen = async (assignmentId, index) => {
+  const handleQuizChildrenOpen = async (aid, index) => {
     const copyChecker = quizChildrenChecker.slice();
     copyChecker[index] = true;
     setQuizChildrenChecker(copyChecker);
     let nQuizChildrenList = {}
     try {
-      nQuizChildrenList = await axios.get(`/v1/users/${nMe.id}/courses/assignments/${assignmentId}/questions/${questionId}/answers`);
+      nQuizChildrenList = await axios.get(`/v1/courses/${router.query.id}/assignments/${aid}/users/${nMe.id}`);
     } catch(err) {
       nQuizChildrenList = {"data": {
         "questionDetail": {

@@ -29,7 +29,7 @@ export default function LoginPage () {
                 'email' : id,
                 'password' : password
             };
-            const nData = await axios.post(`/v1/authentificate`, body);
+            const nData = await axios.post(`/v1/authenticate`, body);
             router.replace(`/?uid=${nData.data.id}&name=${nData.data.username}&role=${nData.data.role}`);
         } catch(err) {
             if(err.response.status == 403 || err.response.status == 401){
@@ -60,7 +60,7 @@ export default function LoginPage () {
                                 <TextField value={id} onChange={(e)=>{handleId(e.target.value)}} placeholder='이메일' />
                             </Grid>
                             <Grid item className={styles.loginTextFieldItem} xs={12}>
-                                <TextField value={password} onChange={(e)=>{handlePassword(e.target.value)}} placeholder='비밀번호' />
+                                <TextField type={'password'} value={password} onChange={(e)=>{handlePassword(e.target.value)}} placeholder='비밀번호' />
                             </Grid>
                             <Grid item xs={12}>
                                 <Button onClick={Login}>로그인</Button>
