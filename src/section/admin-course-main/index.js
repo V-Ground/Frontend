@@ -226,7 +226,7 @@ export default function CourseMain ({nMe, nClassDetail, nStudentList, nQuizList}
               </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-              <div style={{ marginTop: "-170px" }}>
+              <div style={{ marginTop: "-100px" }}>
                 <WhiteBackground>
                   <S.AdminHeader>
                     <h3>과제</h3>
@@ -264,7 +264,7 @@ export default function CourseMain ({nMe, nClassDetail, nStudentList, nQuizList}
               </div>
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <div style={{ marginTop: "-170px" }}>
+              <div style={{ marginTop: "-100px" }}>
                 <WhiteBackground>
                   <S.AdminHeader>
                     <h3>
