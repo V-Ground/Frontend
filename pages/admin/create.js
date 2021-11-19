@@ -24,12 +24,7 @@ export const getServerSideProps = async (ctx) => {
   }
   return {
     props: {
-      nMe: nMe?.data ? nMe?.data : {
-        "id": 6,
-        "email": "teacher1@vground.com",
-        "username": "정승기",
-        "role": "강사"
-      },
+      nMe: nMe?.data ? nMe?.data : {},
     }
 }
 }
