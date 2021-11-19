@@ -90,7 +90,7 @@ const TestSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect, nMe, nEva
         subheader={
           <ListSubheader component="div" id="nested-list-subheader" sx={{ background: "#2E3336", color: "#9e9e9e", fontSize: "1.2rem", margin: "15px" }}>
             {isAdmin ? "[BoB-강사] 보안제품개발 김경태" : <div className="timer">
-              <h4>[BoB] 보안제품개발 장원익</h4>
+              <h4>{`[BoB-${nMe.role}] 보안제품개발 ${nMe.username}`}</h4>
               <h3>남은 시간 : 9 시간 {min} 분 {sec} 초</h3>
             </div>}
           </ListSubheader>
