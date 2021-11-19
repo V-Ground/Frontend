@@ -50,7 +50,7 @@ const CreateCourse = ({nMe}) => {
         'memory': classRAM,
         'os': classOS
       })
-      router.push(`/admin/course/${nResult.data.courseId}`);
+      router.push(`/assignment/class/${nResult.data.courseId}`);
     } catch(err) {
       if(err?.response?.status == 403 || err?.response?.status == 401){
         FailureAlert('로그인이 필요합니다.');

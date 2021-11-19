@@ -21,6 +21,7 @@ import axios from 'axios';
 
 
 const TestSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect, nMe, nEvaluationDetail, nQuizList }) => {
+  console.log('nQuizList : ', nQuizList);
   const router = useRouter();
   const [quizChecker, setQuizChecker] = useState(Array.from({length: nQuizList.length}, ()=>false));
   const [answer, setAnswer] = useState(Array.from({length: nQuizList.length}, ()=>''));

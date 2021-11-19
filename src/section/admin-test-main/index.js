@@ -232,7 +232,7 @@ export default function CourseMain ({nMe, nEvaluationDetail, nStudentList, nQuiz
                   <S.AdminHeader>
                     <h3>문제</h3>
                     <S.Text onClick={handleCreateAssignment}>{/*생성하기*/}</S.Text>
-                  </S.AdminHeader>``
+                  </S.AdminHeader>
                   <Divider />
                   <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import Ground from "../../src/section/ground";
 import TestSidebar from "../../src/component/test-sidebar";
+import axios from 'axios';
 
 export default function test ({nMe, nEvaluationDetail, nQuizList}) {
 
@@ -69,7 +70,9 @@ export const getServerSideProps = async (ctx) => {
       },
       withCredentials : true
     });
+    console.log('jebal : ',nQuizList);
   } catch(err) {
+    console.log('nError : ',err);
     if(err?.response?.status == 403 || err?.response?.status == 401){
       console.log('로그인 전');
     }
