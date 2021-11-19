@@ -200,6 +200,7 @@
 .profileType {
   background-color: #364db1;
   padding: 1px;
+  padding-top: 4px;
   max-width: 54px;
   border-radius: 12px;
   text-align: center;
