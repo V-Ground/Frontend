@@ -99,7 +99,7 @@ export const getServerSideProps = async (ctx) => {
             "endedAt": "2021-11-12T12:00:00"
         }
       ],
-      nStudentList: nStudentList.data ? nStudentList.data : [
+      nStudentList: nStudentList.data ? nStudentList.data.filter((item)=>nMe.data.id!=item.studentId) : [
         {
             "studentId": 1,
             "studentName": '김경태',

@@ -1,17 +1,42 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  width: 100%;
-  height: 60px;
-  background: #0D151C;
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  position: fixed;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
 `;
 
-export const Title = styled.h1`
-  color: #5094FA;
-  font-size: 1rem;
-  margin-left: 40px;
+export const Back = styled.h2`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const Course = styled.div`
+  display: flex;
+  align-items: flex-end;
+`;
+
+export const ContainerButtons = styled.div`
+  display: flex;
+  button {
+    margin: 20px 20px 0 0;
+  }
+`;
+
+export const Button = styled.button`
+  color: white;
+  width: 100px;
+  height: 34px;
+  background: #5094FA;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+`;
+
+export const BackLink = styled.span`
+  cursor: pointer;
+  padding-top: 3px;
 `;

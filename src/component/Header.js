@@ -33,16 +33,16 @@ export default function Header(props) {
     }
   }
 
-  const updateScroll = () => {
-    setScrollPosition(window.scrollY || document.documentElement.scrollTop);
-  }
-  React.useEffect(() => {
-    window.addEventListener('scroll', updateScroll);
-  });
+  // const updateScroll = () => {
+  //   setScrollPosition(window.scrollY || document.documentElement.scrollTop);
+  // }
+  // React.useEffect(() => {
+  //   window.addEventListener('scroll', updateScroll);
+  // });
 
   useEffect(async () => {
     try {
-        const checkLogin = await axios.get('v1/authenticate/me');
+        const checkLogin = await axios.get('/v1/authenticate/me');
         if (checkLogin) {
             setIsLogined(true);
         } else {
@@ -51,7 +51,7 @@ export default function Header(props) {
     } catch(err) {
         setIsLogined(false);
     }
-}, []);
+});
 
   return router.route == '/login' || /signup/g.exec(router.route) ? '' : (
     <Grid style={{ boxShadow: "0px 3px 22px rgba(0, 0, 0, 0.16)", background: "white" }} container className={styles.headerContainer}>

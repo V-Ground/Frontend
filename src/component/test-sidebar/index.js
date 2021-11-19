@@ -106,13 +106,13 @@ const TestSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect, nMe, nEva
             return(
               <Fragment>
               <ListItemButton onClick={()=>{handleQuizChecker(index)}}>
-                {q1SendAnswer ? <><CheckCircleOutlineIcon sx={{ color: "#36B13B", marginRight: "15px" }} /> <ListItemText primary={`[문제 ${index+1}] ${quiz.title}`} /> </> : <><RadioButtonUncheckedIcon sx={{ color: "grey", marginRight: "15px" }} /><ListItemText primary={`[문제 ${index+1}] ${quiz.title}`} /></>}
+                {q1SendAnswer ? <><CheckCircleOutlineIcon sx={{ color: "#36B13B", marginRight: "15px" }} /> <ListItemText primary={`[문제 ${index+1}] ${quiz.question}`} /> </> : <><RadioButtonUncheckedIcon sx={{ color: "grey", marginRight: "15px" }} /><ListItemText primary={`[문제 ${index+1}] ${quiz.question}`} /></>}
                 {quizChecker[index] ? <ExpandLess /> : <ExpandMore />}
               </ListItemButton>
               <Collapse in={quizChecker[index]} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
                 <List component="div" disablePadding>
                   <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemText primary="문제 설명" />
+                    <ListItemText primary={quiz.description} />
                   </ListItemButton>
                   <ListItem sx={{ display: "flex", flexDirection: "column", pl: 4 }}>
                     <div>

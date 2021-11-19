@@ -59,7 +59,7 @@ const OrganizationHeader = ({ children, nClassLength, nEvaluationLength, nMe }) 
   const router = useRouter();
   const [login, setLogin] = useState(true);
   const [popupOpen, setPopupOpen] = useState(false);
-  const [componentChecker, setComponentChecker] = useState(2);
+  const [componentChecker, setComponentChecker] = useState(0);
 
   const slider = useRef();
   const sliderSettings = {

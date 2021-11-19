@@ -16,6 +16,9 @@ import { Divider } from '@mui/material';
 import { DropzoneArea } from 'material-ui-dropzone';
 import Link from 'next/link';
 import FailureAlert from '../../component/FailureAlert';
+import DateTimePicker from '@mui/lab/DateTimePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import axios from 'axios';
 
 const CreateCourse = ({nMe}) => {
@@ -27,7 +30,9 @@ const CreateCourse = ({nMe}) => {
   const [classOS, setClassOS] = useState('');
   const [classCPU, setClassCPU] = useState('');
   const [classRAM, setClassRAM] = useState('');
-  const [classTeacher, setClassTeacher] = useState(''); 
+  const [classTeacher, setClassTeacher] = useState('');
+  const [testOpen, setTestOpen] = useState(Date.now());
+  const [testClose, setTestClose] = useState(Date.now()) 
 
   const handleSoftwareClick = () => {
     setClicked(!clicked);
@@ -46,7 +51,9 @@ const CreateCourse = ({nMe}) => {
         'description': classDescription,
         'cpu': classCPU,
         'memory': classRAM,
-        'os': "UBUNTU_18_04"
+        'os': "UBUNTU_18_04",
+        'startedAt': testOpen,
+        'endedAt': testClose
       })
       router.push(`/question/${nResult.data.evaluationId}`);
     } catch(err) {
@@ -220,7 +227,20 @@ const CreateCourse = ({nMe}) => {
             <h3>시험 시작시간 및 종료시간</h3>
             <S.HelpText>시험의 시작 시간과 종료 시간을 입력해주세요</S.HelpText>
             <div>
-              <TextField sx={{ marginRight: "30px" }} label="시험 시작 시간" variant="outlined" /> <TextField label="시험 종료 시간" variant="outlined" />
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DateTimePicker
+                label="시작시간"
+                value={testOpen}
+                onChange={(e)=>{setTestOpen(new Date(e))}}
+                renderInput={(params) => <TextField style={{ paddingRight: "30px" }} {...params} />}
+              />
+              <DateTimePicker
+                label="종료시간"
+                value={testClose}
+                onChange={(e)=>{setTestClose(new Date(e))}}
+                renderInput={(params) => <TextField {...params} />}
+              />
+              </LocalizationProvider>
             </div>
           </S.InputColumn>
 

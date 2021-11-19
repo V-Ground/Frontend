@@ -22,7 +22,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Chip from "@mui/material/Chip";
 import CircularProgress from '@mui/material/CircularProgress';
-import CourseHeader from "../../component/course-header";
+import TestHeader from "../../component/test-header";
 import WhiteBackground from "../../component/white-background";
 import Modal from "../../component/modal";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -67,7 +67,7 @@ function a11yProps(index) {
   };
 }
 
-export default function CourseMain ({nMe, nClassDetail, nStudentList, nQuizList}) {
+export default function CourseMain ({nMe, nEvaluationDetail, nStudentList, nQuizList}) {
   const router = useRouter();
   const [assignments, setAssignments] = useState([]);
   const [invitation, setInvitation] = useState("")
@@ -209,11 +209,11 @@ export default function CourseMain ({nMe, nClassDetail, nStudentList, nQuizList}
     <>
       <S.Container>
         <S.CourseHeaderWrapper>
-          <CourseHeader
+          <TestHeader
             isAdmin
-            title={nClassDetail.title}
-            instructor={nClassDetail.teacherName}
-            thumnailImageUrl={nClassDetail.thumnailImageUrl}
+            title={nEvaluationDetail.title}
+            instructor={nEvaluationDetail.teacherName}
+            thumnailImageUrl={nEvaluationDetail.thumnailImageUrl}
             containerStatus={containerStatus}
             setContainerStatus={setContainerStatus} />
         </S.CourseHeaderWrapper>
@@ -221,8 +221,8 @@ export default function CourseMain ({nMe, nClassDetail, nStudentList, nQuizList}
           <Box sx={{ width: '100%' }} style={{ margin: "80px 0" }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                <Tab label="과제" {...a11yProps(0)} />
-                <Tab label="구성원 관리" {...a11yProps(1)} />
+                <Tab label="문제" {...a11yProps(0)} />
+                {/*<Tab label="응시자 관리" {...a11yProps(1)} />*/}
                 {/*<Tab label="클래스 관리" {...a11yProps(2)} />*/}
               </Tabs>
             </Box>
@@ -230,33 +230,33 @@ export default function CourseMain ({nMe, nClassDetail, nStudentList, nQuizList}
               <div style={{ marginTop: "-100px" }}>
                 <WhiteBackground>
                   <S.AdminHeader>
-                    <h3>과제</h3>
-                    <S.Text onClick={handleCreateAssignment}>생성하기</S.Text>
-                  </S.AdminHeader>
+                    <h3>문제</h3>
+                    <S.Text onClick={handleCreateAssignment}>{/*생성하기*/}</S.Text>
+                  </S.AdminHeader>``
                   <Divider />
                   <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                       <TableRow>
                         <TableCell>번호</TableCell>
-                        <TableCell align="left">과제 이름</TableCell>
-                        <TableCell align="right">상태</TableCell>
-                        <TableCell align="right">마감</TableCell>
+                        <TableCell align="left">문제 이름</TableCell>
+                        <TableCell align="right">설명</TableCell>
+                        <TableCell align="right">배점</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {nQuizList.length === 0 ? <div style={{ width: "100%", textAlign: "center" }}><h4>과제가 존재하지 않습니다.</h4></div> : nQuizList.map((assignment) => (
                         <TableRow
-                          key={assignment.assignmentId}
+                          key={assignment.quizId}
                           hover
                           style={{ cursor: "pointer" }}
                           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                           <TableCell component="th" scope="row">
-                            {assignment.assignmentId}
+                            {assignment.quizId}
                           </TableCell>
-                          <TableCell align="left">{assignment.title}</TableCell>
-                          <TableCell align="right">{convertToChip(Date.now()-new Date(assignment.endedAt)<0 ? '진행중' : '마감')}</TableCell>
-                          <TableCell align="right">{new Date(assignment.startedAt).toLocaleDateString()} ~ {new Date(assignment.endedAt).toLocaleDateString()}</TableCell>
+                          <TableCell align="left">{assignment.question}</TableCell>
+                          <TableCell align="right">{assignment.description}</TableCell>
+                          <TableCell align="right">{assignment.score}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

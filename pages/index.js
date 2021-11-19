@@ -75,40 +75,9 @@ export const getServerSideProps = async (ctx) => {
   return {
     props: {
       nCookie: ctx.req.headers.cookie ? ctx.req.headers.cookie : '',
-      nMe: nMe?.data ? nMe?.data : {
-        "id": 6,
-        "email": "teacher1@vground.com",
-        "username": "정승기",
-        "role": "강사"
-      },
-      nClass: nCourse.length ? nCourse : [
-        {
-          "courseId": 1,
-          "title": "클라우드 기초",
-          "description": "aws 를 이용하여 클라우드 컴퓨팅의 기초에 대해서 학습합니다.",
-          "visibility": true,
-          "teacherName": "정승기", 
-          "thumnailImageUrl": "https://cdn.inflearn.com/public/courses/326750/cover/d7815167-2a01-42c1-aacf-bbd32a3705bc/326750-eng.png"
-        },
-        {
-          "courseId": 2,
-          "title": "Wireshark 를 이용한 네트워크 분석",
-          "description": "TCP/IP Stack 의 전반적인 구조를 Wireshark 를 통하여 학습하고 전반적인 네트워크를 학습합니다.",
-          "visibility": true,
-          "teacherName": "정승기",
-          "thumnailImageUrl": "https://cdn.inflearn.com/public/courses/327762/cover/d37b231e-411f-4358-9b28-e3839f79f42b/327762-eng.png"
-        }
-      ],
-      nEvaluation: nEvaluation.length ? nEvaluation : [
-        {
-          "evaluationId": 1,
-          "title": "BoB 선발 평가",
-          "description": "Best Of the Best 11기 보안제품개발트랙 선발 평가",
-          "visibility": true,
-          "teacherName": "정승기",
-          "thumnailImageUrl": "https://storage.googleapis.com/static.fastcampus.co.kr/prod/uploads/202107/101320-463/브릿지이미지.png"
-        }
-      ]
+      nMe: nMe?.data ? nMe?.data : {},
+      nClass: nCourse.length ? nCourse : [],
+      nEvaluation: nEvaluation.length ? nEvaluation : []
     }
 }
 }

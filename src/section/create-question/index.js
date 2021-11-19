@@ -37,7 +37,8 @@ const CreateQuestion = () => {
   const handleQuiz = async () => {
     try {
       await axios.post(`/v1/evaluations/${router.query.id}/quizzes`, quizChildrenList);
-      SuccessAlert('과제가 성공적으로 추가되었습니다.')
+      SuccessAlert('과제가 성공적으로 추가되었습니다.');
+      router.push(`/assignment/test/${router.query.id}`);
     } catch(err) {
       console.log('error :', err)
       if(err?.response?.status == 403 || err?.response?.status == 401){

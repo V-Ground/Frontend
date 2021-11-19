@@ -25,6 +25,7 @@ const CourseMain = () => {
 
   const router = useRouter();
   const { courseInfo, assignments } = data;
+  const [containerStatus, setContainerStatus] = useState('중지');
 
   return (
     <S.Container>
@@ -33,7 +34,8 @@ const CourseMain = () => {
           title={courseInfo.title}
           instructor={courseInfo.instructor}
           thumnailImageUrl={courseInfo.thumnailImageUrl}
-          containerStatus={courseInfo.containerStatus} />
+          containerStatus={containerStatus}
+          setContainerStatus={setContainerStatus} />
       </S.CourseHeaderWrapper>
       <S.AssignmentWrapper>
         <WhiteBackground>

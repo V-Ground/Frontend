@@ -12,8 +12,8 @@ const CourseHeader = ({ isAdmin, title, instructor, thumnailImageUrl, containerS
   const router = useRouter();
 
   const handleClick = () => {
-    if (isAdmin) router.push("/ground");
-    else router.push("/ground");
+    if (isAdmin) router.push(`/ground/${router.query.id}`);
+    else router.push("/ground/1");
   }
 
   const handleInstanceStart = () => {

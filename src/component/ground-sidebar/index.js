@@ -31,7 +31,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [openSnapshot, setOpenSnapshot] = useState(false);
   const [openStudentDetail, setOpenStudentDetail] = useState(false);
   const [studentDialogChecker, setStudentDialogChecker] = useState(Array.from({length: nStudentList.length}, ()=>false));
-  const [quizChildrenList, setQuizChildrenList] = useState(Array.from({length: nQuizList.length}, ()=>{}));
+  const [quizChildrenList, setQuizChildrenList] = useState(Array.from({length: nQuizList.length}, ()=>{return {}}));
   const [quizChildrenChecker, setQuizChildrenChecker] = useState(Array.from({length: nQuizList.length}, ()=>false));
   const userId = nMe?.id;
   const courseId = router.query.id;
@@ -63,8 +63,14 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
     setQuizChildrenChecker(copyChecker);
     let nQuizChildrenList = {}
     try {
-      nQuizChildrenList = await axios.get(`/v1/courses/assignments/${assignmentId}/users/${nMe.id}`);
+      nQuizChildrenList = await axios.get(`/v1/courses/${router.query.id}/assignments/${assignmentId}/users/${nMe.id}`).then((result)=>{
+        const copyList = quizChildrenList.slice();
+        copyList[index] =  result.data;
+        setQuizChildrenList(copyList);
+        console.log('copyList : ', copyList);
+      });
     } catch(err) {
+      console.log('error : ', err);
       nQuizChildrenList = {"data": {
         "questionDetail": {
             "assignment": {
@@ -116,10 +122,6 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
         FailureAlert('에러가 발생하였습니다.');
       }
     }
-    console.log('nQuizChildrenList',nQuizChildrenList.data)
-    const copyList = quizChildrenList.slice();
-    copyList[index] =  nQuizChildrenList.data;
-    setQuizChildrenList(copyList);
   };
 
   const handleAnswer = async (aid, aindex, qid, qindex) => {
@@ -181,7 +183,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
 
   }
 
-  const ip = isAdmin ? "http://localhost:5901" : "http://localhost:5901";
+  const ip = 'http://'+nClassDetail.containerIp;
   console.log(ip);
 
   return (
@@ -216,16 +218,16 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                     <ListItemButton onClick={()=>{handleStudentContainer(index)}} sx={{ pl: 4 }}>
                       <ListItemText primary={`[학생 ${index+1}] ${student.studentName}`} />
 
-                      {studentContainer2 ? <ExpandLess /> : <ExpandMore />}
+                      {studentDialogChecker[index] ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
-                    <Collapse in={studentContainer2} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+                    <Collapse in={studentDialogChecker[index]} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
                       <List component="div" disablePadding>
                         <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
                           <ListItemButton >
                             <ListItemText primary="컨테이너 관리" />
                           </ListItemButton>
                           <S.ButtonWrapper>
-                            <S.Button onClick={() => handleVncConnect(student.containerIp)}>접속</S.Button>
+                            <S.Button onClick={() => handleVncConnect('http://'+student.containerIp)}>접속</S.Button>
                             <S.Button onClick={handleVncDisconnect}>중지</S.Button>
                           </S.ButtonWrapper>
                         </ListItem>
@@ -258,7 +260,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                         <ListItemText primary={assignment.description} />
                       </ListItemButton>
                       {
-                        quizChildrenChecker[index] ? quizChildrenList[index].questionDetail.questions.map((child, childIndex)=>{
+                        quizChildrenChecker[index] && Object.keys(quizChildrenList[index]).length ? quizChildrenList[index].questionDetail.questions.map((child, childIndex)=>{
                           return (
                             <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
                               <div>

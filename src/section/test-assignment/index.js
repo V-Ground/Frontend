@@ -11,7 +11,7 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 
-import CourseHeader from "../../component/course-header";
+import TestHeader from "../../component/test-header";
 import Modal from "../../component/modal";
 import WhiteBackground from "../../component/white-background";
 
@@ -55,12 +55,7 @@ const CourseAssignment = ({nMe, nClassDetail, nStudentList, nQuizList}) => {
     setQuizChildrenChecker(copyChecker);
     let nQuizChildrenList = {}
     try {
-      nQuizChildrenList = await axios.get(`/v1/courses/${router.query.id}/assignments/${aid}/users/${nMe.id}`).then((result)=>{
-        const copyList = quizChildrenList.slice();
-        copyList[index] =  result.data;
-        setQuizChildrenList(copyList);
-        console.log('copyList : ', copyList);
-      });;
+      nQuizChildrenList = await axios.get(`/v1/courses/${router.query.id}/assignments/${aid}/users/${nMe.id}`);
     } catch(err) {
       nQuizChildrenList = {"data": {
         "questionDetail": {
@@ -113,15 +108,18 @@ const CourseAssignment = ({nMe, nClassDetail, nStudentList, nQuizList}) => {
         FailureAlert('에러가 발생하였습니다.');
       }
     }
+    console.log('nQuizChildrenList',nQuizChildrenList.data)
+    const copyList = quizChildrenList.slice();
+    copyList[index] =  nQuizChildrenList.data;
+    setQuizChildrenList(copyList);
   };
 
-  const handleAnswer = async (qid) => {
+  const handleAnswer = async () => {
     try {
-      await axios.post(`/v1/users/${userId}/courses/${courseId}/assignments/${assignmentId}/questions/${qid}/answers`, {
+      await axios.post(`/v1/courses/${courseId}/assignments/${assignmentId}/users/${userId}`, {
         'answer' : answer
       })
-      SuccessAlert('과제가 성공적으로 제출되었습니다.');
-      router.reload();
+      SuccessAlert('과제가 성공적으로 제출되었습니다.')
     } catch(err) {
       if(err?.response?.status == 403 || err?.response?.status == 401){
         FailureAlert('로그인이 필요합니다.');
@@ -157,14 +155,14 @@ const CourseAssignment = ({nMe, nClassDetail, nStudentList, nQuizList}) => {
     <Fragment>
     <S.Container>
       <S.CourseHeaderWrapper>
-          <CourseHeader
+          <TestHeader
             title={nClassDetail.title}
             instructor={nClassDetail.teacherName}
             thumnailImageUrl={nClassDetail.thumnailImageUrl}
             containerStatus={containerStatus}
             setContainerStatus={setContainerStatus} />
       </S.CourseHeaderWrapper>
-      { nQuizList.map((quiz, index)=> {
+      {/* nQuizList.map((quiz, index)=> {
         return (<Fragment>
         <S.AssignmentWrapper>
           <WhiteBackground>
@@ -177,10 +175,10 @@ const CourseAssignment = ({nMe, nClassDetail, nStudentList, nQuizList}) => {
             </S.Header>
             <Divider />
             <S.Padding style={{ lineHeight: "2" }}>
-              <h3 onClick={()=>{console.log(quizChildrenList)}}>과제 설명</h3>
+              <h3>과제 설명</h3>
               {quiz.description}
               <h3 style={{ marginTop: "60px" }}>제출 상황<S.quizChildrenOpen>{quizChildrenChecker[index] ? <span onClick={()=>{handleQuizChildrenClose(quiz.assignmentId, index)}}> 닫기</span> : <span onClick={()=>{handleQuizChildrenOpen(quiz.assignmentId, index)}}> 열기</span>}</S.quizChildrenOpen></h3>
-              {quizChildrenChecker[index] && quizChildrenList[index] && Object.keys(quizChildrenList[index]).length ? quizChildrenList[index].questionDetail.questions.map((child)=>{
+              {quizChildrenChecker[index] && Object.keys(quizChildrenList[index]).length ? quizChildrenList[index].questionDetail.questions.map((child)=>{
               return (
               <Fragment>
               <S.AssignmentTableWrapper>
@@ -202,8 +200,8 @@ const CourseAssignment = ({nMe, nClassDetail, nStudentList, nQuizList}) => {
                       <TableRow
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                       >
-                        <TableCell align="left">마지막 제출답안</TableCell>
-                        <TableCell align="left">{`${quizChildrenList[index].submittedAnswerDetail.filter((item)=>item.questionId==child.questionId).length && quizChildrenList[index].submittedAnswerDetail.filter((item)=>item.questionId==child.questionId)[0].submittedAnswer ? quizChildrenList[index].submittedAnswerDetail.filter((item)=>item.questionId==child.questionId)[0].submittedAnswer : ''}`}</TableCell>
+                        <TableCell align="left">마지막 제출일</TableCell>
+                        <TableCell align="left">{submitStatus.lastModifiedAt}</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell align="left">과제 타입</TableCell>
@@ -228,11 +226,11 @@ const CourseAssignment = ({nMe, nClassDetail, nStudentList, nQuizList}) => {
           <div>
           <TextField placeholder="정답을 입력하세요" value={answer} onChange={(e)=>{setAnswer(e.target.value)}} />
           </div>
-          <S.Button onClick={()=>{handleAnswer(questionId)}}>제출</S.Button>
+          <S.Button onClick={handleAnswer}>제출</S.Button>
         </Modal>
         </Fragment>)
       })
-    }
+    */}
     <br/><br/>
   </S.Container>
   </Fragment>
