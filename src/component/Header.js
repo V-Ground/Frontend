@@ -40,18 +40,18 @@ export default function Header(props) {
     window.addEventListener('scroll', updateScroll);
   });
 
-//   useEffect(async () => {
-//     try {
-//         const checkLogin = await axios.get('v1/users/me');
-//         if (checkLogin) {
-//             setIsLogined(true);
-//         } else {
-//             setIsLogined(false);
-//         }
-//     } catch(err) {
-//         setIsLogined(false);
-//     }
-// }, []);
+  useEffect(async () => {
+    try {
+        const checkLogin = await axios.get('v1/authenticate/me');
+        if (checkLogin) {
+            setIsLogined(true);
+        } else {
+            setIsLogined(false);
+        }
+    } catch(err) {
+        setIsLogined(false);
+    }
+}, []);
 
   return router.route == '/login' || /signup/g.exec(router.route) ? '' : (
     <Grid style={{ boxShadow: "0px 3px 22px rgba(0, 0, 0, 0.16)", background: "white" }} container className={styles.headerContainer}>
@@ -63,7 +63,7 @@ export default function Header(props) {
       <Grid item xs={9}>
       </Grid>
           {
-            !router.query?.uid ?
+            !isLogined ?
             <Fragment>
             <Grid item xs={1}>
             <Link href="/login">

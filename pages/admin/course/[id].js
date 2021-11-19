@@ -1,4 +1,4 @@
-import AdminCourseMain from "../../src/section/admin-course-main";
+import AdminCourseMain from "../../../src/section/admin-course-main";
 
 const course = () => {
   return <div style={{ width: "100%" }}><AdminCourseMain /></div>

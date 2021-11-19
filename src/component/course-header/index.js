@@ -7,7 +7,7 @@ import SuccessAlert from '../SuccessAlert.js';
 import InfoAlert from '../InfoAlert.js';
 import WarningAlert from '../WarningAlert.js';
 
-const CourseHeader = ({ isAdmin, title, instructor, thumnailImageUrl, containerStatus }) => {
+const CourseHeader = ({ isAdmin, title, instructor, thumnailImageUrl, containerStatus, setContainerStatus }) => {
 
   const router = useRouter();
 
@@ -18,19 +18,22 @@ const CourseHeader = ({ isAdmin, title, instructor, thumnailImageUrl, containerS
 
   const handleInstanceStart = () => {
     InfoAlert('인스턴스가 시작되었습니다.');
+    setContainerStatus('실행 중');
   }
 
   const handleInstanceStop = () => {
     WarningAlert('인스턴스가 중지되었습니다.');
+    setContainerStatus('중지');
   }
 
   const handleInstanceStopAll = () => {
     WarningAlert('모든 인스턴스가 중지되었습니다.');
+    setContainerStatus('중지');
   }
 
   return (
     <S.Container>
-      <S.Back><ArrowBackIosNewIcon />{title}</S.Back>
+      <S.Back><S.BackLink onClick={()=>{router.push('/')}}><ArrowBackIosNewIcon /></S.BackLink>{title}</S.Back>
       <S.Course>
         <CourseCard
           viewOnly

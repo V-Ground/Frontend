@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, Fragment } from 'react';
+import { useRouter } from 'next/router';
 
 import * as S from "./styles";
 
@@ -16,39 +17,124 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarBorder from '@mui/icons-material/StarBorder';
 import TextField from "@mui/material/TextField";
 import { CircularProgress } from '@mui/material';
+import axios from 'axios';
 
 import Modal from "../../component/modal";
 
 
-const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
-
+const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentList, nClassDetail, nQuizList }) => {
+  const router = useRouter();
   const [openAssignment, setOpenAssignment] = useState(false);
   const [openAssignmentDetail, setOpenAssignmentDetail] = useState(false);
   const [openSnapshot, setOpenSnapshot] = useState(false);
   const [openStudentDetail, setOpenStudentDetail] = useState(false);
-  const [studentContainer, setStudentContainer] = useState(false);
-  const [studentContainer2, setStudentContainer2] = useState(false);
-  const [studentContainer3, setStudentContainer3] = useState(false);
-  const [studentContainer4, setStudentContainer4] = useState(false);
+  const [studentDialogChecker, setStudentDialogChecker] = useState(Array.from({length: nStudentList.length}, ()=>false));
+  const [quizChildrenList, setQuizChildrenList] = useState(Array.from({length: nQuizList.length}, ()=>{}));
+  const [quizChildrenChecker, setQuizChildrenChecker] = useState(Array.from({length: nQuizList.length}, ()=>false));
+  const userId = nMe?.id;
+  const courseId = router.query.id;
+  const [assignmentId, setAssignmentId] = useState(0);
+  const [questionId, setQuestionId] = useState(0);
+  const [questionDescriptionDialog, setQuestionDescriptionDialog] = useState('');
+  const [answer, setAnswer] = useState('');
+
+  const isAdmin = nMe.role=='강사' ? true : false;
+
+  const handleQuizChildrenClose = (assignmentId, index) => {
+    const copyChecker = quizChildrenChecker.slice();
+    copyChecker[index] = false;
+    setQuizChildrenChecker(copyChecker);
+  };
+
+  const handleQuizChildrenOpen = async (assignmentId, index) => {
+    const copyChecker = quizChildrenChecker.slice();
+    copyChecker[index] = true;
+    setQuizChildrenChecker(copyChecker);
+    let nQuizChildrenList = {}
+    try {
+      nQuizChildrenList = await axios.get(`/v1/courses/assignments/${assignmentId}/users/${nMe.id}`);
+    } catch(err) {
+      nQuizChildrenList = {"data": {
+        "questionDetail": {
+            "assignment": {
+                "assignmentId": 1,
+                "title": "클라우드 네트워크",
+                "description": "클라우드 네트워크에 대한 상식 퀴즈를 풀어보세요",
+                "startedAt": "2021-11-09T12:00:00",
+                "endedAt": "2021-11-12T12:00:00"
+            },
+            "questions": [
+                {
+                    "questionId": 1,
+                    "question": "Floating IP 란?",
+                    "description": "Cloud Computing 에서는 Floating IP에 대한 개념이 중요하다. Floating IP 에 대해서 설명하시오",
+                    "score": 100
+                },
+                {
+                    "questionId": 2,
+                    "question": "VPC란?",
+                    "description": "VPC에 대해서 설명하고 사용 이유를 말하시오",
+                    "score": 50
+                },
+                {
+                    "questionId": 3,
+                    "question": "CIDR 이란?",
+                    "description": "클라우드 컴퓨팅에서 네트워크를 할당하는 CIDR 방식에 대해서 설명하세요",
+                    "score": 30
+                }
+            ]
+        },
+        "submittedAnswerDetail": [
+            {
+                "questionId": 2,
+                "question": "VPC란?",
+                "submittedAnswer": "VPC는 Virtual Private Cloud 의 약자이다",
+                "scored": null
+            },
+            {
+                "questionId": 1,
+                "question": "Floating IP 란?",
+                "submittedAnswer": "Floating IP 는 VPC 외부에서 접근 가능한 public IP로 특정 클라우드 플래폼에서는 Floating IP 를 할당 받는것 만으로도 과금이 된다",
+                "scored": null
+            }
+        ]
+    }};
+      if(err?.response?.status == 403 || err?.response?.status == 401){
+        FailureAlert('로그인이 필요합니다.');
+      } else {
+        FailureAlert('에러가 발생하였습니다.');
+      }
+    }
+    console.log('nQuizChildrenList',nQuizChildrenList.data)
+    const copyList = quizChildrenList.slice();
+    copyList[index] =  nQuizChildrenList.data;
+    setQuizChildrenList(copyList);
+  };
+
+  const handleAnswer = async (aid, qid) => {
+    try {
+      await axios.post(`/v1/users/${userId}/courses/${courseId}/assignments/${aid}/questions/${qid}/answers`, {
+        'answer' : answer
+      })
+      SuccessAlert('과제가 성공적으로 제출되었습니다.')
+    } catch {
+      if(err?.response?.status == 403 || err?.response?.status == 401){
+        FailureAlert('로그인이 필요합니다.');
+      } else {
+        FailureAlert('에러가 발생하였습니다.');
+      }
+    }
+    setIsOpen(false);
+  }
 
   const handleStudentDetail = () => {
     setOpenStudentDetail(!openStudentDetail);
   }
 
-  const handleStudentContainer = () => {
-    setStudentContainer(!studentContainer);
-  }
-
-  const handleStudentContainer2 = () => {
-    setStudentContainer2(!studentContainer2);
-  }
-
-  const handleStudentContainer3 = () => {
-    setStudentContainer3(!studentContainer3);
-  }
-
-  const handleStudentContainer4 = () => {
-    setStudentContainer4(!studentContainer4);
+  const handleStudentContainer = (index) => {
+    const copyChecker = studentDialogChecker.slice();
+    copyChecker[index] = !studentDialogChecker[index];
+    setStudentDialogChecker(copyChecker);
   }
 
   const handleAssignmentClick = () => {
@@ -96,7 +182,7 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
         aria-labelledby="nested-list-subheader"
         subheader={
           <ListSubheader component="div" id="nested-list-subheader" sx={{ background: "#2E3336", color: "#9e9e9e", fontSize: "1.2rem", margin: "15px" }}>
-            {isAdmin ? "[BoB-강사] 보안제품개발 김경태" : "[BoB-교육생] 보안제품개발 강지민"}
+            {isAdmin ? `[BoB-강사] 보안제품개발 ${nMe.username}` : `[BoB-교육생] 보안제품개발 ${nMe.username}`}
           </ListSubheader>
         }
       >
@@ -113,81 +199,32 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
         </ListItemButton>
           <Collapse in={openStudentDetail} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
             <List component="div" disablePadding>
-              <ListItemButton onClick={handleStudentContainer} sx={{ pl: 4 }}>
-                <ListItemText primary="[학생 1] 강지민" />
+              {
+                nStudentList.map((student, index)=>{
+                  return(
+                    <Fragment>
+                    <ListItemButton onClick={()=>{handleStudentContainer(index)}} sx={{ pl: 4 }}>
+                      <ListItemText primary={`[학생 ${index+1}] ${student.studentName}`} />
 
-                {studentContainer ? <ExpandLess /> : <ExpandMore />}
-              </ListItemButton>
-              <Collapse in={studentContainer} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
-                <List component="div" disablePadding>
-                  <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
-                    <ListItemButton >
-                      <ListItemText primary="컨테이너 관리" />
+                      {studentContainer2 ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
-                    <S.ButtonWrapper>
-                      <S.Button onClick={() => handleVncConnect("http://localhost:5901")}>접속</S.Button>
-                      <S.Button onClick={handleVncDisconnect}>중지</S.Button>
-                    </S.ButtonWrapper>
-                  </ListItem>
-                </List>
-              </Collapse>
-
-              <ListItemButton onClick={handleStudentContainer2} sx={{ pl: 4 }}>
-                <ListItemText primary="[학생 2] 고현수" />
-
-                {studentContainer2 ? <ExpandLess /> : <ExpandMore />}
-              </ListItemButton>
-              <Collapse in={studentContainer2} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
-                <List component="div" disablePadding>
-                  <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
-                    <ListItemButton >
-                      <ListItemText primary="컨테이너 관리" />
-                    </ListItemButton>
-                    <S.ButtonWrapper>
-                      <S.Button onClick={() => handleVncConnect("http://localhost:5901")}>접속</S.Button>
-                      <S.Button onClick={handleVncDisconnect}>중지</S.Button>
-                    </S.ButtonWrapper>
-                  </ListItem>
-                </List>
-              </Collapse>
-
-              <ListItemButton onClick={handleStudentContainer3} sx={{ pl: 4 }}>
-                <ListItemText primary="[학생 3] 임창현" />
-
-                {studentContainer3 ? <ExpandLess /> : <ExpandMore />}
-              </ListItemButton>
-              <Collapse in={studentContainer3} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
-                <List component="div" disablePadding>
-                  <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
-                    <ListItemButton >
-                      <ListItemText primary="컨테이너 관리" />
-                    </ListItemButton>
-                    <S.ButtonWrapper>
-                      <S.Button onClick={() => handleVncConnect("http://localhost:5901")}>접속</S.Button>
-                      <S.Button onClick={handleVncDisconnect}>중지</S.Button>
-                    </S.ButtonWrapper>
-                  </ListItem>
-                </List>
-              </Collapse>
-
-              <ListItemButton onClick={handleStudentContainer4} sx={{ pl: 4 }}>
-                <ListItemText primary="[학생 4] 장원익" />
-
-                {studentContainer4 ? <ExpandLess /> : <ExpandMore />}
-              </ListItemButton>
-              <Collapse in={studentContainer4} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
-                <List component="div" disablePadding>
-                  <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
-                    <ListItemButton >
-                      <ListItemText primary="컨테이너 관리" />
-                    </ListItemButton>
-                    <S.ButtonWrapper>
-                      <S.Button onClick={() => handleVncConnect("http://localhost:5901")}>접속</S.Button>
-                      <S.Button onClick={handleVncDisconnect}>중지</S.Button>
-                    </S.ButtonWrapper>
-                  </ListItem>
-                </List>
-              </Collapse>
+                    <Collapse in={studentContainer2} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+                      <List component="div" disablePadding>
+                        <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
+                          <ListItemButton >
+                            <ListItemText primary="컨테이너 관리" />
+                          </ListItemButton>
+                          <S.ButtonWrapper>
+                            <S.Button onClick={() => handleVncConnect(student.containerIp)}>접속</S.Button>
+                            <S.Button onClick={handleVncDisconnect}>중지</S.Button>
+                          </S.ButtonWrapper>
+                        </ListItem>
+                      </List>
+                    </Collapse>
+                    </Fragment>
+                  )
+                })
+              }
             </List>
           </Collapse></>}
 
@@ -197,26 +234,40 @@ const GroundSidebar = ({ isAdmin, handleVncConnect, handleVncDisconnect }) => {
         </ListItemButton>
         <Collapse in={openAssignment} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
           <List component="div" disablePadding>
-            <ListItemButton onClick={handleAssignmentDetailClick} sx={{ pl: 4 }}>
-              <ListItemText primary="[과제 1 - 주관식] 공격자의 정보 파악하기" />
-              {openAssignmentDetail ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={openAssignmentDetail} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
-              <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemText primary="문제 설명" />
-                </ListItemButton>
-                <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
-                  <div>
-                    <S.HelpText>Wireshark로 공격 패킷 분석하고 Source IP 와 Destination IP 를 구분하는 소스코드를 업로드해주세요. makefile 을 이용해서 build를 해야하고 헤더 파일과 소스 파일 그리고 main 함수를 나눠서 제출하세요 궁금한 사항이 있으면 vground123@gmail.com 으로 메일 보내주시되 소스 코드를 캡쳐하지 마시고 실행 가능한 형태의 파일 .c 형태로 보내주세요</S.HelpText>
-                    <TextField inputProps={{ sx: "color: #F7F7F7" }} fullWidth color="primary" />
-                  </div>
-                  <S.ButtonWrapper>
-                    <S.Button>제출하기</S.Button>
-                  </S.ButtonWrapper>
-                </ListItem>
-              </List>
-            </Collapse>
+            {
+              nQuizList.map((assignment, index)=>{
+                return (
+                  <Fragment>
+                  <ListItemButton onClick={()=>{quizChildrenChecker[index] ? handleQuizChildrenClose(assignment.assignmentId, index) : handleQuizChildrenOpen(assignment.assignmentId, index)}} sx={{ pl: 4 }}>
+                    <ListItemText primary={`[과제 ${index+1} - 주관식] ${assignment.title}`} />
+                    {quizChildrenChecker[index] ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse in={quizChildrenChecker[index]} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+                    <List component="div" disablePadding>
+                      <ListItemButton sx={{ pl: 4 }}>
+                        <ListItemText primary={assignment.description} />
+                      </ListItemButton>
+                      {
+                        quizChildrenChecker[index] ? quizChildrenList[index].questionDetail.questions.map((child)=>{
+                          return (
+                            <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
+                              <div>
+                                <S.HelpText>{child.description}</S.HelpText>
+                                <TextField inputProps={{ sx: "color: #F7F7F7" }} fullWidth color="primary" value={answer} onChange={(e)=>{setAnswer(e.target.value)}} />
+                              </div>
+                              <S.ButtonWrapper>
+                                <S.Button onClick={()=>{handleAnswer(assignment.assignmentId, child.questionId)}}>제출하기</S.Button>
+                              </S.ButtonWrapper>
+                            </ListItem>
+                          )
+                        }) : ''
+                      }
+                    </List>
+                  </Collapse>
+                  </Fragment>
+                )
+              })
+            }
           </List>
         </Collapse>
 

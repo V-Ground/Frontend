@@ -35,3 +35,8 @@ export const Button = styled.button`
   border-radius: 5px;
   cursor: pointer;
 `;
+
+export const BackLink = styled.span`
+  cursor: pointer;
+  padding-top: 3px;
+`;

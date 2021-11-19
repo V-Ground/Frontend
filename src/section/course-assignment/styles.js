@@ -74,5 +74,17 @@ export const Button = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 50px;
+  margin-top: 5px;
+  margin-bottom: 40px;
 `;
+
+export const quizChildrenOpen = styled.button`
+  color: white;
+  cursor: pointer;
+  padding: 2px 10px;
+  font-size: 15px;
+  margin-left: 10px;
+  background: #5094FA;
+  border: none;
+  border-radius: 15px;
+`
