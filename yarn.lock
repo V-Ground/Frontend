@@ -9841,6 +9841,14 @@ react-dom@^17.0.2:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
+react-draggable@^4.4.4:
+  version "4.4.4"
+  resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-4.4.4.tgz#5b26d9996be63d32d285a426f41055de87e59b2f"
+  integrity sha512-6e0WdcNLwpBx/YIDpoyd2Xb04PB0elrDrulKUgdrIlwuYvxh5Ok9M+F8cljm8kPXXs43PmMzek9RrB1b7mLMqA==
+  dependencies:
+    clsx "^1.1.1"
+    prop-types "^15.6.0"
+
 react-dropzone@^10.2.1:
   version "10.2.2"
   resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-10.2.2.tgz#67b4db7459589a42c3b891a82eaf9ade7650b815"
@@ -11449,6 +11457,11 @@ supports-hyperlinks@^2.0.0:
   dependencies:
     has-flag "^4.0.0"
     supports-color "^7.0.0"
+
+swr@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/swr/-/swr-1.1.0.tgz#7710cdbc5ff664c13e41fba6a1fa4734f82aba35"
+  integrity sha512-MFL3mkl752Uap81nLA1tEu7vQmikPamSziW+6dBidYKAo4oLOlUx/x5GZy4ZCkCwfZe2uedylkz1UMGnatUX4g==
 
 symbol-tree@^3.2.2:
   version "3.2.4"

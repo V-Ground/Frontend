@@ -31,6 +31,7 @@
         "notiflix": "^3.2.2",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
+        "react-draggable": "^4.4.4",
         "react-google-login": "^5.2.2",
         "react-infinite-scroll-component": "^6.1.0",
         "react-responsive-carousel": "^3.2.21",
@@ -42,6 +43,7 @@
         "styled-component": "^2.8.0",
         "styled-components": "^5.3.1",
         "summernote": "^0.8.18",
+        "swr": "^1.1.0",
         "yarn": "^1.22.11"
     }
 }
