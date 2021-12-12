@@ -76,12 +76,12 @@ const bashHistoryDummyResult = Array.from({length: 10}, ()=>{return {
 const installedProgramDummyResult = Array.from({length: 40}, ()=>{return {
   "studentId": 1,
   "status": true,
-  "installed": "/home/user",
+  "installPath": "/home/user",
   "version": "2.2.1"
 }}).concat(Array.from({length: 40}, ()=>{return {
   "studentId": 1,
   "status": false,
-  "installed": "",
+  "installPath": "",
   "version": ""
 }}));
 
@@ -169,6 +169,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [bashHistoryResult, setBashHistoryResult] = useState(false);
   const [bashHistoryResultViewMode, setBashHistoryResultViewMode] = useState(6);
   const [bashHistoryMoreResultKeyword, setBashHistoryMoreResultKeyword] = useState('');
+  const [bashHistoryResultList, setBashHistoryResultList] = useState([]);
 
   const [installedProgramDialogOpen, setInstalledProgramDialogOpen] = useState(false);
   const [installedProgramResult, setInstalledProgramResult] = useState(false);
@@ -184,6 +185,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [installedProgramFailStudentMoreSearch, setInstalledProgramFailStudentMoreSearch] = useState('');
   const [installedProgramFailPathMoreSearch, setInstalledProgramFailPathMoreSearch] = useState('');
   const [installedProgramFailVersionMoreSearch, setInstalledProgramFailVersionMoreSearch] = useState('');
+  const [installedProgramResultList, setInstalledProgramResultList] = useState([]);
 
   const [fileSearchDialogOpen, setFileSearchDialogOpen] = useState(false);
   const [fileSearchResult, setFileSearchResult] = useState(false);
@@ -196,6 +198,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [fileSearchFailStudentMoreSearch, setFileSearchFailStudentMoreSearch] = useState('');
   const [fileSearchResultViewMode, setFileSearchResultViewMode] = useState(6);
   const [fileSearchMoreResultKeyword, setFileSearchMoreResultKeyword] = useState('');
+  const [fileSearchResultList, setFileSearchResultList] = useState([]);
 
   const [networkPacketDialogOpen, setNetworkPacketDialogOpen] = useState(false);
   const [networkPacketResult, setNetworkPacketResult] = useState(0);
@@ -226,10 +229,25 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
     setScriptResult(true);
   }
 
+  const handleBashHistory = async() => {
+    try {
+      const result = await axios.post(
+        `/v1/containers/courses/${courseId}/bash_history/non_realtime`, {
+          "studentIds": [1]
+        }
+      );
+      console.log('BASH기록 성공 : ', err);
+      setBashHistoryResultList(result.data);
+      setBashHistoryResult(true);
+    } catch(err) {
+      console.log('BASH기록 에러 : ', err);
+    }
+  }
+
   const handleCommand = async() => {
     try {
       const result = await axios.post(
-        '/v1/containers/courses/1/remote_command', {
+        `/v1/containers/courses/${courseId}/remote_command`, {
           "studentIds": [
               { "studentId": 1 }
           ],
@@ -238,7 +256,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
       );
       console.log('원격명령실행 성공 : ', result.data);
       setCommandResultList(result.data);
-      setCommandResult(true);
+      setCommandResult(2);
     } catch(err) {
       console.log('원격명령실행 에러 : ', err);
     }
@@ -248,12 +266,36 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
     setNetworkPacketResult(2);
   }
 
-  const handleFileSearch = () => {
-    setFileSearchResult(2);
+  const handleFileSearch = async() => {
+    try {
+      const result = await axios.post(
+        `/v1/containers/courses/${courseId}/file`, {
+          "studentIds": [1],
+          "filePath": fileSearchDirectory
+      }
+      );
+      console.log('파일탐색 성공 : ', result.data);
+      setFileSearchResultList(result.data);
+      setFileSearchResult(true);
+    } catch(err) {
+      console.log('파일탐색 에러 : ', err);
+    }
   }
 
-  const handleInstalledProgram = () => {
-    setInstalledProgramResult(2);
+  const handleInstalledProgram = async() => {
+    try {
+      const result = await axios.get(
+        `/v1/containers/courses/${courseId}/installation`, {
+          "studentIds": [1],
+          "programName": installedProgramName
+      }
+      );
+      console.log('설치프로그램 성공 : ', result.data);
+      setInstalledProgramResultList(result.data);
+      setInstalledProgramResult(true);
+    } catch(err) {
+      console.log('설치프로그램 에러 : ', err);
+    }
   }
 
   const handleToggle = (value, nChecked, setnChecked) => () => {
@@ -358,10 +400,6 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   );
 
   const isAdmin = nMe.role=='강사' ? true : false;
-
-  const handleBashHistory = () => {
-    setBashHistoryResult(true);
-  }
 
   const handleStudentListModalOpen = () => {
     setStudentListModalOpen(true);
@@ -739,7 +777,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                   <Grid container className={styles.monitoringResultHeader} justifyContent={'space-between'}>
                     <Grid item xs={9} className={styles.monitoringResultHeaderSearch}>
                       결과 내 검색 <input className={styles.bashHistoryMoreSearchInput} type='text' onChange={(e)=>{setBashHistoryMoreResultKeyword(e.target.value)}} />
-                      {` ( ${bashHistoryDummyResult.filter((item)=>item.history.replaceAll('\n','').includes(bashHistoryMoreResultKeyword)).length} 명 / ${bashHistoryDummyResult.length} 명 )`}
+                      {` ( ${bashHistoryResultList.filter((item)=>item.history.replaceAll('\n',' ').includes(bashHistoryMoreResultKeyword)).length} 명 / ${bashHistoryResultList.length} 명 )`}
                     </Grid>
                     <Grid item xs={3} className={styles.monitoringResultHeaderButton}>
                       <div onClick={()=>{/*api 완성되면 새로고침함수 추가필요*/}} className={styles.monitoringResultHeaderButtonIcon}><CachedIcon/></div>
@@ -749,14 +787,23 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                   </Grid>
                   <Grid container className={styles.monitoringResultBody} spacing={4}>
                     {
-                      bashHistoryDummyResult.filter((item)=>item.history.replaceAll('\n','').includes(bashHistoryMoreResultKeyword)).map((result, index)=>{
+                      bashHistoryResultList.filter((item)=>item.history.replaceAll('\n',' ').includes(bashHistoryMoreResultKeyword)).map((result, index)=>{
                         return(
                         <Grid item xs={bashHistoryResultViewMode}>
                           <div container className={styles.monitoringResultItem}>
                             <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`${index+1}번 학생명 필요`}</Typography></div>
                             <div className={styles.resultItemBody}>
-                              {
+                              {/*
                                 result.history.split('\n').map((line, index)=>{
+                                  return (
+                                    line && index%2==0 ? 
+                                    <div className={styles.resultLine}>{`[${new Date(line).toLocaleDateString()} ${new Date(line).toLocaleTimeString()}]`} <span className={styles.fontBolder}>{`${result.history.split('\n')[index+1]}`}</span></div>
+                                    : ''
+                                  )
+                                })
+                              */}
+                              {
+                                result.fileContent.split('\n').map((line, index)=>{
                                   return (
                                     line && index%2==0 ? 
                                     <div className={styles.resultLine}>{`[${new Date(line).toLocaleDateString()} ${new Date(line).toLocaleTimeString()}]`} <span className={styles.fontBolder}>{`${result.history.split('\n')[index+1]}`}</span></div>
@@ -858,20 +905,20 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                 <Grid container className={styles.successOrFailResultBody} spacing={4}>
                       <Grid item xs={6}>
                         <div container className={styles.successOrFailResultContainer}>
-                          <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`설치 명단 (${installedProgramDummyResult.filter((item)=>item.status).length}/${installedProgramDummyResult.length})`}</Typography></div>
+                          <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`설치 명단 (${installedProgramResultList.filter((item)=>item.status).length}/${installedProgramResultList.length})`}</Typography></div>
                           <div className={styles.successOrFailItemBody}>
                             <Grid container>
                             <Grid item className={styles.successOrFailTableTitle} xs={3}>학생명<input value={installedProgramSuccessStudentMoreSearch} onChange={(e)=>{setInstalledProgramSuccessStudentMoreSearch(e.target.value)}} className={styles.successOrFailMoreSearchInput} type='text' /></Grid>
                             <Grid item className={styles.successOrFailTableTitle} xs={6}>설치경로<input value={installedProgramSuccessPathMoreSearch} onChange={(e)=>{setInstalledProgramSuccessPathMoreSearch(e.target.value)}} className={styles.successOrFailMoreSearchInput} type='text' /></Grid>
                             <Grid item className={styles.successOrFailTableTitle} xs={3}>버전<input value={installedProgramSuccessVersionMoreSearch} onChange={(e)=>{setInstalledProgramSuccessVersionMoreSearch(e.target.value)}} className={styles.successOrFailMoreSearchInput} type='text' /></Grid>
                             {
-                              installedProgramDummyResult.filter((item, index)=>{
-                                return item.status && (`${index+1}번 학생명 필요`).includes(installedProgramSuccessStudentMoreSearch) && item.installed.includes(installedProgramSuccessPathMoreSearch) && item.version.includes(installedProgramSuccessVersionMoreSearch)
+                              installedProgramResultList.filter((item, index)=>{
+                                return item.status && (`${index+1}번 학생명 필요`).includes(installedProgramSuccessStudentMoreSearch) && item.installPath.includes(installedProgramSuccessPathMoreSearch) && item.version.includes(installedProgramSuccessVersionMoreSearch)
                               }).map((student, index)=>{
                                 return(
                                   <Fragment>
                                     <Grid item xs={3} className={styles.successLine}>{`${index+1}번 학생명 필요`}</Grid>
-                                    <Grid item xs={6} className={styles.successLine}><div>{student.installed}</div></Grid>
+                                    <Grid item xs={6} className={styles.successLine}><div>{student.installPath}</div></Grid>
                                     <Grid item xs={3} className={styles.successLine}>{student.version}</Grid>
                                   </Fragment>
                                 )
@@ -883,14 +930,14 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                       </Grid>
                       <Grid item xs={6}>
                         <div container className={styles.successOrFailResultContainer}>
-                          <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`미설치 명단 (${installedProgramDummyResult.filter((item)=>!item.status).length}/${installedProgramDummyResult.length})`}</Typography></div>
+                          <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`미설치 명단 (${installedProgramResultList.filter((item)=>!item.status).length}/${installedProgramResultList.length})`}</Typography></div>
                           <div className={styles.successOrFailItemBody}>
                             <Grid container>
                             <Grid item className={styles.successOrFailTableTitle} xs={3}>학생명<input value={installedProgramFailStudentMoreSearch} onChange={(e)=>{setInstalledProgramFailStudentMoreSearch(e.target.value)}} className={styles.successOrFailMoreSearchInput} type='text' /></Grid>
                             <Grid item className={styles.successOrFailTableTitle} xs={9}>원격 접속<div className={styles.DdemBbangMessage}># 버튼 클릭하여 학생 컨테이너로 이동</div></Grid>
                             {
-                              installedProgramDummyResult.filter((item, index)=>{
-                                return !item.status && (`${index+1}번 학생명 필요`).includes(installedProgramFailStudentMoreSearch) && item.installed.includes(installedProgramFailPathMoreSearch) && item.version.includes(installedProgramFailVersionMoreSearch)
+                              installedProgramResultList.filter((item, index)=>{
+                                return !item.status && (`${index+1}번 학생명 필요`).includes(installedProgramFailStudentMoreSearch) && item.installPath.includes(installedProgramFailPathMoreSearch) && item.version.includes(installedProgramFailVersionMoreSearch)
                               }).map((student, index)=>{
                                 return(
                                   <Fragment>
@@ -964,7 +1011,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                   <Grid container className={styles.monitoringResultHeader} justifyContent={'space-between'}>
                     <Grid item xs={6} className={styles.monitoringResultHeaderSearch}>
                       결과 내 검색 <input className={styles.bashHistoryMoreSearchInput} type='text' onChange={(e)=>{setFileSearchMoreResultKeyword(e.target.value)}} />
-                      {` ( ${fileSearchDummyResult.filter((item)=>item.fileContent.replaceAll('\n','').includes(fileSearchMoreResultKeyword)).length} 명 / ${fileSearchDummyResult.length} 명 )`}
+                      {` ( ${fileSearchResultList.filter((item)=>item.fileContent.replaceAll('\n',' ').includes(fileSearchMoreResultKeyword)).length} 명 / ${fileSearchResultList.length} 명 )`}
                     </Grid>
                     <Grid item xs={3} className={styles.monitoringResultHeaderButton}>
                       <div onClick={()=>{/*api 완성되면 새로고침함수 추가필요*/}} className={styles.monitoringResultHeaderButtonIcon}><CachedIcon/></div>
@@ -974,7 +1021,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                   </Grid>
                   <Grid container className={styles.monitoringResultBody} spacing={4}>
                     {
-                      fileSearchDummyResult.filter((item)=>item.fileContent.replaceAll('\n','').includes(fileSearchMoreResultKeyword)).map((result, index)=>{
+                      fileSearchResultList.filter((item)=>item.fileContent.replaceAll('\n',' ').includes(fileSearchMoreResultKeyword)).map((result, index)=>{
                         return(
                         <Grid item xs={fileSearchResultViewMode}>
                           <div container className={styles.monitoringResultItem}>
@@ -1110,20 +1157,20 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                     <Grid container className={styles.successOrFailResultBody} spacing={4}>
                           <Grid item xs={6}>
                             <div container className={styles.successOrFailResultContainer}>
-                              <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`설치 명단 (${installedProgramDummyResult.filter((item)=>item.status).length}/${installedProgramDummyResult.length})`}</Typography></div>
+                              <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`설치 명단 (${installedProgramResultList.filter((item)=>item.status).length}/${installedProgramResultList.length})`}</Typography></div>
                               <div className={styles.successOrFailItemBody}>
                                 <Grid container>
                                 <Grid item className={styles.successOrFailTableTitle} xs={3}>학생명<input value={installedProgramSuccessStudentMoreSearch} onChange={(e)=>{setInstalledProgramSuccessStudentMoreSearch(e.target.value)}} className={styles.successOrFailMoreSearchInput} type='text' /></Grid>
                                 <Grid item className={styles.successOrFailTableTitle} xs={6}>설치경로<input value={installedProgramSuccessPathMoreSearch} onChange={(e)=>{setInstalledProgramSuccessPathMoreSearch(e.target.value)}} className={styles.successOrFailMoreSearchInput} type='text' /></Grid>
                                 <Grid item className={styles.successOrFailTableTitle} xs={3}>버전<input value={installedProgramSuccessVersionMoreSearch} onChange={(e)=>{setInstalledProgramSuccessVersionMoreSearch(e.target.value)}} className={styles.successOrFailMoreSearchInput} type='text' /></Grid>
                                 {
-                                  installedProgramDummyResult.filter((item, index)=>{
-                                    return item.status && (`${index+1}번 학생명 필요`).includes(installedProgramSuccessStudentMoreSearch) && item.installed.includes(installedProgramSuccessPathMoreSearch) && item.version.includes(installedProgramSuccessVersionMoreSearch)
+                                  installedProgramResultList.filter((item, index)=>{
+                                    return item.status && (`${index+1}번 학생명 필요`).includes(installedProgramSuccessStudentMoreSearch) && item.installPath.includes(installedProgramSuccessPathMoreSearch) && item.version.includes(installedProgramSuccessVersionMoreSearch)
                                   }).map((student, index)=>{
                                     return(
                                       <Fragment>
                                         <Grid item xs={3} className={styles.successLine}>{`${index+1}번 학생명 필요`}</Grid>
-                                        <Grid item xs={6} className={styles.successLine}><div>{student.installed}</div></Grid>
+                                        <Grid item xs={6} className={styles.successLine}><div>{student.installPath}</div></Grid>
                                         <Grid item xs={3} className={styles.successLine}>{student.version}</Grid>
                                       </Fragment>
                                     )
@@ -1135,14 +1182,14 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                           </Grid>
                           <Grid item xs={6}>
                             <div container className={styles.successOrFailResultContainer}>
-                              <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`미설치 명단 (${installedProgramDummyResult.filter((item)=>!item.status).length}/${installedProgramDummyResult.length})`}</Typography></div>
+                              <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`미설치 명단 (${installedProgramResultList.filter((item)=>!item.status).length}/${installedProgramResultList.length})`}</Typography></div>
                               <div className={styles.successOrFailItemBody}>
                                 <Grid container>
                                 <Grid item className={styles.successOrFailTableTitle} xs={3}>학생명<input value={installedProgramFailStudentMoreSearch} onChange={(e)=>{setInstalledProgramFailStudentMoreSearch(e.target.value)}} className={styles.successOrFailMoreSearchInput} type='text' /></Grid>
                                 <Grid item className={styles.successOrFailTableTitle} xs={9}>원격 접속<div className={styles.DdemBbangMessage}># 버튼 클릭하여 학생 컨테이너로 이동</div></Grid>
                                 {
-                                  installedProgramDummyResult.filter((item, index)=>{
-                                    return !item.status && (`${index+1}번 학생명 필요`).includes(installedProgramFailStudentMoreSearch) && item.installed.includes(installedProgramFailPathMoreSearch) && item.version.includes(installedProgramFailVersionMoreSearch)
+                                  installedProgramResultList.filter((item, index)=>{
+                                    return !item.status && (`${index+1}번 학생명 필요`).includes(installedProgramFailStudentMoreSearch) && item.installPath.includes(installedProgramFailPathMoreSearch) && item.version.includes(installedProgramFailVersionMoreSearch)
                                   }).map((student, index)=>{
                                     return(
                                       <Fragment>
@@ -1257,7 +1304,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                     <Grid container className={styles.monitoringResultBody} spacing={4}>
                       {
                         commandResult == 2 ?
-                        commandResultList.filter((item)=>item.commandResult.replaceAll('\n','').includes(commandMoreSearch)).map((result, index)=>{
+                        commandResultList.filter((item)=>item.commandResult.replaceAll('\n',' ').includes(commandMoreSearch)).map((result, index)=>{
                           return(
                           <Grid item xs={fileSearchResultViewMode}>
                             <div container className={styles.monitoringResultItem}>
@@ -1278,7 +1325,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                           )
                         })
                         :
-                        commandResultList.filter((item)=>!item.commandResult.replaceAll('\n','').includes(commandMoreSearch)).map((result, index)=>{
+                        commandResultList.filter((item)=>!item.commandResult.replaceAll('\n',' ').includes(commandMoreSearch)).map((result, index)=>{
                           return(
                           <Grid item xs={fileSearchResultViewMode}>
                             <div container className={styles.monitoringResultItem}>
