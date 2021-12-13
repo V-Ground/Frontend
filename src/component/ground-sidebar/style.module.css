@@ -38,7 +38,7 @@
 }
 
 .monitoringSidebar {
-    background-color: #0D151C;
+    background-color: #0D151C !important;
     padding: 30px;
     padding-top: 130px;
 }
