@@ -16,12 +16,12 @@ const useStyles = makeStyles((theme) => ({
         marginTop: '30px'
     },
     footerLeftButton: {
-        fontSize: '13pt',
+        fontSize: '11pt',
         width: '80px',
         backgroundColor: '#000000',
         color: '#FFFFFF'
     }
-  }));
+}));
 
 export default function Footer() {
     const classes = useStyles();
@@ -61,6 +61,6 @@ export default function Footer() {
                 </Grid>
             </Grid>
         }
-        </>
+    </>
     );
 }

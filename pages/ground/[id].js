@@ -7,14 +7,14 @@ import useSWR from "swr";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
-export default function ground ({nMe, nClassDetail, nStudentList, nQuizList}) {
+export default function ground({ nMe, nClassDetail, nStudentList, nQuizList }) {
   /*const { data, error } = useSWR(
     "http://58.142.191.143:8080/mouse_keyboard/keyboard",
     fetcher
   );*/
 
   const [vnc, setVnc] = useState(false);
-  const [ip, setIp] = useState('http://'+nClassDetail.containerIp);
+  const [ip, setIp] = useState('http://' + nClassDetail.containerIp);
 
   const handleVncConnect = (ip) => {
     setVnc(true);
@@ -44,12 +44,12 @@ export const getServerSideProps = async (ctx) => {
     const cookies = ctx.req.headers.cookie;
     nMe = await axios.get(`/v1/authenticate/me`, {
       headers: {
-          Cookie: cookies
+        Cookie: cookies
       },
-      withCredentials : true
+      withCredentials: true
     });
-  } catch(err) {
-    if(err?.response?.status == 403 || err?.response?.status == 401){
+  } catch (err) {
+    if (err?.response?.status == 403 || err?.response?.status == 401) {
       console.log('로그인 전');
     }
   }
@@ -59,12 +59,12 @@ export const getServerSideProps = async (ctx) => {
     const cookies = ctx.req.headers.cookie;
     nClassDetail = await axios.get(`/v1/users/${nMe.data?.id}/participating`, {
       headers: {
-          Cookie: cookies
+        Cookie: cookies
       },
-      withCredentials : true
+      withCredentials: true
     });
-  } catch(err) {
-    if(err?.response?.status == 403 || err?.response?.status == 401){
+  } catch (err) {
+    if (err?.response?.status == 403 || err?.response?.status == 401) {
       console.log('로그인 전');
     }
   }
@@ -74,12 +74,12 @@ export const getServerSideProps = async (ctx) => {
     const cookies = ctx.req.headers.cookie;
     nQuizList = await axios.get(`/v1/courses/${ctx.query.id}/assignments`, {
       headers: {
-          Cookie: cookies
+        Cookie: cookies
       },
-      withCredentials : true
+      withCredentials: true
     });
-  } catch(err) {
-    if(err?.response?.status == 403 || err?.response?.status == 401){
+  } catch (err) {
+    if (err?.response?.status == 403 || err?.response?.status == 401) {
       console.log('로그인 전');
     }
   }
@@ -89,12 +89,12 @@ export const getServerSideProps = async (ctx) => {
     const cookies = ctx.req.headers.cookie;
     nStudentList = await axios.get(`/v1/users/${nMe.data?.id}/courses/${ctx.query.id}`, {
       headers: {
-          Cookie: cookies
+        Cookie: cookies
       },
-      withCredentials : true
+      withCredentials: true
     });
-  } catch(err) {
-    if(err?.response?.status == 403 || err?.response?.status == 401){
+  } catch (err) {
+    if (err?.response?.status == 403 || err?.response?.status == 401) {
       console.log('로그인 전');
     }
   }
@@ -102,9 +102,9 @@ export const getServerSideProps = async (ctx) => {
   return {
     props: {
       nMe: nMe?.data ? nMe?.data : {},
-      nClassDetail: nClassDetail.data?.course ? nClassDetail.data?.course.filter((item)=>item.courseId==ctx.query.id).map((item)=>{item.thumnailImageUrl="https://cdn.inflearn.com/public/courses/327762/cover/d37b231e-411f-4358-9b28-e3839f79f42b/327762-eng.png";return item;})[0] : {},
+      nClassDetail: nClassDetail.data?.course ? nClassDetail.data?.course.filter((item) => item.courseId == ctx.query.id).map((item) => { item.thumnailImageUrl = "https://cdn.inflearn.com/public/courses/327762/cover/d37b231e-411f-4358-9b28-e3839f79f42b/327762-eng.png"; return item; })[0] : {},
       nQuizList: nQuizList.data ? nQuizList.data : [],
-      nStudentList: nStudentList.data ? nStudentList.data.filter((item)=>nMe.data.id!=item.studentId) : []
+      nStudentList: nStudentList.data ? nStudentList.data.filter((item) => nMe.data.id != item.studentId) : []
       // nMe: {
       //   "email": "teacher1@vground.com",
       //   "password": "teacher1",
@@ -145,5 +145,5 @@ export const getServerSideProps = async (ctx) => {
       // }
       // ]
     }
-}
+  }
 }
