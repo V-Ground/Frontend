@@ -66,6 +66,12 @@
     cursor: pointer;
 }
 
+.monitoringSidebarButton_active {
+    cursor: pointer;
+    color: #fff;
+    font-weight: 700;
+}
+
 .monitoringCategory {
     /* font-family: 'Spoqa Han Sans Neo' !important; */
     font-weight: 700 !important;
@@ -117,6 +123,7 @@
 }
 
 .bashHistoryContainer::-webkit-scrollbar {
+    display: none;
     background-color: #2f353a !important;
 }
 
@@ -312,6 +319,7 @@
 
 .monitoringResultBody::-webkit-scrollbar {
     background-color: #2f353a !important;
+    display: none;
 }
 
 .monitoringResultBody::-webkit-scrollbar-thumb {
@@ -452,15 +460,15 @@
 
 .successLine {
     text-align: center;
-    border-top: 1px solid #686b6d !important;
-    color: #19890C !important;
-    padding: 3px;
+    border-top: 1px solid #242424 !important;
+    color: #ffffff !important;
+    padding: 5px;
 }
 
 .failLine {
     text-align: center;
-    border-top: 1px solid #686b6d !important;
-    color: #CC5555 !important;
+    border-top: 1px solid #242424 !important;
+    color: #ffffff !important;
     padding: 3px;
 }
 
@@ -483,13 +491,15 @@
 }
 
 .DdemBbangMessage {
-    font-size: 13px;
+    font-size: 15px;
     color: #979fa7 !important;
     margin-top: 3px;
 }
 
 .DdemBbangButton {
     padding: 0px !important;
+    color: #5094FA !important;
+    font-weight: 700 !important;
 }
 
 .filePathSearchTitle {
@@ -681,6 +691,24 @@
     cursor: pointer;
 }
 
+.totalOpenButton {
+    color: #5094Fa;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100px;
+    text-align: right;
+    display: inline;
+}
+
+.totalCloseButton {
+    color: #5094Fa;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100px;
+    margin-left: 30px;
+    display: inline;
+}
+
 .viewModeButton {
     margin-right: 50px;
     color: #5094Fa;
@@ -717,6 +745,16 @@
     font-weight: 700;
 }
 
+.resultPercent {
+    display: inline;
+    position: absolute;
+    right: 0px;
+    top: 10px;
+    cursor: pointer;
+    color: #89E034;
+    font-weight: 700;
+}
+
 .logExpandButton {
     display: inline;
     position: absolute;
@@ -731,4 +769,75 @@
     width: 100%;
     background-color: #141618 !important;
     padding-right: 17px;
+}
+
+.successOrFailResultContainer_v2 {
+    background-color: #141618 !important;
+    height: 590px;
+    border-radius: 6px;
+    overflow-y: scroll;
+}
+
+.successOrFailResultContainer_v2::-webkit-scrollbar {
+    display: none;
+}
+
+.installedProgramVersionCheckBox {
+    position: relative;
+    min-height: 40px;
+}
+
+.installedProgramVersionCheck {
+    position: absolute;
+    right: 0px;
+}
+
+.installedProgramVersionSearchInput {
+    margin-right: 10px;
+    background-color: #141618;
+    border: 0px;
+    padding: 5px;
+    color: #fff;
+    width: 98px;
+    font-size: 0.8rem;
+}
+
+.installedProgramUpdownSelect {
+    background-color: #141618;
+    color: #616367;
+    height: 29px;
+    font-size: 0.8rem;
+}
+
+.installedProgramUpdownSelect svg {
+    color: #616367;
+}
+
+.fileSearchConditionBox {
+    background-color: #2E3336;
+    margin: 10px;
+    height: 550px;
+    padding: 7px;
+}
+
+.monitoringResultBody_v2 {
+    padding-top: 0px;
+}
+
+.fileSearchConditionTitle {
+    display: inline;
+    margin-left: 10px;
+}
+
+.fileSearchConditionPercent {
+    display: inline;
+    right: 0px;
+    position: absolute;
+    padding-right: 20px;
+    color: #89E034;
+    font-weight: 700;
+}
+
+.fileSearchConditionTitleItem {
+    position: relative;
 }
