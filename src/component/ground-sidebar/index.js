@@ -149,7 +149,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [questionDescriptionDialog, setQuestionDescriptionDialog] = useState('');
   const [answer, setAnswer] = useState(Array.from({length: nQuizList.length}, ()=>[]));
   const [monitoringModalOpen, setMonitoringModalOpen] = useState(false);
-  const [monitoringCategory, setMonitoringCategory] = useState('BASH 기록');
+  const [monitoringCategory, setMonitoringCategory] = useState('BASH 기록 확인');
 
   const [bashHistoryLive, setBashHistoryLive] = useState(true);
   const [bashHistoryStartYear, setBashHistoryStartYear] = useState(new Date().getFullYear());
@@ -164,16 +164,19 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [bashHistoryEndMinute, setBashHistoryEndMinute] = useState(new Date().getMinutes());
   const [noneBashHistoryStudentList, setNoneBashHistoryStudentList] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [bashHistoryStudentList, setBashHistoryStudentList] = useState([]);
-  const [bashHistoryStudentChecked, setBashHistoryStudentChecked] = useState([]);
+  const [bashHistoryStudentChecked, setBashHistoryStudentChecked] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [studentListModalOpen, setStudentListModalOpen] = useState(false);
   const [bashHistoryResult, setBashHistoryResult] = useState(false);
   const [bashHistoryResultViewMode, setBashHistoryResultViewMode] = useState(6);
   const [bashHistoryMoreResultKeyword, setBashHistoryMoreResultKeyword] = useState('');
   const [bashHistoryResultList, setBashHistoryResultList] = useState([]);
+  const [bashHistoryExcludeKeyword, setBashHistoryExcludeKeyword] = useState('');
+  const [bashHistoryExcludeKeywordList, setBashHistoryExcludeKeywordList] = useState([]);
+  const [bashHistoryExpandCheck, setBashHistoryExpandCheck] = useState([]);
 
   const [installedProgramDialogOpen, setInstalledProgramDialogOpen] = useState(false);
   const [installedProgramResult, setInstalledProgramResult] = useState(false);
-  const [installedProgramStudentChecked, setInstalledProgramStudentChecked] = useState([]);
+  const [installedProgramStudentChecked, setInstalledProgramStudentChecked] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [noneInstalledProgramStudentList, setNoneInstalledProgramStudentList] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [installedProgramStudentList, setInstalledProgramStudentList] = useState([]);
   const [installedProgramType, setInstalledProgramType] = useState(0);
@@ -189,7 +192,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
 
   const [fileSearchDialogOpen, setFileSearchDialogOpen] = useState(false);
   const [fileSearchResult, setFileSearchResult] = useState(false);
-  const [fileSearchStudentChecked, setFileSearchStudentChecked] = useState([]);
+  const [fileSearchStudentChecked, setFileSearchStudentChecked] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [noneFileSearchStudentList, setNoneFileSearchStudentList] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [fileSearchStudentList, setFileSearchStudentList] = useState([]);
   const [fileSearchDirectory, setFileSearchDirectory] = useState('');
@@ -202,14 +205,14 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
 
   const [networkPacketDialogOpen, setNetworkPacketDialogOpen] = useState(false);
   const [networkPacketResult, setNetworkPacketResult] = useState(0);
-  const [networkPacketStudentChecked, setNetworkPacketStudentChecked] = useState([]);
+  const [networkPacketStudentChecked, setNetworkPacketStudentChecked] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [noneNetworkPacketStudentList, setNoneNetworkPacketStudentList] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [networkPacketStudentList, setNetworkPacketStudentList] = useState([]);
   const [networkPacketResultViewMode, setNetworkPacketResultViewMode] = useState(12);
 
   const [commandDialogOpen, setCommandDialogOpen] = useState(0);
   const [commandResult, setCommandResult] = useState(false);
-  const [commandStudentChecked, setCommandStudentChecked] = useState([]);
+  const [commandStudentChecked, setCommandStudentChecked] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [noneCommandStudentList, setNoneCommandStudentList] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [commandStudentList, setCommandStudentList] = useState([]);
   const [commandResultList, setCommandResultList] = useState([]);
@@ -221,7 +224,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
 
   const [scriptDialogOpen, setScriptDialogOpen] = useState(0);
   const [scriptResult, setScriptResult] = useState(false);
-  const [scriptStudentChecked, setScriptStudentChecked] = useState([]);
+  const [scriptStudentChecked, setScriptStudentChecked] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [noneScriptStudentList, setNoneScriptStudentList] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [scriptStudentList, setScriptStudentList] = useState([]);
 
@@ -233,11 +236,13 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
     try {
       const result = await axios.post(
         `/v1/containers/courses/${courseId}/bash_history/non_realtime`, {
-          "studentIds": [1]
+          "studentIds": bashHistoryStudentList.length ? bashHistoryStudentList.map((e)=>nStudentList.filter(item=>item.studentName==e)[0].studentId) : nStudentList.map((student)=>{return student.studentId}),
+          "excludes": [bashHistoryExcludeKeyword]
         }
       );
-      console.log('BASH기록 성공 : ', err);
+      console.log('BASH기록 성공 : ', result.data);
       setBashHistoryResultList(result.data);
+      setBashHistoryExpandCheck(Array.from({length: result.data.length}, ()=>false))
       setBashHistoryResult(true);
     } catch(err) {
       console.log('BASH기록 에러 : ', err);
@@ -248,9 +253,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
     try {
       const result = await axios.post(
         `/v1/containers/courses/${courseId}/remote_command`, {
-          "studentIds": [
-              { "studentId": 1 }
-          ],
+          "studentIds": commandStudentList.length ? commandStudentList.map((e)=>nStudentList.filter(item=>item.studentName==e)[0].studentId) : nStudentList.map((student)=>{return student.studentId}),
           "command": commandString
       }
       );
@@ -270,7 +273,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
     try {
       const result = await axios.post(
         `/v1/containers/courses/${courseId}/file`, {
-          "studentIds": [1],
+          "studentIds": fileSearchStudentList.length ? fileSearchStudentList.map((e)=>nStudentList.filter(item=>item.studentName==e)[0].studentId) : nStudentList.map((student)=>{return student.studentId}),
           "filePath": fileSearchDirectory
       }
       );
@@ -284,9 +287,9 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
 
   const handleInstalledProgram = async() => {
     try {
-      const result = await axios.get(
+      const result = await axios.post(
         `/v1/containers/courses/${courseId}/installation`, {
-          "studentIds": [1],
+          "studentIds": installedProgramStudentList.length ? installedProgramStudentList.map((e)=>nStudentList.filter(item=>item.studentName==e)[0].studentId) : nStudentList.map((student)=>{return student.studentId}),
           "programName": installedProgramName
       }
       );
@@ -333,6 +336,34 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
     setnRight(not(nRight, intersection(nChecked, nRight)));
     setnChecked(not(nChecked, intersection(nChecked, nRight)));
   };
+
+  const handleBashHistoryExcludeKeyword = (value) => {
+    const copyExclueKeywordList = bashHistoryExcludeKeywordList.slice();
+    if (copyExclueKeywordList.findIndex((item)=>item==value)<0) {
+      if (copyExclueKeywordList.length<5) copyExclueKeywordList.push(value); 
+    }
+    setBashHistoryExcludeKeywordList(copyExclueKeywordList);
+  }
+
+  const handleBashHistoryExcludeKeywordDelete = (value, index) => {
+    const copyExclueKeywordList = bashHistoryExcludeKeywordList.slice();
+    if (copyExclueKeywordList.findIndex((item)=>item==value)>=0) {
+      copyExclueKeywordList.splice(index, 1);
+      setBashHistoryExcludeKeywordList(copyExclueKeywordList)
+    };
+  }
+
+  const handleStudentDelete = (value, index, left, setLeft, right, setRight, setChecked) => {
+    const copyStudentList = right.slice();
+    const copyNoneStudentList = left.slice();
+    if (copyStudentList.findIndex((item)=>item==value)>=0) {
+      copyStudentList.splice(index, 1);
+      copyNoneStudentList.push(value);
+      setRight(copyStudentList);
+      setLeft(copyNoneStudentList);
+      setChecked([]);
+    };
+  }
 
   const customList = (title, items, nChecked, setnChecked) => (
     <Card className={styles.studentTransferCard}>
@@ -559,12 +590,12 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   }
 
   const ip = 'http://'+nClassDetail.containerIp;
-  console.log(ip);
 
   return (
     <S.Container>
       <List
         sx={{ width: '100%', color: "#9E9E9E" }}
+        className={styles.sidebarList}
         component="nav"
         aria-labelledby="nested-list-subheader"
         subheader={
@@ -576,9 +607,9 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
         <ListItemButton onClick={() => handleVncConnect(ip)}>
           <ListItemText primary="컨테이너 접속" />
         </ListItemButton>
-        <ListItemButton onClick={handleVncDisconnect}>
+        {/* <ListItemButton onClick={handleVncDisconnect}>
           <ListItemText primary="컨테이너 중지" />
-        </ListItemButton>
+        </ListItemButton> */}
 
         {isAdmin && <> <ListItemButton onClick={handleStudentDetail}>
           <ListItemText primary="학생 관리" />
@@ -599,7 +630,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                     <Fragment>
                     <ListItemButton sx={{ pl: 4 }}>
                       <ListItemText primary={`[학생 ${index+1}] ${student.studentName}`} />
-                      {student.containerStatus ? <ListItemText><Button variant="contained" color='success'> 원격접속 </Button></ListItemText> : <ListItemText><Button variant="outlined" color='error'>접속불가</Button></ListItemText>}
+                      {student.containerStatus ? <ListItemText><Button variant="contained" color='success' onClick={() => handleVncConnect('http://'+student.containerIp)}> 원격접속 </Button></ListItemText> : <ListItemText><Button variant="outlined" className={styles.impossibleButton} color='error' disabled>접속불가</Button></ListItemText>}
                       {student.activity ? <ListItemText className={styles.mouseIcon}><MouseIcon color='primary' /></ListItemText> : <ListItemText className={styles.mouseIcon}><MouseIcon color='disabled' /></ListItemText>}
                       {studentDialogChecker[index] ? <ExpandLess onClick={()=>{handleStudentContainer(index)}} /> : <ExpandMore onClick={()=>{handleStudentContainer(index)}} />}
                     </ListItemButton>
@@ -623,6 +654,9 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
             </List>
           </Collapse></>}
 
+        {
+        !isAdmin &&
+        <Fragment>
         <ListItemButton onClick={handleAssignmentClick}>
           <ListItemText primary="과제 및 실시간 퀴즈" />
           {openAssignment ? <ExpandLess /> : <ExpandMore />}
@@ -665,11 +699,16 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
             }
           </List>
         </Collapse>
+        </Fragment>
+        }
 
-        <ListItemButton onClick={handleMonitoringModalOpen}>
+        {
+          isAdmin &&
+          <ListItemButton onClick={handleMonitoringModalOpen}>
           <ListItemText primary="모니터링" />
           <div className={styles.addIcon} ><AddIcon /></div>
-        </ListItemButton>
+          </ListItemButton>
+        }
 
         {/* <ListItemButton onClick={handleSnapshotClick}>
           <ListItemText primary="스냅샷" />
@@ -744,18 +783,18 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                 <Grid item xs={2} onClick={()=>{setMonitoringCategory('네트워크')}}><SensorsIcon className={styles.monitoringSidebarIcon_network}/> 네트워크</Grid>
                 <Grid item xs={2} onClick={()=>{setMonitoringCategory('원격실행')}}><SettingsEthernetIcon className={styles.monitoringSidebarIcon_command}/> 원격실행</Grid>
                 <Grid item xs={2} onClick={()=>{setMonitoringCategory('과제 및 실시간 퀴즈')}}><CreateIcon className={styles.monitoringSidebarIcon_command}/> 과제 및 실시간 퀴즈</Grid> */}
-                <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('BASH 기록')}}><ManageSearchIcon className={styles.monitoringSidebarIcon_log}/> BASH 기록</Grid>
-                <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('설치 프로그램')}}><ManageSearchIcon className={styles.monitoringSidebarIcon_log}/> 설치 프로그램</Grid>
-                <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('파일 탐색')}}><ManageSearchIcon className={styles.monitoringSidebarIcon_log}/> 파일 탐색</Grid>
-                <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('네트워크 패킷')}}><SensorsIcon className={styles.monitoringSidebarIcon_network}/> 네트워크 패킷</Grid>
-                <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('명령어 실행')}}><SettingsEthernetIcon className={styles.monitoringSidebarIcon_command}/> 명령어 실행</Grid>
+                <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('BASH 기록 확인')}}>{/*<ManageSearchIcon className={styles.monitoringSidebarIcon_log}/>*/} BASH 기록 확인</Grid>
+                <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('프로그램 설치 유무')}}>{/*<ManageSearchIcon className={styles.monitoringSidebarIcon_log}/>*/} 프로그램 설치 유무</Grid>
+                <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('특정 파일 확인')}}>{/*<ManageSearchIcon className={styles.monitoringSidebarIcon_log}/>*/} 특정 파일 확인</Grid>
+                {/* <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('네트워크 패킷')}}><SensorsIcon className={styles.monitoringSidebarIcon_network}/> 네트워크 패킷</Grid> */}
+                <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('원격 명령 실행')}}>{/*<SettingsEthernetIcon className={styles.monitoringSidebarIcon_command}/>*/} 원격 명령 실행</Grid>
                 {/* <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('스크립트 실행')}}><SettingsEthernetIcon className={styles.monitoringSidebarIcon_command}/> 스크립트 실행</Grid>
                 <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('과제 및 실시간 퀴즈')}}><CreateIcon className={styles.monitoringSidebarIcon_command}/> 과제 및 실시간 퀴즈</Grid>
                 <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('O/X 체크')}}><CreateIcon className={styles.monitoringSidebarIcon_command}/> O/X 체크</Grid> */}
               </Grid>
             </Grid>
             <Grid item xs={10} className={styles.monitoringModalItem}>
-              <Typography className={styles.monitoringCategory} variant='h5'>{
+              <Typography className={styles.monitoringCategory} variant='h5'>{/*
                 //monitoringCategory=='로그' ? <ManageSearchIcon className={styles.monitoringItemTitle_log}/> :
                 monitoringCategory=='BASH 기록' ? <ManageSearchIcon className={styles.monitoringItemTitle_log}/> :
                 monitoringCategory=='설치 프로그램' ? <ManageSearchIcon className={styles.monitoringItemTitle_log}/> :
@@ -768,51 +807,82 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                 monitoringCategory=='과제 및 실시간 퀴즈' ? <CreateIcon className={styles.monitoringItemTitle_command}/> :
                 monitoringCategory=='O/X 체크' ? <CreateIcon className={styles.monitoringItemTitle_command}/> :
                 ''
-              } {monitoringCategory}</Typography>
+                || installedProgramResult || fileSearchResult || commandResult
+              */} {
+                monitoringCategory=='BASH 기록 확인' ? bashHistoryResult ? <div><span className={styles.goBackIcon} onClick={()=>{setBashHistoryResult(false);}}>{'< '}</span>{monitoringCategory}</div> : <div>{monitoringCategory}</div> :
+                monitoringCategory=='프로그램 설치 유무' ? installedProgramResult ? <div><span className={styles.goBackIcon} onClick={()=>{setInstalledProgramResult(false);}}>{'<'}</span>{monitoringCategory}</div> : <div>{monitoringCategory}</div> :
+                monitoringCategory=='특정 파일 확인' ? fileSearchResult ? <div><span className={styles.goBackIcon} onClick={()=>{setFileSearchResult(false);}}>{'< '}</span>{monitoringCategory}</div> : <div>{monitoringCategory}</div> :
+                monitoringCategory=='원격 명령 실행' ? commandResult ? <div><span className={styles.goBackIcon} onClick={()=>{setCommandResult(false);}}>{'< '}</span>{monitoringCategory}</div> : <div>{monitoringCategory}</div> :
+                ''
+            }</Typography>
               {
-                monitoringCategory=='BASH 기록' ?
+                monitoringCategory=='BASH 기록 확인' ?
                   bashHistoryResult ?
                   // #평가모듈 - BASH 기록 결과
                   <Fragment>
+                  <Typography className={styles.monitoringSummary_result}>학생이 입력한 Bash 커맨드를 확인할 수 있습니다</Typography>
                   <Grid container className={styles.monitoringResultHeader} justifyContent={'space-between'}>
                     <Grid item xs={9} className={styles.monitoringResultHeaderSearch}>
                       결과 내 검색 <input className={styles.bashHistoryMoreSearchInput} type='text' onChange={(e)=>{setBashHistoryMoreResultKeyword(e.target.value)}} />
-                      {` ( ${bashHistoryResultList.filter((item)=>item.history.replaceAll('\n',' ').includes(bashHistoryMoreResultKeyword)).length} 명 / ${bashHistoryResultList.length} 명 )`}
+                      {` ( ${bashHistoryResultList.filter((item)=>(!item.fileContent && !bashHistoryMoreResultKeyword) || item.fileContent?.replaceAll('\n',' ')?.includes(bashHistoryMoreResultKeyword)).length} 명 / ${bashHistoryResultList.length} 명 )`}
                     </Grid>
-                    <Grid item xs={3} className={styles.monitoringResultHeaderButton}>
-                      <div onClick={()=>{/*api 완성되면 새로고침함수 추가필요*/}} className={styles.monitoringResultHeaderButtonIcon}><CachedIcon/></div>
+                    {/* <Grid item xs={3} className={styles.monitoringResultHeaderButton}>
+                      <div onClick={()=>{handleBashHistory}} className={styles.monitoringResultHeaderButtonIcon}><CachedIcon/></div>
                       <div onClick={()=>{setBashHistoryResult(false)}}>{`검색창 돌아가기`}</div>
                       <div onClick={()=>{setBashHistoryResultViewMode(bashHistoryResultViewMode==6 ? 12 : 6)}}>{`${bashHistoryResultViewMode==6 ? '1' : '2'}개씩 보기`}</div>
-                    </Grid>
+                    </Grid> */}
+                    <div onClick={handleBashHistory} className={styles.reloadButton}>새로고침</div>
+                    <div onClick={()=>{setBashHistoryResultViewMode(bashHistoryResultViewMode==6 ? 12 : 6)}} className={styles.viewModeButton}>{`${bashHistoryResultViewMode==6 ? '1' : '2'}개씩 보기`}</div>
                   </Grid>
                   <Grid container className={styles.monitoringResultBody} spacing={4}>
                     {
-                      bashHistoryResultList.filter((item)=>item.history.replaceAll('\n',' ').includes(bashHistoryMoreResultKeyword)).map((result, index)=>{
+                      bashHistoryResultList.filter((item)=>(!item.fileContent && !bashHistoryMoreResultKeyword) || item.fileContent?.replaceAll('\n',' ')?.includes(bashHistoryMoreResultKeyword)).map((result, index)=>{
                         return(
                         <Grid item xs={bashHistoryResultViewMode}>
-                          <div container className={styles.monitoringResultItem}>
-                            <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`${index+1}번 학생명 필요`}</Typography></div>
+                          {/* <div container className={styles.monitoringResultItem}>
+                            <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`${nStudentList.filter((e)=>e.studentId==result.studentId)[0].studentName}`}</Typography></div>
                             <div className={styles.resultItemBody}>
-                              {/*
-                                result.history.split('\n').map((line, index)=>{
-                                  return (
-                                    line && index%2==0 ? 
-                                    <div className={styles.resultLine}>{`[${new Date(line).toLocaleDateString()} ${new Date(line).toLocaleTimeString()}]`} <span className={styles.fontBolder}>{`${result.history.split('\n')[index+1]}`}</span></div>
-                                    : ''
-                                  )
-                                })
-                              */}
                               {
-                                result.fileContent.split('\n').map((line, index)=>{
+                                result.fileContent && result.fileContent.split('\n').map((line, index)=>{
                                   return (
                                     line && index%2==0 ? 
-                                    <div className={styles.resultLine}>{`[${new Date(line).toLocaleDateString()} ${new Date(line).toLocaleTimeString()}]`} <span className={styles.fontBolder}>{`${result.history.split('\n')[index+1]}`}</span></div>
+                                    <div className={styles.resultLine}>{`[${new Date(line).slice()}]`} <span className={styles.fontBolder}>{`${result.fileContent.split('\n')[index+1]}`}</span></div>
                                     : ''
                                   )
                                 })
                               }
                             </div>
-                          </div>
+                          </div> */}
+                          <Grid container className={bashHistoryExpandCheck[index] ? styles.monitoringResultItem : styles.monitoringResultItem_close}>
+                            <Grid item xs={12} className={styles.resultItemTitle_v2}>
+                              <div>{`[교육생] ${nStudentList.filter((e)=>e.studentId==result.studentId)[0].studentName}`}</div>
+                              <div className={styles.logExpandButton}>{bashHistoryExpandCheck[index] ? <ExpandLess onClick={()=>{
+                                const copyExpandCheck = bashHistoryExpandCheck.slice();
+                                copyExpandCheck[index] = false;
+                                setBashHistoryExpandCheck(copyExpandCheck);
+                              }} /> : <ExpandMore onClick={()=>{
+                                const copyExpandCheck = bashHistoryExpandCheck.slice();
+                                copyExpandCheck[index] = true;
+                                setBashHistoryExpandCheck(copyExpandCheck);
+                              }} />}</div>
+                              <div className={styles.vncConnectButton}>원격접속</div>
+                            </Grid>
+                            {
+                              bashHistoryExpandCheck[index] ?
+                              <div className={styles.resultItemBody_v2}>
+                              {
+                                result.fileContent && result.fileContent.split('\n').map((line, index)=>{
+                                  return (
+                                    line && index%2==0 ? 
+                                    <div className={styles.resultLine_v2}>{`[${line?.slice(11)}] `} <span className={styles.fontBolder}>{`${result.fileContent.split('\n')[index+1]}`}</span></div>
+                                    : ''
+                                  )
+                                })
+                              }
+                            </div>
+                            : ''
+                            }
+                          </Grid>
                         </Grid>
                         )
                       })
@@ -822,10 +892,11 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                   :
                   // #평가모듈 - BASH 기록
                   <Grid container className={styles.monitoringBody} spacing={4}>
-                    <Grid item xs={12}>
-                      <Grid container className={styles.monitoringItem} justifyContent='center'>
-                        <Grid item xs={10} className={styles.itemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{'BASH 기록'}</Typography></Grid>
-                        <Grid item xs={11}>
+                    <Grid item xs={12} style={{paddingTop:'3px'}}>
+                    <Typography className={styles.monitoringSummary}>학생이 입력한 Bash 커맨드를 확인할 수 있습니다</Typography>
+                      <Grid container /*className={styles.monitoringItem}*/ justifyContent='center'>
+                        {/* <Grid item xs={10} className={styles.itemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{'BASH 기록'}</Typography></Grid> */}
+                        <Grid item xs={12}>
                           <Grid container className={styles.bashHistoryContainer} justifyContent={'center'}>
                             {/* <Grid item xs={11}>
                               <Grid container spacing={2}>
@@ -833,57 +904,38 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                                 <Grid item xs={6}><Button onClick={()=>{setBashHistoryLive(false)}} className={bashHistoryLive ? styles.bashHistoryButton_disabled : styles.bashHistoryButton} variant='contained' fullWidth={true}>비실시간</Button></Grid>
                               </Grid>
                             </Grid> */}
-                            <Grid item xs={11}>
-                              <Grid container className={styles.bashHistoryPeriodContainer}>
-                                <Grid item xs={12}><Typography className={styles.bashHistoryPeriodTitle}>검색기간</Typography></Grid>
-                                <Grid item xs={6}>
-                                  <Grid container>
-                                    <Grid item xs={2}>시작일시</Grid>
-                                    <Grid item xs={2}><input className={styles.bashHistoryPeriod} type='text' value={String(bashHistoryStartYear)} onChange={(e)=>{setBashHistoryStartYear(parseInt(e.target.value ? e.target.value : 0))}} />년</Grid>
-                                    <Grid item xs={2}><input className={styles.bashHistoryPeriod} type='text' value={String(bashHistoryStartMonth)} onChange={(e)=>{setBashHistoryStartMonth(parseInt(e.target.value ? e.target.value : 0))}} />월</Grid>
-                                    <Grid item xs={2}><input className={styles.bashHistoryPeriod} type='text' value={String(bashHistoryStartDate)} onChange={(e)=>{setBashHistoryStartDate(parseInt(e.target.value ? e.target.value : 0))}} />일</Grid>
-                                    <Grid item xs={2}><input className={styles.bashHistoryPeriod} type='text' value={String(bashHistoryStartHour)} onChange={(e)=>{setBashHistoryStartHour(parseInt(e.target.value ? e.target.value : 0))}} />시</Grid>
-                                    <Grid item xs={2}><input className={styles.bashHistoryPeriod} type='text' value={String(bashHistoryStartMinute)} onChange={(e)=>{setBashHistoryStartMinute(parseInt(e.target.value ? e.target.value : 0))}} />분</Grid>
-                                    
-                                    <Grid item xs={2}>종료일시</Grid>
-                                    <Grid item xs={2}><input className={styles.bashHistoryPeriod} type='text' value={String(bashHistoryEndYear)} onChange={(e)=>{setBashHistoryEndYear(parseInt(e.target.value ? e.target.value : 0))}} />년</Grid>
-                                    <Grid item xs={2}><input className={styles.bashHistoryPeriod} type='text' value={String(bashHistoryEndMonth)} onChange={(e)=>{setBashHistoryEndMonth(parseInt(e.target.value ? e.target.value : 0))}} />월</Grid>
-                                    <Grid item xs={2}><input className={styles.bashHistoryPeriod} type='text' value={String(bashHistoryEndDate)} onChange={(e)=>{setBashHistoryEndDate(parseInt(e.target.value ? e.target.value : 0))}} />일</Grid>
-                                    <Grid item xs={2}><input className={styles.bashHistoryPeriod} type='text' value={String(bashHistoryEndHour)} onChange={(e)=>{setBashHistoryEndHour(parseInt(e.target.value ? e.target.value : 0))}} />시</Grid>
-                                    <Grid item xs={2}><input className={styles.bashHistoryPeriod} type='text' value={String(bashHistoryEndMinute)} onChange={(e)=>{setBashHistoryEndMinute(parseInt(e.target.value ? e.target.value : 0))}} />분</Grid>
-                                  </Grid>
-                                </Grid>
-                              
-                              </Grid>
-                              <Grid container className={styles.bashHistoryStudentContainer}>
-                                <Grid item xs={2}><Typography className={styles.bashHistoryPeriodTitle}>학생</Typography></Grid> {/* 별도의 선택이 없으면 전체 학생을 대상으로 검색됩니다. */}
-                                <Grid item xs={10} className={styles.bashHistoryStudentSelectItem}><EditIcon className={styles.bashHistoryStudentSelectButton} onClick={handleStudentListModalOpen} /></Grid>
+                            <Grid item xs={12}>
+                              <Grid container className={styles.bashHistoryKeywordContainer} justifyContent={'flex-start'}>
+                                <Grid item xs={12}><Typography className={styles.designedMonitoringBoyTitle/*styles.bashHistoryPeriodTitle*/}>제외 키워드</Typography></Grid>
+                                <Typography className={styles.monitoringSummary}>검색에서 제외할 키워드를 입력하세요 (최대 5개)</Typography>
+                                <Grid item xs={12} textAlign={'left'}>
                                 {
-                                  bashHistoryStudentList.map((student)=>{
+                                  bashHistoryExcludeKeywordList.map((keyword, index)=>{
                                     return (
-                                      <Chip className={styles.studentListChip} label={student} variant="outlined" />
+                                      <Chip className={styles.excludeKeywordListChip} label={keyword} onDelete={()=>handleBashHistoryExcludeKeywordDelete(keyword, index)} />
                                     )
                                   })
                                 }
+                                </Grid>
+                                <Grid item xs={12} textAlign={'left'}><TextField className={styles.bashHistoryExcludeKeyword} size='small' onKeyPress={(e)=>{if(e.code=='Enter') handleBashHistoryExcludeKeyword(e.target.value)}} label="키워드를 입력하세요" variant="outlined" /></Grid>
                               </Grid>
-                              <Grid container className={styles.bashHistoryKeywordContainer}>
-                                <Grid item xs={12}><Typography className={styles.bashHistoryPeriodTitle}>키워드</Typography></Grid>
-                                <Grid item xs={2} className={styles.bashHistoryKeywordSubTitle}><div className={styles.bashHistoryKeywordInputTitle}>포함 키워드 (최대 5개)</div></Grid>
-                                <Grid item xs={2}><input className={styles.bashHistoryKeywordInput} type='text' /></Grid>
-                                <Grid item xs={2}><input className={styles.bashHistoryKeywordInput} type='text' /></Grid>
-                                <Grid item xs={2}><input className={styles.bashHistoryKeywordInput} type='text' /></Grid>
-                                <Grid item xs={2}><input className={styles.bashHistoryKeywordInput} type='text' /></Grid>
-                                <Grid item xs={2}><input className={styles.bashHistoryKeywordInput} type='text' /></Grid>
-                                <Grid item xs={2} className={styles.bashHistoryKeywordSubTitle}><div className={styles.bashHistoryKeywordInputTitle}>제외 키워드 (최대 5개)</div></Grid>
-                                <Grid item xs={2}><input className={styles.bashHistoryKeywordInput} type='text' /></Grid>
-                                <Grid item xs={2}><input className={styles.bashHistoryKeywordInput} type='text' /></Grid>
-                                <Grid item xs={2}><input className={styles.bashHistoryKeywordInput} type='text' /></Grid>
-                                <Grid item xs={2}><input className={styles.bashHistoryKeywordInput} type='text' /></Grid>
-                                <Grid item xs={2}><input className={styles.bashHistoryKeywordInput} type='text' /></Grid>
+                              <Grid container className={styles.bashHistoryStudentContainer}>
+                                <Grid item xs={12}>
+                                  <Typography className={styles.designedMonitoringBoyTitle/*styles.bashHistoryPeriodTitle*/}>조회 대상 학생 선택하기</Typography>
+                                  <Typography className={styles.monitoringSummary}>위의 조건에 따라 로그를 수집할 학생들을 선택하세요</Typography>  
+                                </Grid> {/* 별도의 선택이 없으면 전체 학생을 대상으로 검색됩니다. */}
+                                {
+                                  bashHistoryStudentList.map((student, index)=>{
+                                    return (
+                                      <Chip className={styles.studentListChip} label={student} onDelete={()=>handleStudentDelete(student, index, noneBashHistoryStudentList, setNoneBashHistoryStudentList, bashHistoryStudentList, setBashHistoryStudentList, setBashHistoryStudentChecked)} />
+                                    )
+                                  })
+                                }
+                                <Grid item xs={12} className={styles.bashHistoryStudentSelectItem}><Button className={styles.studentSelectButton} onClick={handleStudentListModalOpen} variant='contained'>선택하기</Button></Grid>
                               </Grid>
-                              <Grid container justifyContent={'center'}>
-                                <Grid item xs={12} className={styles.bashHistorySearch}>
-                                  <Button onClick={handleBashHistory} className={styles.bashHistoryButton} variant='contained' fullWidth={true}>검색</Button>
+                              <Grid container justifyContent={'flex-start'}>
+                                <Grid item xs={1} className={styles.bashHistorySearch}>
+                                  <div className={styles.monitoringSearchButton} onClick={handleBashHistory}>검색</div>
                                 </Grid>
                               </Grid>
                             </Grid>
@@ -892,7 +944,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                       </Grid>
                     </Grid>
                   </Grid>
-                : monitoringCategory=='설치 프로그램' ?
+                : monitoringCategory=='프로그램 설치 유무' ?
                 installedProgramResult ?
                 // #평가모듈 - 설치 프로그램 결과
                 <Fragment>
@@ -913,11 +965,11 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                             <Grid item className={styles.successOrFailTableTitle} xs={3}>버전<input value={installedProgramSuccessVersionMoreSearch} onChange={(e)=>{setInstalledProgramSuccessVersionMoreSearch(e.target.value)}} className={styles.successOrFailMoreSearchInput} type='text' /></Grid>
                             {
                               installedProgramResultList.filter((item, index)=>{
-                                return item.status && (`${index+1}번 학생명 필요`).includes(installedProgramSuccessStudentMoreSearch) && item.installPath.includes(installedProgramSuccessPathMoreSearch) && item.version.includes(installedProgramSuccessVersionMoreSearch)
+                                return item.status && (`${nStudentList.filter((e)=>e.studentId==item.studentId)[0].studentName}`).includes(installedProgramSuccessStudentMoreSearch) && (item.installPath==null || item.installPath.includes(installedProgramSuccessPathMoreSearch)) && (item.version==null || item.version.includes(installedProgramSuccessVersionMoreSearch))
                               }).map((student, index)=>{
                                 return(
                                   <Fragment>
-                                    <Grid item xs={3} className={styles.successLine}>{`${index+1}번 학생명 필요`}</Grid>
+                                    <Grid item xs={3} className={styles.successLine}>{`${nStudentList.filter((e)=>e.studentId==student.studentId)[0].studentName}`}</Grid>
                                     <Grid item xs={6} className={styles.successLine}><div>{student.installPath}</div></Grid>
                                     <Grid item xs={3} className={styles.successLine}>{student.version}</Grid>
                                   </Fragment>
@@ -937,12 +989,12 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                             <Grid item className={styles.successOrFailTableTitle} xs={9}>원격 접속<div className={styles.DdemBbangMessage}># 버튼 클릭하여 학생 컨테이너로 이동</div></Grid>
                             {
                               installedProgramResultList.filter((item, index)=>{
-                                return !item.status && (`${index+1}번 학생명 필요`).includes(installedProgramFailStudentMoreSearch) && item.installPath.includes(installedProgramFailPathMoreSearch) && item.version.includes(installedProgramFailVersionMoreSearch)
+                                return !item.status && (`${nStudentList.filter((e)=>e.studentId==item.studentId)[0].studentName}`).includes(installedProgramFailStudentMoreSearch) 
                               }).map((student, index)=>{
                                 return(
                                   <Fragment>
-                                    <Grid item xs={3} className={styles.failLine}>{`${index+1}번 학생명 필요`}</Grid>
-                                    <Grid item xs={9} className={styles.failLine}><Button color='error' className={styles.DdemBbangButton}>접속하기</Button></Grid>
+                                    <Grid item xs={3} className={styles.failLine}>{`${nStudentList.filter((e)=>e.studentId==student.studentId)[0].studentName}`}</Grid>
+                                    <Grid item xs={9} className={styles.failLine}><Button color='error' onClick={() => handleVncConnect(`http://${nStudentList.filter((e)=>e.studentId==student.studentId)[0].containerIp}`)} className={styles.DdemBbangButton}>접속하기</Button></Grid>
                                   </Fragment>
                                 )
                               })
@@ -956,27 +1008,32 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                 :
                 // #평가모듈 - 설치 프로그램
                 <Grid container className={styles.monitoringBody} spacing={4}>
-                  <Grid item xs={12}>
-                    <Grid container className={styles.monitoringItem} justifyContent='center'>
-                      <Grid item xs={10} className={styles.itemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{'설치 프로그램'}</Typography></Grid>
-                      <Grid item xs={11}>
+                  <Grid item xs={12} style={{paddingTop:'3px'}}>
+                  <Typography className={styles.monitoringSummary}>설치 프로그램의 패키지명을 입력하면 학생별로 특정 프로그램이 설치 되었는지 확인할 수 있습니다.</Typography>
+                  <br/>
+                    <Grid container /*className={styles.monitoringItem}*/ justifyContent='center'>
+                      {/* <Grid item xs={12} className={styles.itemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{'설치 프로그램'}</Typography></Grid> */}
+                      <Grid item xs={12}>
                         <Grid container className={styles.bashHistoryContainer} justifyContent={'center'}>
-                          <Grid item xs={11}>
-                            <Grid container spacing={2} className={styles.installedProgramTypeContainer}>
+                          <Grid item xs={12}>
+                            {/* <Grid container spacing={2} className={styles.installedProgramTypeContainer}>
                               <Grid item xs={12}><Typography className={styles.bashHistoryPeriodTitle}>설치방식</Typography></Grid>
                               <Grid item xs={6}><Button onClick={()=>{setInstalledProgramType(0)}} className={installedProgramType==0 ? styles.bashHistoryButton : styles.bashHistoryButton_disabled} variant='contained' fullWidth={true}>패키지</Button></Grid>
                               <Grid item xs={6}><Button onClick={()=>{setInstalledProgramType(1)}} className={installedProgramType==0 ? styles.bashHistoryButton_disabled : styles.bashHistoryButton} variant='contained' fullWidth={true}>다운로드 받은 설치파일</Button></Grid>
-                            </Grid>
-                            <Grid container className={styles.installedProgramStudentContainer}>
-                              <Grid item xs={2}><Typography className={styles.bashHistoryPeriodTitle}>학생</Typography></Grid>
-                              <Grid item xs={10} className={styles.bashHistoryStudentSelectItem}><EditIcon className={styles.bashHistoryStudentSelectButton} onClick={()=>{setInstalledProgramDialogOpen(true)}} /></Grid>
-                              {
-                                installedProgramStudentList.map((student)=>{
-                                  return (
-                                    <Chip className={styles.studentListChip} label={student} variant="outlined" />
-                                  )
-                                })
-                              }
+                            </Grid> */}
+                            <Grid container className={styles.bashHistoryStudentContainer}>
+                                <Grid item xs={12}>
+                                  <Typography className={styles.designedMonitoringBoyTitle/*styles.bashHistoryPeriodTitle*/}>조회 대상 학생 선택하기</Typography>
+                                  <Typography className={styles.monitoringSummary}>위의 조건에 따라 로그를 수집할 학생들을 선택하세요</Typography>  
+                                </Grid> {/* 별도의 선택이 없으면 전체 학생을 대상으로 검색됩니다. */}
+                                {
+                                  installedProgramStudentList.map((student, index)=>{
+                                    return (
+                                      <Chip className={styles.studentListChip} label={student} onDelete={()=>handleStudentDelete(student, index, noneInstalledProgramStudentList, setNoneInstalledProgramStudentList, installedProgramStudentList, setInstalledProgramStudentList, setInstalledProgramStudentChecked)} />
+                                    )
+                                  })
+                                }
+                                <Grid item xs={12} className={styles.bashHistoryStudentSelectItem}><Button className={styles.studentSelectButton} onClick={()=>{setInstalledProgramDialogOpen(true)}} variant='contained'>선택하기</Button></Grid>
                             </Grid>
                             <Grid container className={styles.bashHistoryKeywordContainer}>
                               <Grid item xs={6} className={styles.installedProgramSearchKeywordContainer}>
@@ -993,8 +1050,8 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                                 ''
                               }
                             </Grid>
-                            <Grid container justifyContent={'center'}>
-                              <Grid item xs={12} className={styles.bashHistorySearch}>
+                            <Grid container justifyContent={'flex-start'}>
+                              <Grid item xs={1} className={styles.bashHistorySearch}>
                                 <Button onClick={handleInstalledProgram} className={styles.bashHistoryButton} variant='contained' fullWidth={true}>검색</Button>
                               </Grid>
                             </Grid>
@@ -1004,14 +1061,14 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                     </Grid>
                   </Grid>
                 </Grid>
-                : monitoringCategory=='파일 탐색' ?
+                : monitoringCategory=='특정 파일 확인' ?
                 fileSearchResult ?
                 // #평가모듈 - 파일 탐색 결과
                 <Fragment>
                   <Grid container className={styles.monitoringResultHeader} justifyContent={'space-between'}>
                     <Grid item xs={6} className={styles.monitoringResultHeaderSearch}>
                       결과 내 검색 <input className={styles.bashHistoryMoreSearchInput} type='text' onChange={(e)=>{setFileSearchMoreResultKeyword(e.target.value)}} />
-                      {` ( ${fileSearchResultList.filter((item)=>item.fileContent.replaceAll('\n',' ').includes(fileSearchMoreResultKeyword)).length} 명 / ${fileSearchResultList.length} 명 )`}
+                      {` ( ${fileSearchResultList.filter((item)=>(!item.fileContent && !fileSearchMoreResultKeyword) || item.fileContent?.replaceAll('\n',' ')?.includes(fileSearchMoreResultKeyword))?.length} 명 / ${fileSearchResultList.length} 명 )`}
                     </Grid>
                     <Grid item xs={3} className={styles.monitoringResultHeaderButton}>
                       <div onClick={()=>{/*api 완성되면 새로고침함수 추가필요*/}} className={styles.monitoringResultHeaderButtonIcon}><CachedIcon/></div>
@@ -1021,14 +1078,14 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                   </Grid>
                   <Grid container className={styles.monitoringResultBody} spacing={4}>
                     {
-                      fileSearchResultList.filter((item)=>item.fileContent.replaceAll('\n',' ').includes(fileSearchMoreResultKeyword)).map((result, index)=>{
+                      fileSearchResultList.filter((item)=>(!item.fileContent && !fileSearchMoreResultKeyword) || item.fileContent?.replaceAll('\n',' ')?.includes(fileSearchMoreResultKeyword)).map((result, index)=>{
                         return(
                         <Grid item xs={fileSearchResultViewMode}>
                           <div container className={styles.monitoringResultItem}>
-                            <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`${index+1}번 학생명 필요`}</Typography></div>
+                            <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`${nStudentList.filter((e)=>e.studentId==result.studentId)[0].studentName}`}</Typography></div>
                             <div className={styles.resultItemBody}>
                               {
-                                result.fileContent.split('\n').map((line, index) => {
+                                result.fileContent && result.fileContent.split('\n').map((line, index) => {
                                   return (
                                     index+1!=result.fileContent.split('\n').length ? 
                                     <div className={styles.resultLine}>{`${index+1}`} <span className={styles.fontBolder}>{`${line}`}</span></div>
@@ -1101,7 +1158,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                           return(
                           <Grid item xs={12}>
                             <div container className={styles.monitoringResultItem}>
-                              <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`${index+1}번 학생명 필요`}</Typography></div>
+                              <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`${nStudentList.filter((e)=>e.studentId==result.studentId)[0].studentName}`}</Typography></div>
                               <div className={styles.resultItemBody}>
                                 <Grid container className={styles.netowrkPacketResultTableTitle_top}>
                                   <Grid item className={styles.successOrFailTableTitle_right} xs={2}></Grid>
@@ -1165,11 +1222,11 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                                 <Grid item className={styles.successOrFailTableTitle} xs={3}>버전<input value={installedProgramSuccessVersionMoreSearch} onChange={(e)=>{setInstalledProgramSuccessVersionMoreSearch(e.target.value)}} className={styles.successOrFailMoreSearchInput} type='text' /></Grid>
                                 {
                                   installedProgramResultList.filter((item, index)=>{
-                                    return item.status && (`${index+1}번 학생명 필요`).includes(installedProgramSuccessStudentMoreSearch) && item.installPath.includes(installedProgramSuccessPathMoreSearch) && item.version.includes(installedProgramSuccessVersionMoreSearch)
+                                    return item.status && (`${nStudentList.filter((e)=>e.studentId==item.studentId)[0].studentName}`).includes(installedProgramSuccessStudentMoreSearch) && item.installPath.includes(installedProgramSuccessPathMoreSearch) && item.version.includes(installedProgramSuccessVersionMoreSearch)
                                   }).map((student, index)=>{
                                     return(
                                       <Fragment>
-                                        <Grid item xs={3} className={styles.successLine}>{`${index+1}번 학생명 필요`}</Grid>
+                                        <Grid item xs={3} className={styles.successLine}>{`${nStudentList.filter((e)=>e.studentId==student.studentId)[0].studentName}`}</Grid>
                                         <Grid item xs={6} className={styles.successLine}><div>{student.installPath}</div></Grid>
                                         <Grid item xs={3} className={styles.successLine}>{student.version}</Grid>
                                       </Fragment>
@@ -1189,11 +1246,11 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                                 <Grid item className={styles.successOrFailTableTitle} xs={9}>원격 접속<div className={styles.DdemBbangMessage}># 버튼 클릭하여 학생 컨테이너로 이동</div></Grid>
                                 {
                                   installedProgramResultList.filter((item, index)=>{
-                                    return !item.status && (`${index+1}번 학생명 필요`).includes(installedProgramFailStudentMoreSearch) && item.installPath.includes(installedProgramFailPathMoreSearch) && item.version.includes(installedProgramFailVersionMoreSearch)
+                                    return !item.status && (`${nStudentList.filter((e)=>e.studentId==item.studentId)[0].studentName}`).includes(installedProgramFailStudentMoreSearch) && item.installPath.includes(installedProgramFailPathMoreSearch) && item.version.includes(installedProgramFailVersionMoreSearch)
                                   }).map((student, index)=>{
                                     return(
                                       <Fragment>
-                                        <Grid item xs={3} className={styles.failLine}>{`${index+1}번 학생명 필요`}</Grid>
+                                        <Grid item xs={3} className={styles.failLine}>{`${nStudentList.filter((e)=>e.studentId==student.studentId)[0].studentName}`}</Grid>
                                         <Grid item xs={9} className={styles.failLine}><Button color='error' className={styles.DdemBbangButton}>접속하기</Button></Grid>
                                       </Fragment>
                                     )
@@ -1285,7 +1342,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                       </Grid>
                     </Grid>
                   </Grid>
-                : monitoringCategory=='명령어 실행' ?
+                : monitoringCategory=='원격 명령 실행' ?
                 commandResult==2 || commandResult==3 ?
                   // #평가모듈 - 명령어 실행 결과
                   <Fragment>
@@ -1304,14 +1361,14 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                     <Grid container className={styles.monitoringResultBody} spacing={4}>
                       {
                         commandResult == 2 ?
-                        commandResultList.filter((item)=>item.commandResult.replaceAll('\n',' ').includes(commandMoreSearch)).map((result, index)=>{
+                        commandResultList.filter((item)=>(!item.commandResult && !commandMoreSearch) || item.commandResult?.replaceAll('\n',' ')?.includes(commandMoreSearch)).map((result, index)=>{
                           return(
                           <Grid item xs={fileSearchResultViewMode}>
                             <div container className={styles.monitoringResultItem}>
-                              <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`${index+1}번 학생명 필요`}</Typography></div>
+                              <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`${nStudentList.filter((e)=>e.studentId==result.studentId)[0].studentName}`}</Typography></div>
                               <div className={styles.resultItemBody}>
                                 {
-                                  result.commandResult.split('\n').map((line, index) => {
+                                  result.commandResult && result.commandResult.split('\n').map((line, index) => {
                                     return (
                                       index+1!=result.commandResult.split('\n').length ? 
                                       <div className={styles.resultLine}>{`${index+1}`} <span className={styles.fontBolder}>{`${line}`}</span></div>
@@ -1325,14 +1382,14 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                           )
                         })
                         :
-                        commandResultList.filter((item)=>!item.commandResult.replaceAll('\n',' ').includes(commandMoreSearch)).map((result, index)=>{
+                        commandResultList.filter((item)=>(!item.commandResult && !commandMoreSearch) || !item.commandResult.replaceAll('\n',' ').includes(commandMoreSearch)).map((result, index)=>{
                           return(
                           <Grid item xs={fileSearchResultViewMode}>
                             <div container className={styles.monitoringResultItem}>
-                              <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`${index+1}번 학생명 필요`}</Typography></div>
+                              <div className={styles.resultItemTitle}><Typography className={styles.monitoringItemTitle} textAlign='center' variant='h6'>{`${nStudentList.filter((e)=>e.studentId==result.studentId)[0].studentName}`}</Typography></div>
                               <div className={styles.resultItemBody}>
                                 {
-                                  result.commandResult.split('\n').map((line, index) => {
+                                  result.commandResult && result.commandResult.split('\n').map((line, index) => {
                                     return (
                                       index+1!=result.commandResult.split('\n').length ? 
                                       <div className={styles.resultLine}>{`${index+1}`} <span className={styles.fontBolder}>{`${line}`}</span></div>

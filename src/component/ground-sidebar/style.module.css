@@ -22,13 +22,14 @@
 
 .monitoringModalCloseIcon {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 15px;
+    right: 15px;
     color: white;
+    cursor: pointer;
 }
 
 .monitoringModalDialog {
-    background-color: #2D3235;
+    background-color: #212526 !important;
     color: white;
     padding: 0px !important;
 }
@@ -38,9 +39,12 @@
 }
 
 .monitoringSidebar {
-    background-color: #0D151C;
+    background-color: #2E3336 !important;
     padding: 30px;
-    padding-top: 130px;
+    /* padding-top: 130px; */
+    color: #93969D;
+    font-size: 16px !important;
+    font-weight: bold;
 }
 
 .monitoringSidebarIcon_log {
@@ -63,29 +67,28 @@
 }
 
 .monitoringCategory {
-    font-family: 'Spoqa Han Sans Neo' !important;
-    font-style: normal;
-    font-weight: 700;
+    /* font-family: 'Spoqa Han Sans Neo' !important; */
+    font-weight: 700 !important;
+    font-size: 20pt !important;
 }
 
 .monitoringBody {
-    padding-top: 30px;
+    margin-top: 0px;
 }
 
 .monitoringItem {
-    background-color: #373F45;
+    background-color: #373F45 !important;
     margin: 10px 0px;
     min-height: 700px;
-    border: 4px solid #414447;
     border-radius: 6px;
 }
 
 .monitoringItemTitle {
-    font-family: 'Spoqa Han Sans Neo' !important;
+    /* font-family: 'Spoqa Han Sans Neo' !important; */
     font-style: normal;
     font-weight: 500;
     padding: 5px 0px;
-    border-bottom: 1px solid #717479;
+    border-bottom: 1px solid #717479 !important;
 }
 
 .monitoringItemTitle_log {
@@ -114,15 +117,15 @@
 }
 
 .bashHistoryContainer::-webkit-scrollbar {
-    background-color: #2f353a;
+    background-color: #2f353a !important;
 }
 
 .bashHistoryContainer::-webkit-scrollbar-thumb {
-    background-color: #1c1f22;
+    background-color: #1c1f22 !important;
 }
 
 .bashHistoryContainer::-webkit-scrollbar-track {
-    background-color: #2f353a;
+    background-color: #2f353a !important;
 }
 
 .itemTitle {
@@ -147,19 +150,19 @@
 
 .bashHistoryPeriod {
     width: 40px;
-    background-color: #52595c;
-    color: #fff;
+    background-color: #52595c !important;
+    color: #fff !important;
     border-width: 0;
     border-radius: 6px;
     margin-right: 3px;
-    text-align: right;
+    text-align: left;
 }
 
 .bashHistoryPeriodTitle {
-    font-family: 'Spoqa Han Sans Neo' !important;
+    /* font-family: 'Spoqa Han Sans Neo' !important; */
     font-style: normal;
-    background-color: #5C5F61;
-    color: #ececec;
+    background-color: #5C5F61 !important;
+    color: #ececec !important;
     width: 90px;
     text-align: center;
     border-radius: 4px;
@@ -174,7 +177,7 @@
 }
 
 .bashHistoryStudentSelectButton {
-    margin: 6px -100px;
+    margin: 3px -60px !important;
     width: 22px;
     height: 22px;
     font-size: 14px;
@@ -195,20 +198,20 @@
 }
 
 .bashHistoryKeywordInput {
-    background-color: #52595c;
-    color: #fff;
+    background-color: #52595c !important;
+    color: #fff !important;
     border-width: 0;
     border-radius: 2px;
-    text-align: right;
+    text-align: left;
     display: block;
     margin-bottom: 5px;
 }
 
 .bashHistoryMoreSearchInput {
     width: 300px;
-    background-color: #52595c;
-    color: #fff;
-    text-align: right;
+    background-color: #141618 !important;
+    color: #fff !important;
+    text-align: left;
     border-width: 0;
     border-radius: 2px;
     margin-left: 4px;
@@ -220,12 +223,12 @@
 }
 
 .studentListDialogContent {
-    background-color: #2D3235;
+    background-color: #2D3235 !important;
     color: white;
 }
 
 .studentListDialogTitle {
-    font-family: 'Spoqa Han Sans Neo' !important;
+    /* font-family: 'Spoqa Han Sans Neo' !important; */
     font-style: normal;
     font-weight: 700;
     display: inline;
@@ -244,54 +247,61 @@
 .studentTransferCard {
     width: 360px;
     height: 540px;
-    background-color: #373F45;
-    border: 4px solid #414447;
+    background-color: #373F45 !important;
+    border: 4px solid #414447 !important;
     border-radius: 6px;
-    color: #fff;
+    color: #fff !important;
 }
 
 .studentTransferList {
     width: 340px;
     height: 500px;
-    background-color: #373F45;
+    background-color: #373F45 !important;
 }
 
 .studentTransferList::-webkit-scrollbar {
-    background-color: #2f353a;
+    background-color: #2f353a !important;
 }
 
 .studentTransferList::-webkit-scrollbar-thumb {
-    background-color: #1c1f22;
+    background-color: #1c1f22 !important;
 }
 
 .studentTransferList::-webkit-scrollbar-track {
-    background-color: #2f353a;
+    background-color: #2f353a !important;
 }
 
 .studentTransferCardHeader {
-    border-bottom: 4px solid #414447;
+    border-bottom: 4px solid #414447 !important;
 }
 
 .studentTransferCheckbox {
-    color: rgb(161, 161, 161);
+    color: rgb(161, 161, 161) !important;
 }
 
 .studentListTransferButton {
-    background-color: #1b1d1f;
+    background-color: #1b1d1f !important;
     color: rgb(161, 161, 161) !important;
 }
 
 .studentListTransferButton:hover {
-    background-color: #1b1d1f;
+    background-color: #1b1d1f !important;
 }
 
 .studentListChip {
-    color: #fff;
     margin: 4px 4px;
+    color: #ffffff;
+    background-color: #616367;
+    border-color: #707070;
+}
+
+.studentListChip svg {
+    color: #ffffff !important;
 }
 
 .monitoringResultHeader {
     margin-top: 10px;
+    margin-bottom: 40px !important;
 }
 
 .monitoringResultBody {
@@ -301,35 +311,34 @@
 }
 
 .monitoringResultBody::-webkit-scrollbar {
-    background-color: #2f353a;
+    background-color: #2f353a !important;
 }
 
 .monitoringResultBody::-webkit-scrollbar-thumb {
-    background-color: #1c1f22;
+    background-color: #1c1f22 !important;
 }
 
 .monitoringResultBody::-webkit-scrollbar-track {
-    background-color: #2f353a;
+    background-color: #2f353a !important;
 }
 
 .monitoringResultItem {
-    background-color: #373F45;
+    background-color: #141618 !important;
     height: 310px;
-    border: 4px solid #414447;
     border-radius: 6px;
     overflow-y: scroll;
 }
 
 .monitoringResultItem::-webkit-scrollbar {
-    background-color: #2f353a;
+    background-color: #2f353a !important;
 }
 
 .monitoringResultItem::-webkit-scrollbar-thumb {
-    background-color: #1c1f22;
+    background-color: #1c1f22 !important;
 }
 
 .monitoringResultItem::-webkit-scrollbar-track {
-    background-color: #2f353a;
+    background-color: #2f353a !important;
 }
 
 .monitoringResultHeaderButton {
@@ -345,9 +354,9 @@
     font-size: 13px;
     margin-left: 20px;
     padding: 10px;
-    border: 1px solid #fff;
+    border: 1px solid #fff !important;
     border-radius: 8px;
-    background-color: #0D151C;
+    background-color: #0D151C !important;
 }
 
 .monitoringResultHeaderButtonIcon svg {
@@ -357,11 +366,11 @@
 
 .fontBolder {
     font-weight: 700;
-    color: #fff;
+    color: #fff !important;
 }
 
 .resultLine {
-    color: #969ca0;
+    color: #969ca0 !important;
     margin: 5px 20px;
 }
 
@@ -380,10 +389,10 @@
 }
 
 .installedProgramSearchTitle {
-    font-family: 'Spoqa Han Sans Neo' !important;
+    /* font-family: 'Spoqa Han Sans Neo' !important; */
     font-style: normal;
-    background-color: #5C5F61;
-    color: #ececec;
+    background-color: #5C5F61 !important;
+    color: #ececec !important;
     width: 120px;
     text-align: center;
     border-radius: 4px;
@@ -397,11 +406,11 @@
 }
 
 .installedProgramKeywordInput {
-    background-color: #52595c;
-    color: #fff;
+    background-color: #52595c !important;
+    color: #fff !important;
     border-width: 0;
     border-radius: 2px;
-    text-align: right;
+    text-align: left;
     width: 300px;
     padding: 4px;
     margin-left: 10px;
@@ -417,23 +426,23 @@
 }
 
 .successOrFailResultContainer {
-    background-color: #373F45;
+    background-color: #373F45 !important;
     height: 680px;
-    border: 4px solid #414447;
+    border: 4px solid #414447 !important;
     border-radius: 6px;
     overflow-y: scroll;
 }
 
 .successOrFailResultContainer::-webkit-scrollbar {
-    background-color: #2f353a;
+    background-color: #2f353a !important;
 }
 
 .successOrFailResultContainer::-webkit-scrollbar-thumb {
-    background-color: #1c1f22;
+    background-color: #1c1f22 !important;
 }
 
 .successOrFailResultContainer::-webkit-scrollbar-track {
-    background-color: #2f353a;
+    background-color: #2f353a !important;
 }
 
 .successOrFailTableTitle {
@@ -443,15 +452,15 @@
 
 .successLine {
     text-align: center;
-    border-top: 1px solid #686b6d;
-    color: #19890C;
+    border-top: 1px solid #686b6d !important;
+    color: #19890C !important;
     padding: 3px;
 }
 
 .failLine {
     text-align: center;
-    border-top: 1px solid #686b6d;
-    color: #CC5555;
+    border-top: 1px solid #686b6d !important;
+    color: #CC5555 !important;
     padding: 3px;
 }
 
@@ -462,8 +471,8 @@
 }
 
 .successOrFailMoreSearchInput {
-    background-color: #52595c;
-    color: #fff;
+    background-color: #52595c !important;
+    color: #fff !important;
     border-width: 0;
     border-radius: 2px;
     text-align: center;
@@ -475,7 +484,7 @@
 
 .DdemBbangMessage {
     font-size: 13px;
-    color: #979fa7;
+    color: #979fa7 !important;
     margin-top: 3px;
 }
 
@@ -484,9 +493,9 @@
 }
 
 .filePathSearchTitle {
-    font-family: 'Spoqa Han Sans Neo' !important;
+    /* font-family: 'Spoqa Han Sans Neo' !important; */
     font-style: normal;
-    background-color: #5C5F61;
+    background-color: #5C5F61 !important;
     color: #ececec;
     width: 200px;
     text-align: center;
@@ -497,11 +506,11 @@
 }
 
 .fileSearchKeywordInput {
-    background-color: #52595c;
-    color: #fff;
+    background-color: #52595c !important;
+    color: #fff !important;
     border-width: 0;
     border-radius: 2px;
-    text-align: center;
+    text-align: left;
     width: 90%;
     margin: 0 auto;
     margin-top: 13px;
@@ -509,31 +518,31 @@
 }
 
 .networkPacketKeywordInput {
-    background-color: #52595c;
-    color: #fff;
+    background-color: #52595c !important;
+    color: #fff !important;
     border-width: 0;
     border-radius: 2px;
-    text-align: right;
+    text-align: left;
     width: 300px;
     margin: 5px 0px;
 }
 
 .networkPacketLengthInput {
-    background-color: #52595c;
-    color: #fff;
+    background-color: #52595c !important;
+    color: #fff !important;
     border-width: 0;
     border-radius: 2px;
-    text-align: right;
+    text-align: left;
     width: 100px;
     margin: 5px 10px;
     padding: 2px;
 }
 
 .networkPacketSearchTitle {
-    font-family: 'Spoqa Han Sans Neo' !important;
+    /* font-family: 'Spoqa Han Sans Neo' !important; */
     font-style: normal;
-    background-color: #5C5F61;
-    color: #ececec;
+    background-color: #5C5F61 !important;
+    color: #ececec !important;
     width: 120px;
     text-align: center;
     border-radius: 4px;
@@ -543,10 +552,10 @@
 }
 
 .networkPacketPeriodTitle {
-    font-family: 'Spoqa Han Sans Neo' !important;
+    /* font-family: 'Spoqa Han Sans Neo' !important; */
     font-style: normal;
-    background-color: #5C5F61;
-    color: #ececec;
+    background-color: #5C5F61 !important;
+    color: #ececec !important;
     width: 90px;
     text-align: center;
     border-radius: 4px;
@@ -557,7 +566,7 @@
 .netowrkPacketResultTableTitle_top {
     text-align: center;
     margin-bottom: 20px;
-    color: #ffffff
+    color: #ffffff !important;
 }
 
 .netowrkPacketResultTableTitle {
@@ -566,7 +575,7 @@
 }
 
 .successOrFailTableTitle_over {
-    background-color: #2f353a;
+    background-color: #2f353a !important;
     width: 95%;
     margin: 0 auto;
 }
@@ -574,29 +583,152 @@
 .successOrFailTableTitle_left {
     text-align: center;
     margin-bottom: 10px;
-    border: 1px solid #949494;
+    border: 1px solid #949494 !important;
 }
 
 .successOrFailTableTitle_right {
     text-align: center;
-    border: 1px solid #949494;
+    border: 1px solid #949494 !important;
 }
 
 .successOrFailTableTitle_right_margin {
     text-align: center;
-    border: 1px solid #949494;
+    border: 1px solid #949494 !important;
     padding-top: 10px;
 }
 
 .commandLengthInput {
-    background-color: #52595c;
-    color: #fff;
+    background-color: #52595c !important;
+    color: #fff !important;
     border-width: 0;
     border-radius: 2px;
-    text-align: right;
+    text-align: left;
     width: 800px;
     margin: 5px 0px;
     height: 150px;
-    padding: 10px;
-    
+    padding: 10px;    
+}
+
+.impossibleButton {
+    color: #ff002f !important;
+    border-color: #ff002f !important;
+}
+
+.sidebarList {
+    overflow-y: scroll;
+}
+
+.sidebarList::-webkit-scrollbar {
+    display: none;
+}
+
+.monitoringSummary {
+    color: #616367;
+    font-size: 12pt;
+}
+
+.designedMonitoringBoyTitle {
+    text-align: left;
+    font-size: 14pt !important;
+    font-weight: bold !important;
+    margin-top: 30px;
+}
+
+.bashHistoryExcludeKeyword * {
+    color: #b7bac0 !important;
+    border-color: #b7bac0 !important;
+}
+
+.bashHistoryExcludeKeyword {
+    margin-top: 15px;
+}
+
+.excludeKeywordListChip {
+    margin: 4px 4px;
+    color: #ffffff;
+    background-color: #616367;
+    border-color: #707070;
+}
+
+.excludeKeywordListChip svg {
+    color: #ffffff !important;
+}
+
+.studentSelectButton {
+    margin-top: 10px;
+    background-color: #5094FA !important;
+    /* box-shadow: 0px 3px 22px rgba(0, 0, 0, 0.16) !important; */
+}
+
+.monitoringSearchButton {
+    cursor: pointer;
+    color: #5094FA;
+    text-align: left;
+    font-size: 20px;
+    font-weight: bold;
+    position: absolute;
+    bottom: 50px;
+}
+
+.monitoringSummary_result {
+    color: #616367;
+    font-size: 12pt;
+}
+
+.reloadButton {
+    color: #5094Fa;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.viewModeButton {
+    margin-right: 50px;
+    color: #5094Fa;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.resultItemTitle_v2 {
+    margin: 0px 20px;
+    position: sticky;
+    top: 0;
+    background-color: #141618;
+    padding: 10px 0px;
+}
+
+.goBackIcon { 
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 21pt;
+}
+
+.resultLine_v2 {
+    color: #89E034 !important;
+    margin: 5px 20px;
+}
+
+.vncConnectButton {
+    display: inline;
+    position: absolute;
+    right: 0px;
+    top: 10px;
+    cursor: pointer;
+    color: #5094Fa;
+    font-weight: 700;
+}
+
+.logExpandButton {
+    display: inline;
+    position: absolute;
+    right: 70px;
+    top: 10px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.monitoringResultItem_close {
+    border-radius: 6px;
+    width: 100%;
+    background-color: #141618 !important;
+    padding-right: 17px;
 }

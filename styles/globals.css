@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;700&display=swap');
+
+
 html,
 body {
   padding: 0;
@@ -17,5 +20,5 @@ a {
 
 * {
   box-sizing: border-box;
-  font-family: Spoqa Han Sans Neo;
+  font-family: 'Noto Sans KR', sans-serif !important;
 }
