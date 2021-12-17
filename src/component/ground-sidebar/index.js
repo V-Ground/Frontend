@@ -138,7 +138,7 @@ const networkPacketDummyResult = Array.from({length: 40}, ()=>{return {
   }]
 }}));
 
-const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentList, nClassDetail, nQuizList }) => {
+const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentList, nClassDetail, nQuizList, nStatusList }) => {
   const router = useRouter();
   const [openAssignment, setOpenAssignment] = useState(false);
   const [openAssignmentDetail, setOpenAssignmentDetail] = useState(false);
@@ -240,7 +240,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [noneScriptStudentList, setNoneScriptStudentList] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [scriptStudentList, setScriptStudentList] = useState([]);
 
-  const [studentActionList, setStudentActionList] = useState([]);
+  const [studentActionList, setStudentActionList] = useState(nStatusList);
 
   const [quizOrder, setQuizOrder] = useState(0);
   const [quizStandard, setQuizStandard] = useState('');
@@ -251,14 +251,9 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
     console.log(studentActionList);
   }
 
-  useEffect(async()=>{
-    const result = await axios.get(`/v1/courses/${courseId}/task/status`);
-    setStudentActionList(result.data);
-  });
-
   const interval = useRef(null);
   useEffect(()=>{
-      interval.current = setInterval(actionCheck, 1000*10);
+      interval.current = setInterval(actionCheck, 1000*60);
       return () => {
           clearInterval(interval.current)
       }
@@ -695,9 +690,9 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
         <ListItemButton onClick={() => handleVncConnect(ip)}>
           <ListItemText primary="컨테이너 접속" />
         </ListItemButton>
-        {/* <ListItemButton onClick={handleVncDisconnect}>
-          <ListItemText primary="컨테이너 중지" />
-        </ListItemButton> */}
+        <ListItemButton onClick={handleVncDisconnect}>
+          <ListItemText primary="컨테이너 접속중지" />
+        </ListItemButton>
 
         {isAdmin && <> <ListItemButton onClick={handleStudentDetail}>
           <ListItemText primary="학생 관리" />
@@ -709,7 +704,10 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                 <ListItemText primary={``} />
                 <ListItemText primary={`학생명`} />
                 <ListItemText primary={``} />
+                <ListItemText primary={``} />
+                <ListItemText primary={``} />
                 <ListItemText className={styles.studentManagementTitle} primary={`컨테이너`} />
+                <ListItemText primary={``} />
                 <ListItemText primary={`활동감지`} />
               </ListItemButton>
               {
