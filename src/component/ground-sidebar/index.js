@@ -707,19 +707,19 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                 <ListItemText primary={`활동감지`} />
               </ListItemButton>
               {
-                studentActionList[0]?.containerStatus=='RUNNING' && nStudentList.map((student, index)=>{
+                studentActionList.map((student, index)=>{
                   console.log('테스트 중 : ',studentActionList.filter((item)=>item.studentId==student.studentId)[0]);
                   console.log('테스트 중 : ',studentActionList.filter((item)=>item.studentId==student.studentId)[0]?.containerStatus);
                   console.log('테스트 중 : ',studentActionList.filter((item)=>item.studentId==student.studentId)[0]?.containerStatus=='RUNNING');
                   return(
                     <Fragment>
                     <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemText primary={`[학생 ${index+1}] ${student.studentName}`} />
-                      {studentActionList.filter((item)=>item.studentId==student.studentId)[0]?.containerStatus=='RUNNING' ? <ListItemText><Button variant="contained" color='success' onClick={() => {handleVncConnect('http://'+student.containerIp)}}> 원격접속 </Button></ListItemText> : <ListItemText><Button variant="outlined" className={styles.impossibleButton} color='error' disabled>접속불가</Button></ListItemText>}
-                      {student.activity ? <ListItemText className={styles.mouseIcon}><MouseIcon color='primary' /></ListItemText> : <ListItemText className={styles.mouseIcon}><MouseIcon color='disabled' /></ListItemText>}
-                      {studentDialogChecker[index] ? <ExpandLess onClick={()=>{handleStudentContainer(index)}} /> : <ExpandMore onClick={()=>{handleStudentContainer(index)}} />}
+                      <ListItemText primary={`[학생 ${index+1}] ${nStudentList.filter((s)=>s.studentId==student.studentId)[0]?.studentName}`} />
+                      {student.containerStatus=="RUNNING" ? <ListItemText><Button variant="contained" color='success' onClick={() => {handleVncConnect('http://'+nStudentList.filter((s)=>s.studentId==student.studentId)[0]?.containerIp)}}> 원격접속 </Button></ListItemText> : <ListItemText><Button variant="outlined" className={styles.impossibleButton} color='error' disabled>접속불가</Button></ListItemText>}
+                      {student?.activity ? <ListItemText className={styles.mouseIcon}><MouseIcon color='primary' /></ListItemText> : <ListItemText className={styles.mouseIcon}><MouseIcon color='disabled' /></ListItemText>}
+                      {/*studentDialogChecker[index] ? <ExpandLess onClick={()=>{handleStudentContainer(index)}} /> : <ExpandMore onClick={()=>{handleStudentContainer(index)}} />*/}
                     </ListItemButton>
-                    <Collapse in={studentDialogChecker[index]} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+                    {/* <Collapse in={studentDialogChecker[index]} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
                       <List component="div" disablePadding>
                         <ListItem sx={{ pl: 4, display: "flex", flexDirection: "column" }}>
                           <ListItemButton >
@@ -731,7 +731,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                           </S.ButtonWrapper>
                         </ListItem>
                       </List>
-                    </Collapse>
+                    </Collapse> */}
                     </Fragment>
                   )
                 })
