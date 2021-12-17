@@ -1856,9 +1856,12 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                     <Grid item xs={12} style={{paddingTop:'3px'}}>
                       <Typography className={styles.monitoringSummary}>과제 및 실시간 퀴즈의 제출현황을 확인할 수 있습니다</Typography>
                       <br/>
+                      <div style={{textAlign:'right',marginBottom:'10px'}}>
+                      <div className={styles.quizReload} onClick={()=>{handleQuizData()}}>새로고침</div>
                       <div className={styles.createQuiz}><a target='_blank' href={`/assignment/class/${router.query.id}?quizCreate=true`}>퀴즈 생성</a></div>
+                      </div>
                       <div className={styles.monitoringBody_quiz}>
-                        <Grid container justifyContent='flex-start'>
+                        <Grid className={styles.quizResultContainer} container justifyContent='flex-start'>
                           <Grid className={styles.quizResultTable} item xs={1}></Grid>
                           {
                             quizList.length && 
@@ -1917,7 +1920,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                             unknownList.concat(correctList.concat(wrongList))
                           )})*/.map((qs)=>{
                             return (
-                              <Grid container className={styles.quizResultTableBodyContainer} justifyContent='flex-start'>
+                              <Grid container className={`${styles.quizResultTableBodyContainer} ${styles.quizResultContainer}`} justifyContent='flex-start'>
                                 <Grid item className={styles.noAnswer} xs={1}>{nStudentList.filter((s)=>s.studentId==qs.studentId)[0]?.studentName}</Grid>
                                 {
                                   quizList?.map((q,index)=>{
@@ -1941,9 +1944,12 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                 <Grid item xs={12} style={{paddingTop:'3px'}}>
                   <Typography className={styles.monitoringSummary}>학생들의 수업 진행상황을 확인할 수 있습니다</Typography>
                   <br/>
+                  <div style={{textAlign:'right',marginBottom:'10px'}}>
+                  <div className={styles.quizReload} onClick={()=>{handleInteraction()}}>새로고침</div>
                   <div className={styles.createQuiz}><a target='_blank' href={`/assignment/class/${router.query.id}?interactionCreate=true`}>O/X 생성</a></div>
+                  </div>
                   <div className={styles.monitoringBody_quiz}>
-                    <Grid container justifyContent='flex-start'>
+                    <Grid container className={styles.quizResultContainer} justifyContent='flex-start'>
                       <Grid className={styles.quizResultTable} item xs={1}></Grid>
                       {
                         interactionList.map((i)=>{
@@ -2001,7 +2007,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                         unknownList.concat(correctList.concat(wrongList))
                       )})*/.map((qs)=>{
                         return (
-                          <Grid container className={styles.quizResultTableBodyContainer} justifyContent='flex-start'>
+                          <Grid container className={`${styles.quizResultTableBodyContainer} ${styles.quizResultContainer}`} justifyContent='flex-start'>
                             <Grid item className={styles.noAnswer} xs={1}>{nStudentList.filter((s)=>s.studentId==qs.studentId)[0]?.studentName}</Grid>
                             {
                               interactionList?.map((q)=>{

@@ -84,6 +84,22 @@
 
 .monitoringBody_quiz {
     background-color: #2E3336 !important;
+    width: 1200px !important;
+    overflow-x: scroll !important;
+    text-align: center !important;
+    border-radius: 8px !important;
+}
+
+.monitoringBody_quiz::-webkit-scrollbar {
+    background-color: #2f353a !important;
+}
+
+.monitoringBody_quiz::-webkit-scrollbar-thumb {
+    background-color: #1c1f22 !important;
+}
+
+.monitoringBody_quiz::-webkit-scrollbar-track {
+    background-color: #2f353a !important;
 }
 
 .monitoringItem {
@@ -866,11 +882,6 @@
     position: relative !important;
 }
 
-.monitoringBody_quiz {
-    text-align: center !important;
-    border-radius: 8px !important;
-}
-
 .quizResultTable {
     width: 100% !important;
     padding: 10px 0px !important;
@@ -939,10 +950,22 @@
 
 .createQuiz {
     text-align: right !important;
-    padding-bottom: 10px !important;
+    margin-bottom: 20px !important;
+    margin-right: 30px !important;
     color: #5094FA !important;
     font-weight: 700 !important;
     cursor: pointer !important;
+    display: inline !important;
+}
+
+.quizReload {
+    text-align: right !important;
+    margin-bottom: 20px !important;
+    margin-right: 30px !important;
+    color: #5094FA !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    display: inline !important;
 }
 
 .alignQuiz {
@@ -968,4 +991,10 @@
 .interactionCheckbox {
     border-color: #aaaaaa !important;
     color: #aaaaaa !important;
+}
+
+.quizResultContainer {
+    display: -webkit-inline-box !important;
+    flex-wrap: nowrap !important;
+    min-width: 1200px !important;   
 }

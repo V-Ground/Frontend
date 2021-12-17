@@ -79,10 +79,10 @@ export default function CourseMain({ nMe, nClassDetail, nStudentList, nQuizList,
   const [quizTitle, setQuizTitle] = useState('');
 
   const [quizDescription, setQuizDescription] = useState('');
-  const [quizOpen, setQuizOpen] = useState(Date.now());
-  const [quizClose, setQuizClose] = useState(Date.now());
+  const [quizOpen, setQuizOpen] = useState(new Date());
+  const [quizClose, setQuizClose] = useState(new Date());
   const [quizChildrenList, setQuizChildrenList] = useState([{
-    'question': '퀴즈제목',
+    'question': '',
     'description': '',
     'answer': '',
     'score': 0
@@ -93,25 +93,29 @@ export default function CourseMain({ nMe, nClassDetail, nStudentList, nQuizList,
   const [interactionType, setInteractionType] = useState("");
 
   const handleQuiz = async () => {
-    try {
-      const nResult = await axios.post(`/v1/courses/${router.query.id}/assignments`, {
-        'title': quizTitle,
-        'description': quizDescription,
-        'startedAt': quizOpen,
-        'endedAt': quizClose
-      });
-      await axios.post(`/v1/courses/${router.query.id}/assignments/${nResult.data.assignmentId}`, quizChildrenList);
-      //SuccessAlert('과제가 성공적으로 추가되었습니다.');
-      router.reload();
-    } catch (err) {
-      console.log('error :', err)
-      if (err?.response?.status == 403 || err?.response?.status == 401) {
-        FailureAlert('로그인이 필요합니다.');
-      } else {
-        FailureAlert('에러가 발생하였습니다.');
+    if (quizTitle=='' || quizDescription=='' || quizOpen.getTime()==quizClose.getTime()) {
+      FailureAlert(quizTitle=='' ? '퀴즈제목을 입력해주시기 바랍니다.' : quizOpen.getTime()==quizClose.getTime() ? '퀴즈 시작시간과 종료시간이 동일합니다.' : '퀴즈설명을 입력해주시기 바랍니다.');
+    } else {
+      try {
+        const nResult = await axios.post(`/v1/courses/${router.query.id}/assignments`, {
+          'title': quizTitle,
+          'description': quizDescription,
+          'startedAt': quizOpen,
+          'endedAt': quizClose
+        });
+        await axios.post(`/v1/courses/${router.query.id}/assignments/${nResult.data.assignmentId}`, quizChildrenList);
+        //SuccessAlert('과제가 성공적으로 추가되었습니다.');
+        router.replace(`/assignment/class/${router.query.id}`);
+      } catch (err) {
+        console.log('error :', err)
+        if (err?.response?.status == 403 || err?.response?.status == 401) {
+          FailureAlert('로그인이 필요합니다.');
+        } else {
+          FailureAlert('에러가 발생하였습니다.');
+        }
       }
+      setAssignmentModal(false);
     }
-    setAssignmentModal(false);
   }
 
   const handleInteractionSubmit = async () => {
@@ -120,7 +124,7 @@ export default function CourseMain({ nMe, nClassDetail, nStudentList, nQuizList,
         'title': interactionTitle,
         'interactionType': interactionType,
       });
-      router.reload();
+      router.replace(`/assignment/class/${router.query.id}`);
     } catch (err) {
       console.log('error :', err)
       if (err?.response?.status == 403 || err?.response?.status == 401) {
@@ -129,6 +133,17 @@ export default function CourseMain({ nMe, nClassDetail, nStudentList, nQuizList,
         FailureAlert('에러가 발생하였습니다.');
       }
     }
+  }
+
+  const handleQuizChildrenQuestion = (data, index) => {
+    const copyList = quizChildrenList.slice();
+    copyList[index] = {
+      'question': data,
+      'description': quizChildrenList[index].description,
+      'answer': quizChildrenList[index].answer,
+      'score': quizChildrenList[index].score
+    }
+    setQuizChildrenList(copyList);
   }
 
   const handleQuizChildrenDescription = (data, index) => {
@@ -167,7 +182,7 @@ export default function CourseMain({ nMe, nClassDetail, nStudentList, nQuizList,
   const addQuizChildren = () => {
     const copyList = quizChildrenList.slice();
     copyList.push({
-      'question': '퀴즈제목',
+      'question': '',
       'description': '',
       'answer': '',
       'score': 0
@@ -456,9 +471,9 @@ export default function CourseMain({ nMe, nClassDetail, nStudentList, nQuizList,
               quizChildrenList.map((item, index) => {
                 return (
                   <div style={{ width: "100%", display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: "5px" }}>
-                    <TextField sx={{ width: "50%", marginRight: "20px" }} fullWidth label="문제" variant="outlined" value={item.description} onChange={(e) => { handleQuizChildrenDescription(e.target.value, index) }} />
-                    <TextField sx={{ width: "30%", marginRight: "20px" }} fullWidth label="정답" variant="outlined" value={item.answer} onChange={(e) => { handleQuizChildrenAnswer(e.target.value, index) }} />
-                    <TextField sx={{ width: "20%", marginRight: "20px" }} fullWidth label="배점" variant="outlined" value={item.score} onChange={(e) => { handleQuizChildrenScore(e.target.value, index) }} />
+                    <TextField sx={{ width: "50%", marginRight: "20px" }} fullWidth label="문제" variant="outlined" required value={item.question} onChange={(e) => { handleQuizChildrenQuestion(e.target.value, index) }} />
+                    <TextField sx={{ width: "30%", marginRight: "20px" }} fullWidth label="정답" variant="outlined" required value={item.answer} onChange={(e) => { handleQuizChildrenAnswer(e.target.value, index) }} />
+                    <TextField sx={{ width: "20%", marginRight: "20px" }} fullWidth label="배점" variant="outlined" required value={item.score>=0 ? item.score : 0} onChange={(e) => { if (typeof parseInt(e.target.value)=='number') handleQuizChildrenScore(e.target.value, index) }} />
                     {quizChildrenList.length == index + 1 ? <AddCircleOutlineIcon onClick={addQuizChildren} sx={{ color: "green" }} /> : <RemoveCircleOutlineIcon onClick={() => { deleteQuizChildren(index) }} sx={{ color: "red" }} />}
                   </div>
                 )
