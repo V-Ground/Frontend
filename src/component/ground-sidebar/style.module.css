@@ -994,7 +994,9 @@
 }
 
 .quizResultContainer {
+    display: inline-box !important;
     display: -webkit-inline-box !important;
+    display: -moz-inline-box !important;
     flex-wrap: nowrap !important;
     min-width: 1200px !important;   
 }
