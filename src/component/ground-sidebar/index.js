@@ -210,7 +210,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [fileSearchResultList, setFileSearchResultList] = useState([]);
   const [fileSearchExpandCheck, setFileSearchExpandCheck] = useState([]);
 
-  const [insertOption, setInsertOption] = useState(0);
+  const [insertOption, setInsertOption] = useState(1);
   const [insertSelectedFile, setInsertSelectedFile] = useState(null);
 
   const [networkPacketDialogOpen, setNetworkPacketDialogOpen] = useState(false);
@@ -248,10 +248,11 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const actionCheck = async()=>{
     const result = await axios.get(`/v1/courses/${courseId}/task/status`);
     setStudentActionList(result.data);
+    console.log(studentActionList);
   }
   const interval = useRef(null);
   useEffect(()=>{
-      interval.current = setInterval(actionCheck, 1000*60);
+      interval.current = setInterval(actionCheck, 1000*10);
       return () => {
           clearInterval(interval.current)
       }
@@ -1288,7 +1289,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                                   <Typography className={styles.monitoringSummary}>파일이 이미 존재할 경우 해당파일을 덮어쓸 것인지 체크해주세요</Typography>
                                   <input className={styles.fileUpload} type='file' onChange={(e)=>{handleFilePush(e)}} />
                                   <FormGroup className={styles.switchButton}>
-                                    <FormControlLabel control={<Switch defaultChecked checked={insertOption} onChange={()=>{setInsertOption(insertOption ? 0 : 1)}} />} label="덮어쓰기 허용여부" labelPlacement='start' />
+                                    <FormControlLabel control={<Switch defaultChecked checked={insertOption==0} onChange={()=>{setInsertOption(insertOption ? 0 : 1)}} />} label="덮어쓰기 허용여부" labelPlacement='start' />
                                   </FormGroup>
                                 </Grid>
                                 <Grid item xs={12} textAlign={'left'} >
