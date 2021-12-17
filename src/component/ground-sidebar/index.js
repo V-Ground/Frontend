@@ -708,6 +708,9 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
               </ListItemButton>
               {
                 nStudentList.map((student, index)=>{
+                  console.log('테스트 중 : ',studentActionList.filter((item)=>item.studentId==student.studentId)[0]);
+                  console.log('테스트 중 : ',studentActionList.filter((item)=>item.studentId==student.studentId)[0]?.containerStatus);
+                  console.log('테스트 중 : ',studentActionList.filter((item)=>item.studentId==student.studentId)[0]?.containerStatus=='RUNNING');
                   return(
                     <Fragment>
                     <ListItemButton sx={{ pl: 4 }}>
