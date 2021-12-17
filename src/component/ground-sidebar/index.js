@@ -707,7 +707,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                 <ListItemText primary={`활동감지`} />
               </ListItemButton>
               {
-                nStudentList.map((student, index)=>{
+                studentActionList.length && nStudentList.map((student, index)=>{
                   console.log('테스트 중 : ',studentActionList.filter((item)=>item.studentId==student.studentId)[0]);
                   console.log('테스트 중 : ',studentActionList.filter((item)=>item.studentId==student.studentId)[0]?.containerStatus);
                   console.log('테스트 중 : ',studentActionList.filter((item)=>item.studentId==student.studentId)[0]?.containerStatus=='RUNNING');
