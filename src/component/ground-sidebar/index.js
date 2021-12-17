@@ -305,7 +305,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
       const result = await axios.post(
         `/v1/containers/courses/${courseId}/bash_history/non_realtime`, {
           "studentIds": bashHistoryStudentList.length ? bashHistoryStudentList.map((e)=>nStudentList.filter(item=>item.studentName==e)[0].studentId) : nStudentList.map((student)=>{return student.studentId}),
-          "excludes": [bashHistoryExcludeKeyword]
+          "excludes": bashHistoryExcludeKeywordList
         }
       );
       console.log('BASH기록 성공 : ', result.data);
