@@ -34,8 +34,7 @@ export const getServerSideProps = async (ctx) => {
   let nEvaluation = [];
   const imageList = [
     "https://cdn.inflearn.com/public/courses/326750/cover/d7815167-2a01-42c1-aacf-bbd32a3705bc/326750-eng.png",
-    "https://cdn.inflearn.com/public/courses/327762/cover/d37b231e-411f-4358-9b28-e3839f79f42b/327762-eng.png",
-    "https://storage.googleapis.com/static.fastcampus.co.kr/prod/uploads/202107/101320-463/브릿지이미지.png"
+    "https://cdn.inflearn.com/public/courses/327762/cover/d37b231e-411f-4358-9b28-e3839f79f42b/327762-eng.png"
   ]
   try {
     const cookies = ctx.req.headers.cookie;
@@ -53,7 +52,7 @@ export const getServerSideProps = async (ctx) => {
     });
     const getRandomImage = async (item) => {
       return new Promise((resolve, reject)=>{
-        item.thumnailImageUrl = imageList[(Math.floor(Math.random()*3))];
+        item.thumnailImageUrl = imageList[(Math.floor(Math.random()*2))];
         resolve(item);
       })
     }

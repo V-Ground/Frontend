@@ -996,5 +996,12 @@
 .quizResultContainer {
     display: inline-box !important;
     flex-wrap: nowrap !important;
-    min-width: 1200px !important;   
+    min-width: 1200px !important;  
+}
+
+.marginLittle {
+    margin-top: 5px !important;
+    text-align: left !important;
+    font-size: 14pt !important;
+    font-weight: bold !important;
 }

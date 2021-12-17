@@ -361,9 +361,9 @@ export default function CourseMain({ nMe, nClassDetail, nStudentList, nQuizList,
                     <h3>
                       구성원 관리
                     </h3>
-                    <S.Text style={{ cursor: "pointer" }} onClick={handleInvitationOpen}>
+                    {/* <S.Text style={{ cursor: "pointer" }} onClick={handleInvitationOpen}>
                       초대 링크
-                      </S.Text>
+                      </S.Text> */}
                   </S.AdminHeader>
                   <Divider />
                   <S.AdminCourseTitle>수강 중인 학생</S.AdminCourseTitle>

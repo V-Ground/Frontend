@@ -167,8 +167,8 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [bashHistoryEndDate, setBashHistoryEndDate] = useState(new Date().getDate());
   const [bashHistoryEndHour, setBashHistoryEndHour] = useState(new Date().getHours());
   const [bashHistoryEndMinute, setBashHistoryEndMinute] = useState(new Date().getMinutes());
-  const [noneBashHistoryStudentList, setNoneBashHistoryStudentList] = useState(nStudentList.map((student)=>{return student.studentName}));
-  const [bashHistoryStudentList, setBashHistoryStudentList] = useState([]);
+  const [noneBashHistoryStudentList, setNoneBashHistoryStudentList] = useState([]);
+  const [bashHistoryStudentList, setBashHistoryStudentList] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [bashHistoryStudentChecked, setBashHistoryStudentChecked] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [studentListModalOpen, setStudentListModalOpen] = useState(false);
   const [bashHistoryResult, setBashHistoryResult] = useState(false);
@@ -182,8 +182,8 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [installedProgramDialogOpen, setInstalledProgramDialogOpen] = useState(false);
   const [installedProgramResult, setInstalledProgramResult] = useState(false);
   const [installedProgramStudentChecked, setInstalledProgramStudentChecked] = useState(nStudentList.map((student)=>{return student.studentName}));
-  const [noneInstalledProgramStudentList, setNoneInstalledProgramStudentList] = useState(nStudentList.map((student)=>{return student.studentName}));
-  const [installedProgramStudentList, setInstalledProgramStudentList] = useState([]);
+  const [noneInstalledProgramStudentList, setNoneInstalledProgramStudentList] = useState([]);
+  const [installedProgramStudentList, setInstalledProgramStudentList] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [installedProgramType, setInstalledProgramType] = useState(0);
   const [installedProgramRootDirectory, setInstalledProgramRootDirectory] = useState('');
   const [installedProgramName, setInstalledProgramName] = useState('');
@@ -199,8 +199,8 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [fileSearchDialogOpen, setFileSearchDialogOpen] = useState(false);
   const [fileSearchResult, setFileSearchResult] = useState(false);
   const [fileSearchStudentChecked, setFileSearchStudentChecked] = useState(nStudentList.map((student)=>{return student.studentName}));
-  const [noneFileSearchStudentList, setNoneFileSearchStudentList] = useState(nStudentList.map((student)=>{return student.studentName}));
-  const [fileSearchStudentList, setFileSearchStudentList] = useState([]);
+  const [noneFileSearchStudentList, setNoneFileSearchStudentList] = useState([]);
+  const [fileSearchStudentList, setFileSearchStudentList] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [fileSearchDirectory, setFileSearchDirectory] = useState('');
   const [fileSearchSuccessStudentMoreSearch, setFileSearchSuccessStudentMoreSearch] = useState('');
   const [fileSearchSuccessFileMoreSearch, setFileSearchSuccessFileMoreSearch] = useState('');
@@ -223,8 +223,8 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [commandDialogOpen, setCommandDialogOpen] = useState(0);
   const [commandResult, setCommandResult] = useState(false);
   const [commandStudentChecked, setCommandStudentChecked] = useState(nStudentList.map((student)=>{return student.studentName}));
-  const [noneCommandStudentList, setNoneCommandStudentList] = useState(nStudentList.map((student)=>{return student.studentName}));
-  const [commandStudentList, setCommandStudentList] = useState([]);
+  const [noneCommandStudentList, setNoneCommandStudentList] = useState([]);
+  const [commandStudentList, setCommandStudentList] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [commandResultList, setCommandResultList] = useState([]);
   const [commandString, setCommandString] = useState('');
   const [commandType, setCommandType] = useState(0);
@@ -736,7 +736,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
         component="nav"
         aria-labelledby="nested-list-subheader"
         subheader={
-          <ListSubheader component="div" id="nested-list-subheader" sx={{ background: "#2E3336", color: "#9e9e9e", fontSize: "1.2rem", margin: "15px" }}>
+          <ListSubheader component="div" id="nested-list-subheader" sx={{ background: "#2E3336", color: "#9e9e9e", fontSize: "1.4rem", margin: "15px" }}>
             {isAdmin ? `[BoB-강사] 보안제품개발 ${nMe.username}` : `[BoB-교육생] 보안제품개발 ${nMe.username}`}
           </ListSubheader>
         }
@@ -761,8 +761,8 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                 <ListItemText primary={``} />
                 <ListItemText primary={``} />
                 <ListItemText className={styles.studentManagementTitle} primary={`컨테이너`} />
-                <ListItemText primary={``} />
-                <ListItemText primary={`활동감지`} />
+                {/* <ListItemText primary={``} />
+                <ListItemText primary={`활동감지`} /> */}
               </ListItemButton>
               {
                 studentActionList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).map((student, index)=>{
@@ -775,8 +775,11 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                     <Fragment>
                     <ListItemButton sx={{ pl: 4 }}>
                       <ListItemText primary={`[학생 ${index+1}] ${nStudentList.filter((item)=>item.studentId==student.studentId)[0]?.studentName}`} />
+                      <ListItemText primary={``} />
+                      <ListItemText primary={``} />
+                      <ListItemText primary={``} />
                       {student.containerStatus=="RUNNING" ? <ListItemText><Button variant="contained" color='success' onClick={() => {handleVncConnect('http://'+nStudentList.filter((item)=>item.studentId==student.studentId)[0]?.containerIp)}}> 원격접속 </Button></ListItemText> : <ListItemText><Button variant="outlined" className={styles.impossibleButton} color='error' disabled>접속불가</Button></ListItemText>}
-                      {student?.activity ? <ListItemText className={styles.mouseIcon}><MouseIcon color='primary' /></ListItemText> : <ListItemText className={styles.mouseIcon}><MouseIcon color='disabled' /></ListItemText>}
+                      {/*student?.activity ? <ListItemText className={styles.mouseIcon}><MouseIcon color='primary' /></ListItemText> : <ListItemText className={styles.mouseIcon}><MouseIcon color='disabled' /></ListItemText>*/}
                       {/*studentDialogChecker[index] ? <ExpandLess onClick={()=>{handleStudentContainer(index)}} /> : <ExpandMore onClick={()=>{handleStudentContainer(index)}} />*/}
                     </ListItemButton>
                     {/* <Collapse in={studentDialogChecker[index]} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
@@ -1383,7 +1386,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                             </Grid>
                             <Grid container className={styles.bashHistoryStudentContainer}>
                                 <Grid item xs={12}>
-                                  <Typography className={styles.designedMonitoringBoyTitle/*styles.bashHistoryPeriodTitle*/}>조회 대상 학생 선택하기</Typography>
+                                  <Typography className={styles.marginLittle/*styles.bashHistoryPeriodTitle*/}>조회 대상 학생 선택하기</Typography>
                                   <Typography className={styles.monitoringSummary}>위의 조건에 따라 로그를 수집할 학생들을 선택하세요</Typography>  
                                 </Grid> {/* 별도의 선택이 없으면 전체 학생을 대상으로 검색됩니다. */}
                                 {
@@ -1926,7 +1929,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                                       qs.submittedQuestions.findIndex((ql)=>ql.questionId==q.questionId)>=0 ?
                                       <Grid item xs={2} className={qs.submittedQuestions[qs.submittedQuestions.findIndex((ql)=>ql.questionId==q.questionId)].scored>0 ? styles.correctAnswer : styles.wrongAnswer}>{qs.submittedQuestions[qs.submittedQuestions.findIndex((ql)=>ql.questionId==q.questionId)].submittedAnswer}</Grid>
                                       :
-                                      <Grid item xs={2} className={styles.noAnswer}>{''}</Grid>
+                                      <Grid item xs={2} className={styles.noAnswer}>{'미제출'}</Grid>
                                     )
                                   })
                                 }

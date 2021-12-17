@@ -52,9 +52,9 @@ const CourseHeader = ({ isAdmin, title, instructor, thumnailImageUrl, containerS
           </div>
           <S.ContainerButtons>
             <S.Button onClick={handleClick}>클래스 입장</S.Button>
-            <S.Button onClick={handleInstanceStart}>인스턴스 시작</S.Button>
+            {/*<S.Button onClick={handleInstanceStart}>인스턴스 시작</S.Button>
             <S.Button onClick={handleInstanceStop}>인스턴스 중지</S.Button>
-            {isAdmin && <S.Button onClick={handleInstanceStopAll} style={{ background: "#FA5050", width: "140px" }}>모든 인스턴스 중지</S.Button>}
+            {isAdmin && <S.Button onClick={handleInstanceStopAll} style={{ background: "#FA5050", width: "140px" }}>모든 인스턴스 중지</S.Button>}*/}
           </S.ContainerButtons>
         </div>
       </S.Course>
