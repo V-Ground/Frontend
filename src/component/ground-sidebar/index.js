@@ -243,7 +243,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [studentActionList, setStudentActionList] = useState(nStatusList);
 
   const [openInteraction, setOpenInteraction] = useState(false);
-  const [interactionChecker, setInteractionChecker] = useState(useState(Array.from({length: nInteractionList.length}, ()=>false)));
+  const [interactionChecker, setInteractionChecker] = useState(Array.from({length: nInteractionList.length}, ()=>false));
   const [interactionPrevious, setInteractionPrevious] = useState([]);
   const [interactionInput, setInteractionInput] = useState({});
 
@@ -853,12 +853,11 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
           <List component="div" disablePadding>
             {
               nInteractionList.map((interaction, index)=>{
-                console.log(interactionPrevious);
-                console.log(interactionPrevious.filter((i)=>i.interactionId==interaction.interactionId)[0]);
+                console.log(interactionChecker);
                 return (
                   <Fragment>
                   <ListItemButton className={styles.interactionCheckboxContainer} sx={{ pl: 4 }}>
-                    <Checkbox checked={interactionChecker[index]} onChange={(e)=>{handleInteractionCheck(interaction.interactionId, index, interactionChecker[index])}} className={styles.interactionCheckbox} /><ListItemText primary={`${interaction.title}`} />
+                    <Checkbox checked={interactionChecker[index]} onChange={(e)=>{if(!interactionChecker[index]) handleInteractionCheck(interaction.interactionId, index, interactionChecker[index])}} className={styles.interactionCheckbox} /><ListItemText primary={`${interaction.title}`} />
                   </ListItemButton>
                   </Fragment>
                 )
@@ -1872,13 +1871,13 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                                   <Grid container>
                                     <Grid item xs={6}>
                                       <Typography className={styles.oneLineLimit}>참여율</Typography>
-                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPercent}`}>{`${parseInt(quizSubmitList.filter((qs)=>qs.submittedQuestions.findIndex((sq)=>sq.questionId==q.questionId)>=0).length/quizSubmitList.length*100)}%`}</Typography>
-                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPeople}`}>{`(${quizSubmitList.filter((qs)=>qs.submittedQuestions.findIndex((sq)=>sq.questionId==q.questionId)>=0).length}/${quizSubmitList.length}명)`}</Typography>
+                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPercent}`}>{`${parseInt(quizSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).filter((qs)=>qs.submittedQuestions.findIndex((sq)=>sq.questionId==q.questionId)>=0).length/quizSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).length*100)}%`}</Typography>
+                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPeople}`}>{`(${quizSubmitList.filter((qs)=>qs.submittedQuestions.findIndex((sq)=>sq.questionId==q.questionId)>=0).length}/${quizSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).length}명)`}</Typography>
                                     </Grid>
                                     <Grid item xs={6}>
                                       <Typography className={styles.oneLineLimit}>정답율</Typography>
-                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPercent}`}>{`${parseInt(quizSubmitList.filter((qs)=>qs.submittedQuestions.findIndex((sq)=>sq.questionId==q.questionId&&sq.scored>0)>=0).length/quizSubmitList.length*100)}%`}</Typography>
-                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPeople}`}>{`(${quizSubmitList.filter((qs)=>qs.submittedQuestions.findIndex((sq)=>sq.questionId==q.questionId&&sq.scored>0)>=0).length}/${quizSubmitList.length}명)`}</Typography>
+                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPercent}`}>{`${parseInt(quizSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).filter((qs)=>qs.submittedQuestions.findIndex((sq)=>sq.questionId==q.questionId&&sq.scored>0)>=0).length/quizSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).length*100)}%`}</Typography>
+                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPeople}`}>{`(${quizSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).filter((qs)=>qs.submittedQuestions.findIndex((sq)=>sq.questionId==q.questionId&&sq.scored>0)>=0).length}/${quizSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).length}명)`}</Typography>
                                     </Grid>
                                   </Grid>
                                 </Grid>
@@ -1905,7 +1904,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                           }
                         </Grid> */}
                         {
-                          quizSubmitList/*.map((nqs, index)=>{
+                          quizSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId))/*.map((nqs, index)=>{
                           const correctList = quizSubmitList.filter((nqs)=>nqs.submittedQuestions.filter((a)=>a.question==quizStandard)[0]?.scored==1);
                           const wrongList = quizSubmitList.filter((nqs)=>nqs.submittedQuestions.filter((a)=>a.question==quizStandard)[0]?.scored==0);
                           const unknownList = quizSubmitList.filter((nqs)=>nqs.submittedQuestions.findIndex((a)=>a.question==quizStandard)<0);
@@ -1959,13 +1958,13 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                               <Grid container>
                                 <Grid item xs={6}>
                                   <Typography className={styles.oneLineLimit}>참여율</Typography>
-                                  <Typography className={`${styles.oneLineLimit} ${styles.questionResultPercent}`}>{`${parseInt(interactionSubmitList.filter((qs)=>qs.submittedInteractions.findIndex((sq)=>sq.interactionId==i.interactionId)>=0).length/interactionSubmitList.length*100)}%`}</Typography>
-                                  <Typography className={`${styles.oneLineLimit} ${styles.questionResultPeople}`}>{`(${interactionSubmitList.filter((qs)=>qs.submittedInteractions.findIndex((sq)=>sq.interactionId==i.interactionId)>=0).length}/${interactionSubmitList.length}명)`}</Typography>
+                                  <Typography className={`${styles.oneLineLimit} ${styles.questionResultPercent}`}>{`${parseInt(interactionSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).filter((qs)=>qs.submittedInteractions.findIndex((sq)=>sq.interactionId==i.interactionId)>=0).length/interactionSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).length*100)}%`}</Typography>
+                                  <Typography className={`${styles.oneLineLimit} ${styles.questionResultPeople}`}>{`(${interactionSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).filter((qs)=>qs.submittedInteractions.findIndex((sq)=>sq.interactionId==i.interactionId)>=0).length}/${interactionSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).length}명)`}</Typography>
                                 </Grid>
                                 <Grid item xs={6}>
                                   <Typography className={styles.oneLineLimit}>O비율</Typography>
-                                  <Typography className={`${styles.oneLineLimit} ${styles.questionResultPercent}`}>{`${parseInt(interactionSubmitList.filter((qs)=>qs.submittedInteractions.findIndex((sq)=>sq.interactionId==i.interactionId&&sq.yesNo)>=0).length/interactionSubmitList.length*100)}%`}</Typography>
-                                  <Typography className={`${styles.oneLineLimit} ${styles.questionResultPeople}`}>{`(${interactionSubmitList.filter((qs)=>qs.submittedInteractions.findIndex((sq)=>sq.interactionId==i.interactionId&&sq.yesNo)>=0).length}/${interactionSubmitList.length}명)`}</Typography>
+                                  <Typography className={`${styles.oneLineLimit} ${styles.questionResultPercent}`}>{`${parseInt(interactionSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).filter((qs)=>qs.submittedInteractions.findIndex((sq)=>sq.interactionId==i.interactionId&&sq.yesNo)>=0).length/interactionSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).length*100)}%`}</Typography>
+                                  <Typography className={`${styles.oneLineLimit} ${styles.questionResultPeople}`}>{`(${interactionSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).filter((qs)=>qs.submittedInteractions.findIndex((sq)=>sq.interactionId==i.interactionId&&sq.yesNo)>=0).length}/${interactionSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).length}명)`}</Typography>
                                 </Grid>
                               </Grid>
                             </Grid>
@@ -1992,7 +1991,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                       }
                     </Grid> */}
                     {
-                      interactionSubmitList/*.map((nqs, index)=>{
+                      interactionSubmitList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId))/*.map((nqs, index)=>{
                       const correctList = quizSubmitList.filter((nqs)=>nqs.submittedQuestions.filter((a)=>a.question==quizStandard)[0]?.scored==1);
                       const wrongList = quizSubmitList.filter((nqs)=>nqs.submittedQuestions.filter((a)=>a.question==quizStandard)[0]?.scored==0);
                       const unknownList = quizSubmitList.filter((nqs)=>nqs.submittedQuestions.findIndex((a)=>a.question==quizStandard)<0);
@@ -2015,7 +2014,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                                   qs.submittedInteractions.findIndex((ql)=>ql.interactionId==q.interactionId)>=0 ?
                                   <Grid item xs={2} className={qs.submittedInteractions[qs.submittedInteractions.findIndex((ql)=>ql.interactionId==q.interactionId)].yesNo ? styles.interactionO : styles.interactionX}>{qs.submittedInteractions[qs.submittedInteractions.findIndex((ql)=>ql.interactionId==q.interactionId)].yesNo ? 'O' : 'X'}</Grid>
                                   :
-                                  <Grid item xs={2} className={styles.noAnswer}>{''}</Grid>
+                                  <Grid item xs={2} className={styles.interactionX}>{'X'}</Grid>
                                 )
                               })
                             }
