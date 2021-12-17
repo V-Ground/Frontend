@@ -1023,7 +1023,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                           </div> */}
                           <Grid container className={bashHistoryExpandCheck[index] ? styles.monitoringResultItem : styles.monitoringResultItem_close}>
                             <Grid item xs={12} className={styles.resultItemTitle_v2}>
-                              <div>{`[교육생] ${nStudentList.filter((e)=>e.studentId==result.studentId)[0].studentName}`}</div>
+                              <div>{`[교육생] ${nStudentList.filter((e)=>e.studentId==result.studentId)[0]?.studentName}`}</div>
                               <div className={styles.logExpandButton}>{bashHistoryExpandCheck[index] ? <ExpandLess onClick={()=>{
                                 const copyExpandCheck = bashHistoryExpandCheck.slice();
                                 copyExpandCheck[index] = false;
@@ -1033,7 +1033,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                                 copyExpandCheck[index] = true;
                                 setBashHistoryExpandCheck(copyExpandCheck);
                               }} />}</div>
-                              <div className={styles.vncConnectButton} onClick={() => {handleVncConnect('http://'+nStudentList.filter((e)=>e.studentId==result.studentId)[0].containerIp);setMonitoringModalOpen(false);}}>원격접속</div>
+                              <div className={styles.vncConnectButton} onClick={() => {handleVncConnect('http://'+nStudentList.filter((e)=>e.studentId==result.studentId)[0]?.containerIp);setMonitoringModalOpen(false);}}>원격접속</div>
                             </Grid>
                             {
                               bashHistoryExpandCheck[index] ?
