@@ -250,6 +250,12 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
     setStudentActionList(result.data);
     console.log(studentActionList);
   }
+
+  useEffect(async()=>{
+    const result = await axios.get(`/v1/courses/${courseId}/task/status`);
+    setStudentActionList(result.data);
+  });
+
   const interval = useRef(null);
   useEffect(()=>{
       interval.current = setInterval(actionCheck, 1000*10);
@@ -708,6 +714,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
               </ListItemButton>
               {
                 studentActionList.filter((student)=>nStudentList.map((item)=>{return item.studentId}).includes(student.studentId)).map((student, index)=>{
+                  console.log('테스트 중 : ',studentActionList);
                   console.log('테스트 중 : ',nStudentList);
                   console.log('테스트 중 : ',nStudentList.filter((item)=>item.studentId==student.studentId)[0]);
                   console.log('테스트 중 : ',nStudentList.filter((item)=>item.studentId==student.studentId)[0]?.studentName);
