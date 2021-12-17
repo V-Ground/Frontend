@@ -1920,18 +1920,11 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                               <Grid container className={styles.quizResultTableBodyContainer} justifyContent='flex-start'>
                                 <Grid item className={styles.noAnswer} xs={1}>{nStudentList.filter((s)=>s.studentId==qs.studentId)[0]?.studentName}</Grid>
                                 {
-                                  qs.submittedQuestions?.map((q)=>{
+                                  quizList?.map((q,index)=>{
                                     return (
-                                      quizList.findIndex((ql)=>ql.questionId==q.questionId)>=0 ?
-                                      <Grid item xs={2} className={q.scored>0 ? styles.correctAnswer : styles.wrongAnswer}>{q.submittedAnswer}</Grid>
+                                      qs.submittedQuestions.findIndex((ql)=>ql.questionId==q.questionId)>=0 ?
+                                      <Grid item xs={2} className={qs.submittedQuestions[qs.submittedQuestions.findIndex((ql)=>ql.questionId==q.questionId)].scored>0 ? styles.correctAnswer : styles.wrongAnswer}>{qs.submittedQuestions[qs.submittedQuestions.findIndex((ql)=>ql.questionId==q.questionId)].submittedAnswer}</Grid>
                                       :
-                                      <Grid item xs={2} className={styles.noAnswer}>{''}</Grid>
-                                    )
-                                  })
-                                }
-                                {
-                                  Array.from({length: quizList.length-qs.submittedQuestions.length}, ()=>0).map(()=>{
-                                    return (
                                       <Grid item xs={2} className={styles.noAnswer}>{''}</Grid>
                                     )
                                   })
@@ -2011,18 +2004,11 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                           <Grid container className={styles.quizResultTableBodyContainer} justifyContent='flex-start'>
                             <Grid item className={styles.noAnswer} xs={1}>{nStudentList.filter((s)=>s.studentId==qs.studentId)[0]?.studentName}</Grid>
                             {
-                              qs.submittedInteractions?.map((q)=>{
+                              interactionList?.map((q)=>{
                                 return (
-                                  interactionList.findIndex((ql)=>ql.interactionId==q.interactionId)>=0 ?
-                                  <Grid item xs={2} className={q.yesNo ? styles.interactionO : styles.interactionX}>{q.yesNo ? 'O' : 'X'}</Grid>
+                                  qs.submittedInteractions.findIndex((ql)=>ql.interactionId==q.interactionId)>=0 ?
+                                  <Grid item xs={2} className={qs.submittedInteractions[qs.submittedInteractions.findIndex((ql)=>ql.interactionId==q.interactionId)].yesNo ? styles.interactionO : styles.interactionX}>{qs.submittedInteractions[qs.submittedInteractions.findIndex((ql)=>ql.interactionId==q.interactionId)].yesNo ? 'O' : 'X'}</Grid>
                                   :
-                                  <Grid item xs={2} className={styles.noAnswer}>{''}</Grid>
-                                )
-                              })
-                            }
-                            {
-                              Array.from({length: interactionList.length-qs.submittedInteractions.length}, ()=>0).map(()=>{
-                                return (
                                   <Grid item xs={2} className={styles.noAnswer}>{''}</Grid>
                                 )
                               })
