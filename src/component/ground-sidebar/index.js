@@ -708,14 +708,14 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
               </ListItemButton>
               {
                 studentActionList.map((student, index)=>{
-                  console.log('테스트 중 : ',studentActionList.filter((item)=>item.studentId==student.studentId)[0]);
-                  console.log('테스트 중 : ',studentActionList.filter((item)=>item.studentId==student.studentId)[0]?.containerStatus);
-                  console.log('테스트 중 : ',studentActionList.filter((item)=>item.studentId==student.studentId)[0]?.containerStatus=='RUNNING');
+                  console.log('테스트 중 : ',nStudentList.filter((item)=>item.studentId==student.studentId)[0]);
+                  console.log('테스트 중 : ',nStudentList.filter((item)=>item.studentId==student.studentId)[0]?.containerStatus);
+                  console.log('테스트 중 : ',nStudentList.filter((item)=>item.studentId==student.studentId)[0]?.containerStatus=='RUNNING');
                   return(
                     <Fragment>
                     <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemText primary={`[학생 ${index+1}] ${nStudentList.filter((s)=>s.studentId==student.studentId)[0]?.studentName}`} />
-                      {student.containerStatus=="RUNNING" ? <ListItemText><Button variant="contained" color='success' onClick={() => {handleVncConnect('http://'+nStudentList.filter((s)=>s.studentId==student.studentId)[0]?.containerIp)}}> 원격접속 </Button></ListItemText> : <ListItemText><Button variant="outlined" className={styles.impossibleButton} color='error' disabled>접속불가</Button></ListItemText>}
+                      <ListItemText primary={`[학생 ${index+1}] ${nStudentList.filter((item)=>item.studentId==student.studentId)[0]?.studentName}`} />
+                      {student.containerStatus=="RUNNING" ? <ListItemText><Button variant="contained" color='success' onClick={() => {handleVncConnect('http://'+nStudentList.filter((item)=>item.studentId==student.studentId)[0]?.containerIp)}}> 원격접속 </Button></ListItemText> : <ListItemText><Button variant="outlined" className={styles.impossibleButton} color='error' disabled>접속불가</Button></ListItemText>}
                       {student?.activity ? <ListItemText className={styles.mouseIcon}><MouseIcon color='primary' /></ListItemText> : <ListItemText className={styles.mouseIcon}><MouseIcon color='disabled' /></ListItemText>}
                       {/*studentDialogChecker[index] ? <ExpandLess onClick={()=>{handleStudentContainer(index)}} /> : <ExpandMore onClick={()=>{handleStudentContainer(index)}} />*/}
                     </ListItemButton>
