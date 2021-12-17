@@ -6,7 +6,7 @@ import GroundHeader from "../src/component/ground-header";
 import TestHeader from "../src/component/test-header";
 import Axios from 'axios';
 
-Axios.defaults.baseURL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
+Axios.defaults.baseURL = 'http://15.164.221.215:8080/api' || process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 Axios.defaults.withCredentials = true;
 
 function MyApp({ Component, pageProps }) {

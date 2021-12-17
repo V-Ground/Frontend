@@ -73,8 +73,8 @@ export default function CourseMain({ nMe, nClassDetail, nStudentList, nQuizList,
   const [assignments, setAssignments] = useState([]);
   const [invitation, setInvitation] = useState("")
   const [invitationModal, setInvitationModal] = useState(false);
-  const [assignmentModal, setAssignmentModal] = useState(false);
-  const [interactionModal, setInteractionModal] = useState(false);
+  const [assignmentModal, setAssignmentModal] = useState(router.query.quizCreate ? true : false);
+  const [interactionModal, setInteractionModal] = useState(router.query.interactionCreate ? true : false);
   const [containerStatus, setContainerStatus] = useState('중지');
   const [quizTitle, setQuizTitle] = useState('');
 

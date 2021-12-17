@@ -1,4 +1,4 @@
-import { useState, Fragment } from 'react';
+import { useState, useEffect, useRef, Fragment } from 'react';
 import { useRouter } from 'next/router';
 
 import * as S from "./styles";
@@ -49,6 +49,9 @@ import SuccessAlert from '../SuccessAlert';
 import FailureAlert from '../FailureAlert';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 
 import Modal from "../../component/modal";
 
@@ -207,6 +210,9 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [fileSearchResultList, setFileSearchResultList] = useState([]);
   const [fileSearchExpandCheck, setFileSearchExpandCheck] = useState([]);
 
+  const [insertOption, setInsertOption] = useState(0);
+  const [insertSelectedFile, setInsertSelectedFile] = useState(null);
+
   const [networkPacketDialogOpen, setNetworkPacketDialogOpen] = useState(false);
   const [networkPacketResult, setNetworkPacketResult] = useState(0);
   const [networkPacketStudentChecked, setNetworkPacketStudentChecked] = useState(nStudentList.map((student)=>{return student.studentName}));
@@ -226,6 +232,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [commandSuccessStudentMoreSearch, setCommandSuccessStudentMoreSearch] = useState('');
   const [commandSuccessResultMoreSearch, setCommandSuccessResultMoreSearch] = useState('');
   const [commandExpandCheck, setCommandExpandCheck] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const [scriptDialogOpen, setScriptDialogOpen] = useState(0);
   const [scriptResult, setScriptResult] = useState(false);
@@ -233,8 +240,55 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [noneScriptStudentList, setNoneScriptStudentList] = useState(nStudentList.map((student)=>{return student.studentName}));
   const [scriptStudentList, setScriptStudentList] = useState([]);
 
+  const [studentActionList, setStudentActionList] = useState([]);
+
+  const [quizOrder, setQuizOrder] = useState(0);
+  const [quizStandard, setQuizStandard] = useState('');
+
+  const actionCheck = async()=>{
+    const result = await axios.get(`/v1/courses/${courseId}/task/status`);
+    setStudentActionList(result.data);
+  }
+  const interval = useRef(null);
+  useEffect(()=>{
+      interval.current = setInterval(actionCheck, 1000*60);
+      return () => {
+          clearInterval(interval.current)
+      }
+  });
+
+  const handleQuizOrder = (value, question) => {
+    setQuizStandard(question);
+    setQuizOrder(value);
+  }
+
+  const handleFilePush = (e) => {
+    setInsertSelectedFile(e.target.files[0]);
+  }
+
+  const handleFileUpload = (e) => {
+    setSelectedFile(e.target.files[0]);
+  }
+
   const handleScript = () => {
     setScriptResult(true);
+  }
+
+  const handleFileFile = async() => {
+    try {
+      const formData = new FormData();
+        formData.append('filePath', fileSearchDirectory);
+        formData.append('inputFile', insertSelectedFile, insertSelectedFile.name);
+        formData.append('insertOption', insertOption);
+        formData.append('studentIds', fileSearchStudentList.length ? fileSearchStudentList.map((e)=>nStudentList.filter(item=>item.studentName==e)[0].studentId) : nStudentList.map((student)=>{return student.studentId}));
+      const result = await axios.post(
+        `/v1/containers/courses/${courseId}/file/insertion`, formData
+      )
+      console.log('파일 업로드 성공 : ', result.data);
+      SuccessAlert('파일 업로드에 성공하였습니다.');
+    } catch(err) {
+      console.log('파일 업로드 에러 : ', err);
+    }
   }
 
   const handleBashHistory = async() => {
@@ -247,7 +301,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
       );
       console.log('BASH기록 성공 : ', result.data);
       setBashHistoryResultList(result.data);
-      setBashHistoryExpandCheck(Array.from({length: result.data.length}, ()=>false))
+      setBashHistoryExpandCheck(Array.from({length: result.data.length}, ()=>true))
       setBashHistoryResult(true);
     } catch(err) {
       console.log('BASH기록 에러 : ', err);
@@ -256,17 +310,29 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
 
   const handleCommand = async() => {
     try {
-      const result = await axios.post(
-        `/v1/containers/courses/${courseId}/remote_command`, {
-          "studentIds": commandStudentList.length ? commandStudentList.map((e)=>nStudentList.filter(item=>item.studentName==e)[0].studentId) : nStudentList.map((student)=>{return student.studentId}),
-          "command": commandString
+      if (!selectedFile?.name) {
+        const result = await axios.post(
+          `/v1/containers/courses/${courseId}/remote_command`, {
+            "studentIds": commandStudentList.length ? commandStudentList.map((e)=>nStudentList.filter(item=>item.studentName==e)[0].studentId) : nStudentList.map((student)=>{return student.studentId}),
+            "command": commandString
+        }
+        );
+        console.log('원격명령실행 성공 : ', result.data);
+        setCommandResultList(result.data);
+        setCommandResult(2);
+      } else {
+        const formData = new FormData();
+        formData.append('scriptFile', selectedFile, selectedFile.name);
+        formData.append('studentIds', commandStudentList.length ? commandStudentList.map((e)=>nStudentList.filter(item=>item.studentName==e)[0].studentId) : nStudentList.map((student)=>{return student.studentId}));
+        const result = await axios.post(
+          `/v1/containers/courses/${courseId}/remote_script`, formData
+        );
+        console.log('원격스크립트 실행 성공 : ', result.data);
+        setCommandResultList(result.data);
+        setCommandResult(2);
       }
-      );
-      console.log('원격명령실행 성공 : ', result.data);
-      setCommandResultList(result.data);
-      setCommandResult(2);
     } catch(err) {
-      console.log('원격명령실행 에러 : ', err);
+      console.log('원격스크립트 실행 에러 : ', err);
     }
   }
 
@@ -322,7 +388,6 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const numberOfChecked = (items, nChecked) => intersection(nChecked, items).length;
 
   const handleToggleAll = (items, nChecked, setnChecked) => () => {
-    console.log('what??', items, nChecked);
     if (numberOfChecked(items, nChecked) === items.length) {
       setnChecked(not(nChecked, items));
     } else {
@@ -591,6 +656,17 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const handleAddClick = () => {
     setLoading(true);
     setTimeout(addSnapshot, 2000);
+  }
+
+  const [quizSubmitList, setQuizSubmitList] = useState({});
+  const [quizList, setQuizList] = useState([]);
+
+  const handleQuizData = async() => {
+    const result = await axios.get(`/v1/courses/${courseId}/assignments`);
+    setMonitoringCategory('과제 및 실시간 퀴즈');
+  }
+
+  const handleInteractionData = async() => {
 
   }
 
@@ -635,7 +711,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                     <Fragment>
                     <ListItemButton sx={{ pl: 4 }}>
                       <ListItemText primary={`[학생 ${index+1}] ${student.studentName}`} />
-                      {student.containerStatus ? <ListItemText><Button variant="contained" color='success' onClick={() => {handleVncConnect('http://'+student.containerIp)}}> 원격접속 </Button></ListItemText> : <ListItemText><Button variant="outlined" className={styles.impossibleButton} color='error' disabled>접속불가</Button></ListItemText>}
+                      {studentActionList.filter((item)=>item.studentId==student.studentId)[0]?.containerStatus=='RUNNING' ? <ListItemText><Button variant="contained" color='success' onClick={() => {handleVncConnect('http://'+student.containerIp)}}> 원격접속 </Button></ListItemText> : <ListItemText><Button variant="outlined" className={styles.impossibleButton} color='error' disabled>접속불가</Button></ListItemText>}
                       {student.activity ? <ListItemText className={styles.mouseIcon}><MouseIcon color='primary' /></ListItemText> : <ListItemText className={styles.mouseIcon}><MouseIcon color='disabled' /></ListItemText>}
                       {studentDialogChecker[index] ? <ExpandLess onClick={()=>{handleStudentContainer(index)}} /> : <ExpandMore onClick={()=>{handleStudentContainer(index)}} />}
                     </ListItemButton>
@@ -794,8 +870,8 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                 {/* <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('네트워크 패킷')}}><SensorsIcon className={styles.monitoringSidebarIcon_network}/> 네트워크 패킷</Grid> */}
                 <Grid className={monitoringCategory=='원격 명령 실행' ? styles.monitoringSidebarButton_active : styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('원격 명령 실행')}}>{/*<SettingsEthernetIcon className={styles.monitoringSidebarIcon_command}/>*/} 원격 명령 실행</Grid>
                 {/* <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('스크립트 실행')}}><SettingsEthernetIcon className={styles.monitoringSidebarIcon_command}/> 스크립트 실행</Grid> */}
-                <Grid className={monitoringCategory=='과제 및 실시간 퀴즈' ? styles.monitoringSidebarButton_active : styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('과제 및 실시간 퀴즈')}}>과제 및 실시간 퀴즈</Grid>
-                <Grid className={monitoringCategory=='O/X 체크' ? styles.monitoringSidebarButton_active : styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('O/X 체크')}}>O/X 체크</Grid>
+                {/* <Grid className={monitoringCategory=='과제 및 실시간 퀴즈' ? styles.monitoringSidebarButton_active : styles.monitoringSidebarButton} item xs={1} onClick={()=>{handleQuizData();}}>과제 및 실시간 퀴즈</Grid> */}
+                {/* <Grid className={monitoringCategory=='O/X 체크' ? styles.monitoringSidebarButton_active : styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('O/X 체크');handleInteractionData();}}>O/X 체크</Grid> */}
               </Grid>
             </Grid>
             <Grid item xs={10} className={styles.monitoringModalItem}>
@@ -871,7 +947,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                                 copyExpandCheck[index] = true;
                                 setBashHistoryExpandCheck(copyExpandCheck);
                               }} />}</div>
-                              <div className={styles.vncConnectButton} onClick={() => {handleVncConnect('http://'+result.containerIp);setMonitoringModalOpen(false);}}>원격접속</div>
+                              <div className={styles.vncConnectButton} onClick={() => {handleVncConnect('http://'+nStudentList.filter((e)=>e.studentId==result.studentId)[0].containerIp);setMonitoringModalOpen(false);}}>원격접속</div>
                             </Grid>
                             {
                               bashHistoryExpandCheck[index] ?
@@ -988,7 +1064,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                             <Grid item className={styles.successOrFailTableTitle} xs={3}>버전</Grid>
                             {
                               installedProgramResultList.filter((item, index)=>{
-                                return item.status && (`${nStudentList.filter((e)=>e.studentId==item.studentId)[0].studentName}`).includes(installedProgramSuccessStudentMoreSearch) && (item.installPath==null || item.installPath.includes(installedProgramSuccessPathMoreSearch)) && (item.version==null || installedProgramVersionUpdown ? item.version>=installedProgramSuccessVersionMoreSearch : item.version>=installedProgramSuccessVersionMoreSearch)
+                                return item.status && (`${nStudentList.filter((e)=>e.studentId==item.studentId)[0].studentName}`).includes(installedProgramSuccessStudentMoreSearch) && (item.installPath==null || item.installPath.includes(installedProgramSuccessPathMoreSearch)) && (item.version==null || installedProgramVersionUpdown ? item.version<installedProgramSuccessVersionMoreSearch : item.version>=installedProgramSuccessVersionMoreSearch)
                               }).map((student, index)=>{
                                 return(
                                   <Fragment>
@@ -1117,7 +1193,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                               copyExpandCheck[index] = true;
                               setFileSearchExpandCheck(copyExpandCheck);
                             }} />}</div>
-                            <div className={styles.vncConnectButton} onClick={() => {handleVncConnect('http://'+result.containerIp);setMonitoringModalOpen(false);}}>원격접속</div>
+                            <div className={styles.vncConnectButton} onClick={() => {handleVncConnect('http://'+nStudentList.filter((e)=>e.studentId==result.studentId)[0].containerIp);setMonitoringModalOpen(false);}}>원격접속</div>
                           </Grid>
                           {
                             fileSearchExpandCheck[index] ?
@@ -1143,11 +1219,11 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                     </div>
                     </Grid>
                     <Grid item xs={6} className={styles.fileSearchConditionTitleItem}>
-                    <div className={styles.fileSearchConditionTitle}>조건 미충족 {` ( ${fileSearchResultList.filter((item)=>(!(!item.fileContent && !fileSearchMoreResultKeyword) || item.fileContent?.replaceAll('\n',' ')?.includes(fileSearchMoreResultKeyword)))?.length} / ${fileSearchResultList.length} 명 )`}</div>
-                    <div className={styles.fileSearchConditionPercent}>{`${parseInt(fileSearchResultList.filter((item)=>(!(!item.fileContent && !fileSearchMoreResultKeyword) || item.fileContent?.replaceAll('\n',' ')?.includes(fileSearchMoreResultKeyword)))?.length/fileSearchResultList.length*100)}%`}</div>
+                    <div className={styles.fileSearchConditionTitle}>조건 미충족 {` ( ${fileSearchResultList.filter((item)=>(fileSearchMoreResultKeyword && !item.fileContent?.replaceAll('\n',' ')?.includes(fileSearchMoreResultKeyword)))?.length} / ${fileSearchResultList.length} 명 )`}</div>
+                    <div className={styles.fileSearchConditionPercent}>{`${parseInt(fileSearchResultList.filter((item)=>(fileSearchMoreResultKeyword && !item.fileContent?.replaceAll('\n',' ')?.includes(fileSearchMoreResultKeyword)))?.length/fileSearchResultList.length*100)}%`}</div>
                     <div className={styles.fileSearchConditionBox}>
                     {
-                      fileSearchResultList.filter((item)=>(!(!item.fileContent && !fileSearchMoreResultKeyword) || item.fileContent?.replaceAll('\n',' ')?.includes(fileSearchMoreResultKeyword))).map((result, index)=>{
+                      fileSearchResultList.filter((item)=>(fileSearchMoreResultKeyword && !item.fileContent?.replaceAll('\n',' ')?.includes(fileSearchMoreResultKeyword))).map((result, index)=>{
                         return(
                         <Fragment>
                         <Grid item xs={12}>
@@ -1163,7 +1239,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                               copyExpandCheck[index] = true;
                               setFileSearchExpandCheck(copyExpandCheck);
                             }} />}</div>
-                            <div className={styles.vncConnectButton} onClick={() => {handleVncConnect('http://'+result.containerIp);setMonitoringModalOpen(false);}}>원격접속</div>
+                            <div className={styles.vncConnectButton} onClick={() => {handleVncConnect('http://'+nStudentList.filter((e)=>e.studentId==result.studentId)[0].containerIp);setMonitoringModalOpen(false);}}>원격접속</div>
                           </Grid>
                           {
                             fileSearchExpandCheck[index] ?
@@ -1205,6 +1281,20 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                                 <Grid item xs={12}><Typography className={styles.designedMonitoringBoyTitle/*styles.bashHistoryPeriodTitle*/}>파일명</Typography></Grid>
                                 <Typography className={styles.monitoringSummary}>경로를 포함한 파일명을 입력해주세요</Typography>
                                 <Grid item xs={12} textAlign={'left'}><TextField className={styles.bashHistoryExcludeKeyword} size='small' onChange={(e)=>{setFileSearchDirectory(e.target.value)}} label="파일명을 입력하세요" variant="outlined" /></Grid>
+                            </Grid>
+                            <Grid container justifyContent={'flex-start'}>
+                                <Grid item xs={12}><Typography className={styles.designedMonitoringBoyTitle/*styles.bashHistoryPeriodTitle*/}>파일주입</Typography></Grid>
+                                <Grid item xs={12} textAlign={'left'} className={styles.positionRelative}>
+                                  <Typography className={styles.monitoringSummary}>파일이 이미 존재할 경우 해당파일을 덮어쓸 것인지 체크해주세요</Typography>
+                                  <input className={styles.fileUpload} type='file' onChange={(e)=>{handleFilePush(e)}} />
+                                  <FormGroup className={styles.switchButton}>
+                                    <FormControlLabel control={<Switch defaultChecked checked={insertOption} onChange={()=>{setInsertOption(insertOption ? 0 : 1)}} />} label="덮어쓰기 허용여부" labelPlacement='start' />
+                                  </FormGroup>
+                                </Grid>
+                                <Grid item xs={12} textAlign={'left'} >
+                                  <TextField className={styles.uploadDirectoryInput} size='small' onChange={(e)=>{setFileSearchDirectory(e.target.value)}} label="학생들에게 업로드할 파일경로를 입력하세요" variant="outlined" />
+                                </Grid>
+                                <Grid item xs={12} textAlign={'left'} className={styles.bashHistoryStudentSelectItem}><Button className={styles.studentSelectButton} onClick={()=>{handleFileFile()}} variant='contained'>업로드</Button></Grid>
                             </Grid>
                             <Grid container className={styles.bashHistoryStudentContainer}>
                                 <Grid item xs={12}>
@@ -1453,7 +1543,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                   <Grid container className={styles.monitoringResultBody_v2} spacing={4}>
                     <Grid item xs={6} className={styles.fileSearchConditionTitleItem}>
                     <div className={styles.fileSearchConditionTitle}>조건 충족 {` ( ${commandResultList.filter((item)=>(!item.commandResult && !commandMoreSearch) || item.commandResult?.replaceAll('\n',' ')?.includes(commandMoreSearch))?.length} / ${commandResultList.length} 명 )`}</div>
-                    <div className={styles.fileSearchConditionPercent}>{`${parseInt(commandResultList.filter((item)=>(!item.commandResult && !commandMoreSearch) || item.commandResult?.replaceAll('\n',' ')?.includes(commandMoreSearch))?.length/commandResultList.length)*100}%`}</div>
+                    <div className={styles.fileSearchConditionPercent}>{`${parseInt(commandResultList.filter((item)=>(!item.commandResult && !commandMoreSearch) || item.commandResult?.replaceAll('\n',' ')?.includes(commandMoreSearch))?.length/commandResultList.length*100)}%`}</div>
                     <div className={styles.fileSearchConditionBox}>
                     {
                       commandResultList.filter((item)=>(!item.commandResult && !commandMoreSearch) || item.commandResult?.replaceAll('\n',' ')?.includes(commandMoreSearch)).map((result, index)=>{
@@ -1472,16 +1562,17 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                                 copyExpandCheck[index] = true;
                                 setCommandExpandCheck(copyExpandCheck);
                               }} />}</div>
-                              <div className={styles.vncConnectButton} onClick={() => {handleVncConnect('http://'+result.containerIp);setMonitoringModalOpen(false);}}>원격접속</div>
+                              <div className={styles.vncConnectButton} onClick={() => {handleVncConnect('http://'+nStudentList.filter((e)=>e.studentId==result.studentId)[0].containerIp);setMonitoringModalOpen(false);}}>원격접속</div>
                             </Grid>
                             {
                               commandExpandCheck[index] ?
                               <div className={styles.resultItemBody_v2}>
                               {
                                 result.commandResult && result.commandResult.split('\n').map((line, index)=>{
+                                  console.log(line);
                                   return (
                                     index+1!=result.commandResult.split('\n').length ? 
-                                    <div className={styles.resultLine}>{`${index+1}`} <span className={styles.fontBolder}>{`${line}`}</span></div>
+                                    <div className={styles.resultLine}>{`${index+1}`} <span className={styles.fontBolder}>{line}</span></div>
                                     : ''
                                   )
                                 })
@@ -1498,11 +1589,11 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                       </div>
                       </Grid>
                       <Grid item xs={6} className={styles.fileSearchConditionTitleItem}>
-                      <div className={styles.fileSearchConditionTitle}>조건 미충족 {` ( ${commandResultList.filter((item)=>(!(!item.commandResult && !commandString) || item.commandResult?.replaceAll('\n',' ')?.includes(commandString)))?.length} / ${commandResultList.length} 명 )`}</div>
-                      <div className={styles.fileSearchConditionPercent}>{`${parseInt(commandResultList.filter((item)=>(!(!item.commandResult && !commandString) || item.commandResult?.replaceAll('\n',' ')?.includes(commandString)))?.length/commandResultList.length*100)}%`}</div>
+                      <div className={styles.fileSearchConditionTitle}>조건 미충족 {` ( ${commandResultList.filter((item)=>(commandMoreSearch && !item.commandResult?.replaceAll('\n',' ')?.includes(commandMoreSearch)))?.length} / ${commandResultList.length} 명 )`}</div>
+                      <div className={styles.fileSearchConditionPercent}>{`${parseInt(commandResultList.filter((item)=>commandMoreSearch && !item.commandResult?.replaceAll('\n',' ')?.includes(commandMoreSearch))?.length/commandResultList.length*100)}%`}</div>
                       <div className={styles.fileSearchConditionBox}>
                       {
-                        commandResultList.filter((item)=>(!(!item.commandResult && !commandMoreSearch) || item.commandResult?.replaceAll('\n',' ')?.includes(commandString))).map((result, index)=>{
+                        commandResultList.filter((item)=>(commandMoreSearch && !item.commandResult?.replaceAll('\n',' ')?.includes(commandMoreSearch))).map((result, index)=>{
                           return(
                           <Fragment>
                           <Grid item xs={12}>
@@ -1518,7 +1609,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                                 copyExpandCheck[index] = true;
                                 setCommandExpandCheck(copyExpandCheck);
                               }} />}</div>
-                              <div className={styles.vncConnectButton} onClick={() => {handleVncConnect('http://'+result.containerIp);setMonitoringModalOpen(false);}}>원격접속</div>
+                              <div className={styles.vncConnectButton} onClick={() => {handleVncConnect('http://'+nStudentList.filter((e)=>e.studentId==result.studentId)[0].containerIp);setMonitoringModalOpen(false);}}>원격접속</div>
                             </Grid>
                             {
                               commandExpandCheck[index] ?
@@ -1619,6 +1710,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                               <Grid container justifyContent={'flex-start'}>
                                   <Grid item xs={12}><Typography className={styles.designedMonitoringBoyTitle/*styles.bashHistoryPeriodTitle*/}>명령어</Typography></Grid>
                                   <Typography className={styles.monitoringSummary}>학생 컨테이너에서 실행할 명령어를 입력해주세요</Typography>
+                                  <Grid item xs={12} textAlign={'left'}><input className={styles.fileUpload} type='file' onChange={(e)=>{handleFileUpload(e)}} /></Grid>
                                   <Grid item xs={12} textAlign={'left'}><TextField className={styles.bashHistoryExcludeKeyword} size='small' onChange={(e)=>{setCommandString(e.target.value)}} label="명령어를 입력하세요" variant="outlined" /></Grid>
                               </Grid>
                               <Grid container className={styles.bashHistoryStudentContainer}>
@@ -1676,16 +1768,95 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                 : monitoringCategory=='과제 및 실시간 퀴즈' ?
                   <Grid container className={styles.monitoringBody}>
                     <Grid item xs={12} style={{paddingTop:'3px'}}>
-                      <Typography className={styles.monitoringSummary}>설치 프로그램의 패키지명을 입력하면 학생별로 특정 프로그램이 설치 되었는지 확인할 수 있습니다</Typography>
+                      <Typography className={styles.monitoringSummary}>과제 및 실시간 퀴즈의 제출현황을 확인할 수 있습니다</Typography>
                       <br/>
-                      <Grid container justifyContent='center'>
-                      </Grid>
+                      <div className={styles.createQuiz}><a target='_blank' href={`/assignment/class/${router.query.id}?quizCreate=true`}>퀴즈 생성</a></div>
+                      <div className={styles.monitoringBody_quiz}>
+                        <Grid container justifyContent='flex-start'>
+                          <Grid className={styles.quizResultTable} item xs={1}></Grid>
+                          {
+                            quizList.length && 
+                            quizList.map((q)=>{
+                              return (
+                                <Grid item xs={2} className={styles.quizResultTable}>
+                                  <Typography className={`${styles.oneLineLimit} ${styles.questionResultTitle}`}>{q.question}</Typography>
+                                  <Grid container>
+                                    <Grid item xs={6}>
+                                      <Typography className={styles.oneLineLimit}>참여율</Typography>
+                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPercent}`}>{`${parseInt(Object.keys(quizSubmitList).filter((item)=>Object.keys(q.students).includes(item)).length/Object.keys(quizSubmitList).length*100)}%`}</Typography>
+                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPeople}`}>{`(${Object.keys(quizSubmitList).filter((item)=>Object.keys(q.students).includes(item)).length}/${Object.keys(quizSubmitList).length}명)`}</Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                      <Typography className={styles.oneLineLimit}>정답율</Typography>
+                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPercent}`}>{`${parseInt(Object.keys(quizSubmitList).filter((item)=>Object.keys(q.students).includes(item) && q.students[item].score>0).length/Object.keys(quizSubmitList).length*100)}%`}</Typography>
+                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPeople}`}>{`(${Object.keys(quizSubmitList).filter((item)=>Object.keys(q.students).includes(item) && q.students[item].score>0).length}/${Object.keys(quizSubmitList).length}명)`}</Typography>
+                                    </Grid>
+                                  </Grid>
+                                </Grid>
+                              )
+                            })
+                          }
+                        </Grid>
+                        <Grid container justifyContent='flex-start'>
+                          <Grid className={styles.quizResultTable} item xs={1}></Grid>
+                          {
+                            quizList.length && 
+                            quizList.map((q,index)=>{
+                              return (
+                                <Grid item xs={2} className={styles.quizResultTable}>
+                                  <div className={styles.alignQuiz}>정렬</div>
+                                  <Select className={styles.installedProgramUpdownSelect} value={quizStandard==q.question ? quizOrder : 0} onChange={(e)=>handleQuizOrder(e.target.value, q.question)}>
+                                    <MenuItem value={0}>정답순</MenuItem>
+                                    <MenuItem value={1}>오답순</MenuItem>
+                                    <MenuItem value={2}>미제출순</MenuItem>
+                                  </Select>
+                                </Grid>
+                              )
+                            })
+                          }
+                        </Grid>
+                        {
+                          Object.keys(quizSubmitList).length >= 1 &&
+                          Object.keys(quizSubmitList).map((nkey, index)=>{
+                          const correctList = Object.keys(quizSubmitList).filter((nkey)=>quizSubmitList[nkey][quizStandard]?.score==1);
+                          const wrongList = Object.keys(quizSubmitList).filter((nkey)=>quizSubmitList[nkey][quizStandard]?.score==0);
+                          const unknownList = Object.keys(quizSubmitList).filter((nkey)=>!quizSubmitList[nkey][quizStandard]); 
+                          console.log(quizStandard);
+                          console.log(correctList.concat(wrongList.concat(unknownList)), wrongList.concat(correctList.concat(unknownList)), unknownList.concat(correctList.concat(wrongList)));
+                          return(
+                            quizOrder==0 ?
+                            correctList.concat(wrongList.concat(unknownList))
+                            : quizOrder==1 ?
+                            wrongList.concat(correctList.concat(unknownList))
+                            :
+                            unknownList.concat(correctList.concat(wrongList))
+                          )}).map((key)=>{
+                            return (
+                              <Grid container className={styles.quizResultTableBodyContainer} justifyContent='flex-start'>
+                                {quizSubmitList[key]+'2'}
+                                <Grid item className={styles.noAnswer} xs={1}>{nStudentList.filter((s)=>s.studentId==key)[0]?.studentName}</Grid>
+                                {
+                                  quizSubmitList[key] && quizList.map((q)=>{
+                                    console.log('key q : ',key,q);
+                                    return (
+                                      Object.keys(quizSubmitList[key]).includes(q.question) ?
+                                      <Grid item xs={2} className={quizSubmitList[key][q.question].score>0 ? styles.correctAnswer : styles.wrongAnswer}>{quizSubmitList[key][q.question].submit}</Grid>
+                                      :
+                                      <Grid item xs={2} className={styles.noAnswer}>{''}</Grid>
+                                    )
+                                  })
+                                }
+                              </Grid>
+                            )
+                          })
+                        }
+                      </div>
                     </Grid>
                   </Grid>
                 : monitoringCategory=='O/X 체크' ?
                   <Grid container className={styles.monitoringBody}>
                     <Grid item xs={12} style={{paddingTop:'3px'}}>
-                      <Typography className={styles.monitoringSummary}>설치 프로그램의 패키지명을 입력하면 학생별로 특정 프로그램이 설치 되었는지 확인할 수 있습니다</Typography>
+                      <Typography className={styles.monitoringSummary}>O/X 체크를 통해 학생들의 이해도를 파악할 수 있습니다</Typography>
                       <br/>
                       <Grid container justifyContent='center'>
                       </Grid>
