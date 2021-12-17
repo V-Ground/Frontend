@@ -1287,7 +1287,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                               result.fileContent && result.fileContent.split('\n').map((line, index)=>{
                                 return (
                                   index+1!=result.fileContent.split('\n').length ? 
-                                  <div className={styles.resultLine}>{`${index+1}`} <span className={styles.fontBolder}>{`${line}`}</span></div>
+                                  <div className={styles.resultLine}>{`${('00'+index+1).slice(-2)}`} <span className={styles.fontBolder}>{`${line}`}</span></div>
                                   : ''
                                 )
                               })
