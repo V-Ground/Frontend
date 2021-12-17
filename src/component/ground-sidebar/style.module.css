@@ -914,6 +914,20 @@
     font-weight: 700 !important;
 }
 
+.interactionO {
+    padding: 10px 0px !important;
+    border-right: 1px solid #242424 !important;
+    color: #89E034 !important;
+    font-weight: 700 !important;
+}
+
+.interactionX {
+    padding: 10px 0px !important;
+    border-right: 1px solid #242424 !important;
+    color: #FA5050 !important;
+    font-weight: 700 !important;
+}
+
 .noAnswer {
     padding: 10px 0px !important;
     border-right: 1px solid #242424 !important;
@@ -945,4 +959,13 @@
 
 .positionRelative {
     position: relative !important;
+}
+
+.interactionCheckboxContainer {
+    padding-left: 20px !important;
+}
+
+.interactionCheckbox {
+    border-color: #aaaaaa !important;
+    color: #aaaaaa !important;
 }

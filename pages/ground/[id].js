@@ -7,7 +7,7 @@ import useSWR from "swr";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
-export default function ground({ nMe, nClassDetail, nStudentList, nQuizList, nStatusList }) {
+export default function ground({ nMe, nClassDetail, nStudentList, nQuizList, nStatusList, nInteractionList }) {
   /*const { data, error } = useSWR(
     "http://58.142.191.143:8080/mouse_keyboard/keyboard",
     fetcher
@@ -27,7 +27,7 @@ export default function ground({ nMe, nClassDetail, nStudentList, nQuizList, nSt
 
   return (
     <>
-      <GroundSidebar handleVncConnect={handleVncConnect} handleVncDisconnect={handleVncDisconnect} nMe={nMe} nClassDetail={nClassDetail} nQuizList={nQuizList} nStudentList={nStudentList} nStatusList={nStatusList} />
+      <GroundSidebar handleVncConnect={handleVncConnect} handleVncDisconnect={handleVncDisconnect} nMe={nMe} nClassDetail={nClassDetail} nQuizList={nQuizList} nStudentList={nStudentList} nStatusList={nStatusList} nInteractionList={nInteractionList} />
       <Ground vnc={vnc} ip={ip} />
     </>
   );
@@ -39,6 +39,7 @@ export const getServerSideProps = async (ctx) => {
   let nStudentList = [];
   let nQuizList = [];
   let nStatusList = [];
+  let nInteractionList = [];
 
   // 이용자정보 조회
   try {
@@ -100,7 +101,7 @@ export const getServerSideProps = async (ctx) => {
     }
   }
 
-   try {
+  try {
     const cookies = ctx.req.headers.cookie;
     nStatusList = await axios.get(`/v1/courses/${ctx.query.id}/task/status`, {
       headers: {
@@ -108,11 +109,25 @@ export const getServerSideProps = async (ctx) => {
       },
       withCredentials: true
     });
-   } catch(err) {
+  } catch(err) {
     if (err?.response?.status == 403 || err?.response?.status == 401) {
       console.log('로그인 전');
     }
-   }
+  }
+
+  try {
+    const cookies = ctx.req.headers.cookie;
+    nInteractionList = await axios.get(`/v1/interactions/courses/${ctx.query.id}`, {
+      headers: {
+        Cookie: cookies
+      },
+      withCredentials: true
+    });
+  } catch(err) {
+    if (err?.response?.status == 403 || err?.response?.status == 401) {
+      console.log('로그인 전');
+    }
+  }
 
   return {
     props: {
@@ -120,7 +135,8 @@ export const getServerSideProps = async (ctx) => {
       nClassDetail: nClassDetail.data?.course ? nClassDetail.data?.course.filter((item) => item.courseId == ctx.query.id).map((item) => { item.thumnailImageUrl = "https://cdn.inflearn.com/public/courses/327762/cover/d37b231e-411f-4358-9b28-e3839f79f42b/327762-eng.png"; return item; })[0] : {},
       nQuizList: nQuizList.data ? nQuizList.data : [],
       nStudentList: nStudentList.data ? nStudentList.data.filter((item) => nMe.data.id != item.studentId) : [],
-      nStatusList: nStatusList.data ? nStatusList.data : []
+      nStatusList: nStatusList.data ? nStatusList.data : [],
+      nInteractionList: nInteractionList.data ? nInteractionList.data : []
       // nMe: {
       //   "email": "teacher1@vground.com",
       //   "password": "teacher1",

@@ -138,7 +138,7 @@ const networkPacketDummyResult = Array.from({length: 40}, ()=>{return {
   }]
 }}));
 
-const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentList, nClassDetail, nQuizList, nStatusList }) => {
+const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentList, nClassDetail, nQuizList, nStatusList, nInteractionList }) => {
   const router = useRouter();
   const [openAssignment, setOpenAssignment] = useState(false);
   const [openAssignmentDetail, setOpenAssignmentDetail] = useState(false);
@@ -242,13 +242,20 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
 
   const [studentActionList, setStudentActionList] = useState(nStatusList);
 
+  const [openInteraction, setOpenInteraction] = useState(false);
+  const [interactionChecker, setInteractionChecker] = useState(useState(Array.from({length: nInteractionList.length}, ()=>false)));
+  const [interactionPrevious, setInteractionPrevious] = useState([]);
+  const [interactionInput, setInteractionInput] = useState({});
+
   const [quizOrder, setQuizOrder] = useState(0);
   const [quizStandard, setQuizStandard] = useState('');
 
   const actionCheck = async()=>{
-    const result = await axios.get(`/v1/courses/${courseId}/task/status`);
-    setStudentActionList(result.data);
-    console.log(studentActionList);
+    if (nMe.role=='강사') {
+      const result = await axios.get(`/v1/courses/${courseId}/task/status`);
+      setStudentActionList(result.data);
+      console.log(studentActionList);
+    }
   }
 
   const interval = useRef(null);
@@ -526,6 +533,38 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
     setAnswer(copyAnswer); 
   }
 
+  const handleInteractionDetailClose = (interactionId, index) => {
+    const copyChecker = interactionChecker.slice();
+    copyChecker[index] = false;
+    setInteractionChecker(copyChecker);
+  }
+
+  const handleInteractionDetailOpen = async(interactionId, index) => {
+    try {
+      const previous = await axios.get(`/v1/interactions/courses/${courseId}/summary`);
+      console.log('이전기록 : ',previous.data.students);
+      setInteractionPrevious(previous.data.students.filter((e)=>e.studentId==nMe.id)[0].submittedInteractions);
+      const copyChecker = interactionChecker.slice();
+      copyChecker[index] = false;
+      setInteractionChecker(copyChecker);
+    } catch(err) {
+      console.log('error : ', err);
+    }
+  }
+
+  const handleInteractionCheck = async(interactionId, index, value) => {
+    try {
+      await axios.post(`/v1/interactions/${interactionId}/courses/${courseId}/users/${nMe.id}`, {
+        'yesNo': !value
+      });
+      const copyChecker = interactionChecker.slice();
+      copyChecker[index] = !value;
+      setInteractionChecker(copyChecker);
+    } catch(err) {
+      console.log('error : ', err);
+    }
+  }
+
   const handleQuizChildrenClose = (assignmentId, index) => {
     const copyChecker = quizChildrenChecker.slice();
     copyChecker[index] = false;
@@ -627,6 +666,10 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
     setStudentDialogChecker(copyChecker);
   }
 
+  const handleInteractionClick = () => {
+    setOpenInteraction(!openInteraction);
+  }
+
   const handleAssignmentClick = () => {
     setOpenAssignment(!openAssignment);
   };
@@ -664,12 +707,23 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
   const [quizList, setQuizList] = useState([]);
 
   const handleQuizData = async() => {
-    const result = await axios.get(`/v1/courses/${courseId}/assignments`);
+    const result = await axios.get(`/v1/courses/${courseId}/summary`);
+    console.log('quizData : ',result.data);
+    setQuizList(result.data.questions);
+    setQuizSubmitList(result.data.students);
     setMonitoringCategory('과제 및 실시간 퀴즈');
   }
 
-  const handleInteractionData = async() => {
+  const [interactionSubmitList, setInteractionSubmitList] = useState({});
+  const [interactionList, setInteractionList] = useState([]);
 
+
+  const handleInteraction = async() => {
+    const result = await axios.get(`/v1/interactions/courses/${courseId}/summary`);
+    console.log('interactionData : ',result.data);
+    setInteractionList(result.data.interactions);
+    setInteractionSubmitList(result.data.students);
+    setMonitoringCategory('O/X 체크');
   }
 
   const ip = 'http://'+nClassDetail.containerIp;
@@ -790,6 +844,28 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
             }
           </List>
         </Collapse>
+
+          <ListItemButton onClick={handleInteractionClick}>
+            <ListItemText primary="O/X 체크" />
+            {openInteraction ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={openInteraction} timeout="auto" unmountOnExit sx={{ background: "#373F45" }}>
+          <List component="div" disablePadding>
+            {
+              nInteractionList.map((interaction, index)=>{
+                console.log(interactionPrevious);
+                console.log(interactionPrevious.filter((i)=>i.interactionId==interaction.interactionId)[0]);
+                return (
+                  <Fragment>
+                  <ListItemButton className={styles.interactionCheckboxContainer} sx={{ pl: 4 }}>
+                    <Checkbox checked={interactionChecker[index]} onChange={(e)=>{handleInteractionCheck(interaction.interactionId, index, interactionChecker[index])}} className={styles.interactionCheckbox} /><ListItemText primary={`${interaction.title}`} />
+                  </ListItemButton>
+                  </Fragment>
+                )
+              })
+            }
+          </List>
+        </Collapse>
         </Fragment>
         }
 
@@ -880,8 +956,8 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                 {/* <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('네트워크 패킷')}}><SensorsIcon className={styles.monitoringSidebarIcon_network}/> 네트워크 패킷</Grid> */}
                 <Grid className={monitoringCategory=='원격 명령 실행' ? styles.monitoringSidebarButton_active : styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('원격 명령 실행')}}>{/*<SettingsEthernetIcon className={styles.monitoringSidebarIcon_command}/>*/} 원격 명령 실행</Grid>
                 {/* <Grid className={styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('스크립트 실행')}}><SettingsEthernetIcon className={styles.monitoringSidebarIcon_command}/> 스크립트 실행</Grid> */}
-                {/* <Grid className={monitoringCategory=='과제 및 실시간 퀴즈' ? styles.monitoringSidebarButton_active : styles.monitoringSidebarButton} item xs={1} onClick={()=>{handleQuizData();}}>과제 및 실시간 퀴즈</Grid> */}
-                {/* <Grid className={monitoringCategory=='O/X 체크' ? styles.monitoringSidebarButton_active : styles.monitoringSidebarButton} item xs={1} onClick={()=>{setMonitoringCategory('O/X 체크');handleInteractionData();}}>O/X 체크</Grid> */}
+                <Grid className={monitoringCategory=='과제 및 실시간 퀴즈' ? styles.monitoringSidebarButton_active : styles.monitoringSidebarButton} item xs={1} onClick={()=>{handleQuizData()}}>과제 및 실시간 퀴즈</Grid>
+                <Grid className={monitoringCategory=='O/X 체크' ? styles.monitoringSidebarButton_active : styles.monitoringSidebarButton} item xs={1} onClick={()=>{handleInteraction()}}>O/X 체크</Grid>
               </Grid>
             </Grid>
             <Grid item xs={10} className={styles.monitoringModalItem}>
@@ -1793,13 +1869,13 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                                   <Grid container>
                                     <Grid item xs={6}>
                                       <Typography className={styles.oneLineLimit}>참여율</Typography>
-                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPercent}`}>{`${parseInt(Object.keys(quizSubmitList).filter((item)=>Object.keys(q.students).includes(item)).length/Object.keys(quizSubmitList).length*100)}%`}</Typography>
-                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPeople}`}>{`(${Object.keys(quizSubmitList).filter((item)=>Object.keys(q.students).includes(item)).length}/${Object.keys(quizSubmitList).length}명)`}</Typography>
+                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPercent}`}>{`${parseInt(quizSubmitList.filter((qs)=>qs.submittedQuestions.findIndex((sq)=>sq.questionId==q.questionId)>=0).length/quizSubmitList.length*100)}%`}</Typography>
+                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPeople}`}>{`(${quizSubmitList.filter((qs)=>qs.submittedQuestions.findIndex((sq)=>sq.questionId==q.questionId)>=0).length}/${quizSubmitList.length}명)`}</Typography>
                                     </Grid>
                                     <Grid item xs={6}>
                                       <Typography className={styles.oneLineLimit}>정답율</Typography>
-                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPercent}`}>{`${parseInt(Object.keys(quizSubmitList).filter((item)=>Object.keys(q.students).includes(item) && q.students[item].score>0).length/Object.keys(quizSubmitList).length*100)}%`}</Typography>
-                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPeople}`}>{`(${Object.keys(quizSubmitList).filter((item)=>Object.keys(q.students).includes(item) && q.students[item].score>0).length}/${Object.keys(quizSubmitList).length}명)`}</Typography>
+                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPercent}`}>{`${parseInt(quizSubmitList.filter((qs)=>qs.submittedQuestions.findIndex((sq)=>sq.questionId==q.questionId&&sq.scored>0)>=0).length/quizSubmitList.length*100)}%`}</Typography>
+                                      <Typography className={`${styles.oneLineLimit} ${styles.questionResultPeople}`}>{`(${quizSubmitList.filter((qs)=>qs.submittedQuestions.findIndex((sq)=>sq.questionId==q.questionId&&sq.scored>0)>=0).length}/${quizSubmitList.length}명)`}</Typography>
                                     </Grid>
                                   </Grid>
                                 </Grid>
@@ -1807,7 +1883,7 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                             })
                           }
                         </Grid>
-                        <Grid container justifyContent='flex-start'>
+                        {/* <Grid container justifyContent='flex-start'>
                           <Grid className={styles.quizResultTable} item xs={1}></Grid>
                           {
                             quizList.length && 
@@ -1824,13 +1900,12 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                               )
                             })
                           }
-                        </Grid>
+                        </Grid> */}
                         {
-                          Object.keys(quizSubmitList).length >= 1 &&
-                          Object.keys(quizSubmitList).map((nkey, index)=>{
-                          const correctList = Object.keys(quizSubmitList).filter((nkey)=>quizSubmitList[nkey][quizStandard]?.score==1);
-                          const wrongList = Object.keys(quizSubmitList).filter((nkey)=>quizSubmitList[nkey][quizStandard]?.score==0);
-                          const unknownList = Object.keys(quizSubmitList).filter((nkey)=>!quizSubmitList[nkey][quizStandard]); 
+                          quizSubmitList/*.map((nqs, index)=>{
+                          const correctList = quizSubmitList.filter((nqs)=>nqs.submittedQuestions.filter((a)=>a.question==quizStandard)[0]?.scored==1);
+                          const wrongList = quizSubmitList.filter((nqs)=>nqs.submittedQuestions.filter((a)=>a.question==quizStandard)[0]?.scored==0);
+                          const unknownList = quizSubmitList.filter((nqs)=>nqs.submittedQuestions.findIndex((a)=>a.question==quizStandard)<0);
                           console.log(quizStandard);
                           console.log(correctList.concat(wrongList.concat(unknownList)), wrongList.concat(correctList.concat(unknownList)), unknownList.concat(correctList.concat(wrongList)));
                           return(
@@ -1840,18 +1915,23 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                             wrongList.concat(correctList.concat(unknownList))
                             :
                             unknownList.concat(correctList.concat(wrongList))
-                          )}).map((key)=>{
+                          )})*/.map((qs)=>{
                             return (
                               <Grid container className={styles.quizResultTableBodyContainer} justifyContent='flex-start'>
-                                {quizSubmitList[key]+'2'}
-                                <Grid item className={styles.noAnswer} xs={1}>{nStudentList.filter((s)=>s.studentId==key)[0]?.studentName}</Grid>
+                                <Grid item className={styles.noAnswer} xs={1}>{nStudentList.filter((s)=>s.studentId==qs.studentId)[0]?.studentName}</Grid>
                                 {
-                                  quizSubmitList[key] && quizList.map((q)=>{
-                                    console.log('key q : ',key,q);
+                                  qs.submittedQuestions?.map((q)=>{
                                     return (
-                                      Object.keys(quizSubmitList[key]).includes(q.question) ?
-                                      <Grid item xs={2} className={quizSubmitList[key][q.question].score>0 ? styles.correctAnswer : styles.wrongAnswer}>{quizSubmitList[key][q.question].submit}</Grid>
+                                      quizList.findIndex((ql)=>ql.questionId==q.questionId)>=0 ?
+                                      <Grid item xs={2} className={q.scored>0 ? styles.correctAnswer : styles.wrongAnswer}>{q.submittedAnswer}</Grid>
                                       :
+                                      <Grid item xs={2} className={styles.noAnswer}>{''}</Grid>
+                                    )
+                                  })
+                                }
+                                {
+                                  Array.from({length: quizList.length-qs.submittedQuestions.length}, ()=>0).map(()=>{
+                                    return (
                                       <Grid item xs={2} className={styles.noAnswer}>{''}</Grid>
                                     )
                                   })
@@ -1864,14 +1944,96 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                     </Grid>
                   </Grid>
                 : monitoringCategory=='O/X 체크' ?
-                  <Grid container className={styles.monitoringBody}>
-                    <Grid item xs={12} style={{paddingTop:'3px'}}>
-                      <Typography className={styles.monitoringSummary}>O/X 체크를 통해 학생들의 이해도를 파악할 수 있습니다</Typography>
-                      <br/>
-                      <Grid container justifyContent='center'>
-                      </Grid>
+                <Grid container className={styles.monitoringBody}>
+                <Grid item xs={12} style={{paddingTop:'3px'}}>
+                  <Typography className={styles.monitoringSummary}>학생들의 수업 진행상황을 확인할 수 있습니다</Typography>
+                  <br/>
+                  <div className={styles.createQuiz}><a target='_blank' href={`/assignment/class/${router.query.id}?interactionCreate=true`}>O/X 생성</a></div>
+                  <div className={styles.monitoringBody_quiz}>
+                    <Grid container justifyContent='flex-start'>
+                      <Grid className={styles.quizResultTable} item xs={1}></Grid>
+                      {
+                        interactionList.map((i)=>{
+                          return (
+                            <Grid item xs={2} className={styles.quizResultTable}>
+                              <Typography className={`${styles.oneLineLimit} ${styles.questionResultTitle}`}>{i.title}</Typography>
+                              <Grid container>
+                                <Grid item xs={6}>
+                                  <Typography className={styles.oneLineLimit}>참여율</Typography>
+                                  <Typography className={`${styles.oneLineLimit} ${styles.questionResultPercent}`}>{`${parseInt(interactionSubmitList.filter((qs)=>qs.submittedInteractions.findIndex((sq)=>sq.interactionId==i.interactionId)>=0).length/interactionSubmitList.length*100)}%`}</Typography>
+                                  <Typography className={`${styles.oneLineLimit} ${styles.questionResultPeople}`}>{`(${interactionSubmitList.filter((qs)=>qs.submittedInteractions.findIndex((sq)=>sq.interactionId==i.interactionId)>=0).length}/${interactionSubmitList.length}명)`}</Typography>
+                                </Grid>
+                                <Grid item xs={6}>
+                                  <Typography className={styles.oneLineLimit}>O비율</Typography>
+                                  <Typography className={`${styles.oneLineLimit} ${styles.questionResultPercent}`}>{`${parseInt(interactionSubmitList.filter((qs)=>qs.submittedInteractions.findIndex((sq)=>sq.interactionId==i.interactionId&&sq.yesNo)>=0).length/interactionSubmitList.length*100)}%`}</Typography>
+                                  <Typography className={`${styles.oneLineLimit} ${styles.questionResultPeople}`}>{`(${interactionSubmitList.filter((qs)=>qs.submittedInteractions.findIndex((sq)=>sq.interactionId==i.interactionId&&sq.yesNo)>=0).length}/${interactionSubmitList.length}명)`}</Typography>
+                                </Grid>
+                              </Grid>
+                            </Grid>
+                          )
+                        })
+                      }
                     </Grid>
-                  </Grid>
+                    {/* <Grid container justifyContent='flex-start'>
+                      <Grid className={styles.quizResultTable} item xs={1}></Grid>
+                      {
+                        quizList.length && 
+                        quizList.map((q,index)=>{
+                          return (
+                            <Grid item xs={2} className={styles.quizResultTable}>
+                              <div className={styles.alignQuiz}>정렬</div>
+                              <Select className={styles.installedProgramUpdownSelect} value={quizStandard==q.question ? quizOrder : 0} onChange={(e)=>handleQuizOrder(e.target.value, q.question)}>
+                                <MenuItem value={0}>정답순</MenuItem>
+                                <MenuItem value={1}>오답순</MenuItem>
+                                <MenuItem value={2}>미제출순</MenuItem>
+                              </Select>
+                            </Grid>
+                          )
+                        })
+                      }
+                    </Grid> */}
+                    {
+                      interactionSubmitList/*.map((nqs, index)=>{
+                      const correctList = quizSubmitList.filter((nqs)=>nqs.submittedQuestions.filter((a)=>a.question==quizStandard)[0]?.scored==1);
+                      const wrongList = quizSubmitList.filter((nqs)=>nqs.submittedQuestions.filter((a)=>a.question==quizStandard)[0]?.scored==0);
+                      const unknownList = quizSubmitList.filter((nqs)=>nqs.submittedQuestions.findIndex((a)=>a.question==quizStandard)<0);
+                      console.log(quizStandard);
+                      console.log(correctList.concat(wrongList.concat(unknownList)), wrongList.concat(correctList.concat(unknownList)), unknownList.concat(correctList.concat(wrongList)));
+                      return(
+                        quizOrder==0 ?
+                        correctList.concat(wrongList.concat(unknownList))
+                        : quizOrder==1 ?
+                        wrongList.concat(correctList.concat(unknownList))
+                        :
+                        unknownList.concat(correctList.concat(wrongList))
+                      )})*/.map((qs)=>{
+                        return (
+                          <Grid container className={styles.quizResultTableBodyContainer} justifyContent='flex-start'>
+                            <Grid item className={styles.noAnswer} xs={1}>{nStudentList.filter((s)=>s.studentId==qs.studentId)[0]?.studentName}</Grid>
+                            {
+                              qs.submittedInteractions?.map((q)=>{
+                                return (
+                                  interactionList.findIndex((ql)=>ql.interactionId==q.interactionId)>=0 ?
+                                  <Grid item xs={2} className={q.yesNo ? styles.interactionO : styles.interactionX}>{q.yesNo ? 'O' : 'X'}</Grid>
+                                  :
+                                  <Grid item xs={2} className={styles.noAnswer}>{''}</Grid>
+                                )
+                              })
+                            }
+                            {
+                              Array.from({length: interactionList.length-qs.submittedInteractions.length}, ()=>0).map(()=>{
+                                return (
+                                  <Grid item xs={2} className={styles.noAnswer}>{''}</Grid>
+                                )
+                              })
+                            }
+                          </Grid>
+                        )
+                      })
+                    }
+                  </div>
+                </Grid>
+              </Grid>
                 :
                 ''
               }
