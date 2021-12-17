@@ -1863,7 +1863,6 @@ const GroundSidebar = ({ handleVncConnect, handleVncDisconnect, nMe, nStudentLis
                         <Grid className={styles.quizResultContainer} container justifyContent='flex-start'>
                           <Grid className={styles.quizResultTable} item xs={1}></Grid>
                           {
-                            quizList.length && 
                             quizList.map((q)=>{
                               return (
                                 <Grid item xs={2} className={styles.quizResultTable}>
